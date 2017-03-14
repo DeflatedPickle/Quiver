@@ -1,5 +1,8 @@
 import tkinter as tk
 
+# Credit: Bryan Oakley
+# http://stackoverflow.com/questions/3781670/how-to-highlight-text-in-a-tkinter-text-widget
+
 
 class HighlightingText(tk.Text):
     """A text widget with a new method, highlight_pattern()
