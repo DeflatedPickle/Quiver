@@ -7,17 +7,17 @@
 Quiver is a resource pack creator and manager for Minecraft.
 
 ### How does it work?
-First, you need to have Minecraft installed.
-Second, you need to select the version of Minecraft you would like your pack to be based on.
-Third, you need to press the "Create" button.
-After doing the first three steps, the program will extract everything needed for a resource pack from the selected versions' .jar.
-The pack will have opened in the editor and you can browse through everything inside the pack and edit and delete any file you'd like.
-Clicking on an item will show its' source on the right in a panel, no matter if it's an image file or a .mcmeta/.json file.
+- First, you need to have Minecraft installed.
+- Second, you need to select the version of Minecraft you would like your pack to be based on.
+- Third, you need to press the "Create" button.
+- After doing the first three steps, the program will extract everything needed for a resource pack from the selected versions' .jar.
+- The pack will have opened in the editor and you can browse through everything inside the pack and edit and delete any file you'd like.
+- Clicking on an item will show its' source on the right in a panel, no matter if it's an image file or a .mcmeta/.json file.
 
 ### What can it do?
-Generate a resource pack from any version of Minecraft.
-Show every file from the resource pack in the tree.
-Show what's contained in each file in a panel on the left (if it's an image, the image is shown with a chessboard background, if it's code, the code is shown with syntax highlighting)
+- Generate a resource pack from any version of Minecraft.
+- Show every file from the resource pack in the tree.
+- Show what's contained in each file in a panel on the left (if it's an image, the image is shown with a chessboard background, if it's code, the code is shown with syntax highlighting)
 
 ### What are the requirements?
 All you need is to have Minecraft installed and have run it once (to generate the versions folder).
@@ -28,14 +28,14 @@ Download the .zip file and extract the sub-file, "Quiver". Do not delete anythin
 ---
 
 ### Planned Features:
-Mod detector (would detect any mods installed and ask if you'd like to add them to the pack).
-File selector before extraction (in case you don't want your pack to have everything)
-Custom text-editor and image-editor.
-More items for the menus.
-More uses for properties.json.
+- Mod detector (would detect any mods installed and ask if you'd like to add them to the pack).
+- File selector before extraction (in case you don't want your pack to have everything)
+- Custom text-editor and image-editor.
+- More items for the menus.
+- More uses for properties.json.
 
 ### Bugs:
-Syntax highlighting for strings carries on until the final quotation is found.
+- Syntax highlighting for strings carries on until the final quotation is found.
 
 ---
 
