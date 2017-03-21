@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 import json
 import os
 from datetime import datetime
@@ -294,17 +295,18 @@ class SidePanel(ttk.Frame):
 
         image_file = " ".join(self.tree.item(self.tree.focus())["tags"])
 
-        self.image = tk.PhotoImage(file=image_file)
+        image = Image.open(image_file)
+        self.image = ImageTk.PhotoImage(image)
 
         if self.tree.item(self.tree.focus())["text"] != "pack":
             width = self.image.width()
             height = self.image.height()
-            self.image = self.image.zoom(16)
+            self.image = ImageTk.PhotoImage(image.resize((self.image.width() * 16, self.image.height() * 16)))
 
         else:
             width = 16
             height = 16
-            self.image = self.image.zoom(2)
+            self.image = ImageTk.PhotoImage(image.resize((self.image.width() * 2, self.image.height() * 2)))
 
         self.widget_canvas.configure(scrollregion=(0, 0, self.image.width(), self.image.height()))
 

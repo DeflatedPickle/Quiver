@@ -6,6 +6,7 @@ import zipfile  # https://docs.python.org/3.4/library/zipfile.html
 from datetime import datetime
 
 import pkinter as pk
+import mod_detector
 
 
 class ProjectWindow(tk.Toplevel):
@@ -15,6 +16,7 @@ class ProjectWindow(tk.Toplevel):
         self.title("Project Window")
         self.geometry("300x250")
         self.minsize(width=300, height=150)
+        self.maxsize(width=500, height=300)
         self.transient(parent)
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", self.exit_program)
@@ -22,6 +24,8 @@ class ProjectWindow(tk.Toplevel):
         self.minecraft_location = os.getenv("APPDATA") + "\\.minecraft"
         self.minecraft_versions = self.minecraft_location + "\\versions"
         self.minecraft_resource_packs = self.minecraft_location + "\\resourcepacks"
+
+        self.included_mods = ""
 
         self.widget_frame_body = ttk.Frame(self)
         self.widget_frame_body.pack(side="top", fill="both", expand=True)
@@ -69,6 +73,9 @@ class ProjectWindow(tk.Toplevel):
         self.widget_button_create = ttk.Button(self.widget_frame_buttons, text="Create",
                                                command=self.extract_minecraft_jar)
         self.widget_button_create.pack(side="right")
+
+        self.widget_button_detect_mods = ttk.Button(self.widget_frame_buttons, text="Detect Mods",
+                                                    command=lambda: mod_detector.ModDetector(self)).pack(side="left")
 
         self.widget_combobox_version.configure(values=self.find_minecraft_versions())
         try:
@@ -119,6 +126,14 @@ class ProjectWindow(tk.Toplevel):
                     "description": self.widget_text_description.get(1.0, "end").strip("\n") + " - Made with Quiver."
                 }
             }, sort_keys=False, indent=2))
+
+        for item in self.included_mods:
+            # print(item)
+            with zipfile.ZipFile(item["tags"][0]) as z:
+                for file in z.namelist():
+                    if file.startswith("assets/"):
+                        print("{} | Extracting: {}".format(datetime.now().strftime("%H:%M:%S"), file))
+                        z.extract(file, pack_location)
 
         self.parent.directory = pack_location
         self.parent.cmd.tree_refresh()
