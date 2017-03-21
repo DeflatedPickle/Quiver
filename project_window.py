@@ -129,7 +129,7 @@ class ProjectWindow(tk.Toplevel):
 
         for item in self.included_mods:
             # print(item)
-            with zipfile.ZipFile(item["tags"][0]) as z:
+            with zipfile.ZipFile(" ".join(item["tags"])) as z:
                 for file in z.namelist():
                     if file.startswith("assets/"):
                         print("{} | Extracting: {}".format(datetime.now().strftime("%H:%M:%S"), file))
