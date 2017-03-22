@@ -228,6 +228,10 @@ class SidePanel(ttk.Frame):
         ttk.Label(self.widget_frame_text, text="File Description:").grid(row=2, column=0, sticky="w")
         ttk.Label(self.widget_frame_text, textvariable=self.description_variable).grid(row=2, column=1, sticky="w")
 
+        self.image_size_variable = tk.StringVar()
+        self.image_size_label = ttk.Label(self.widget_frame_text, text="Image Size:")
+        self.image_size_variable_label = ttk.Label(self.widget_frame_text, textvariable=self.image_size_variable)
+
         ##################################################
 
         self.widget_frame_code_buttons = ttk.Frame(self)
@@ -298,26 +302,26 @@ class SidePanel(ttk.Frame):
                                                       "section sign", elide=self.variable_show_signs.get()))
         self.widget_check_signs.grid(row=0, column=0)
 
-        self.widget_frame_text = ttk.Frame(self.widget_frame_code)
-        self.widget_frame_text.grid(row=2, column=0, sticky="nesw")
-        self.widget_frame_text.rowconfigure(0, weight=1)
-        self.widget_frame_text.columnconfigure(1, weight=1)
+        self.widget_frame_code_text = ttk.Frame(self.widget_frame_code)
+        self.widget_frame_code_text.grid(row=2, column=0, sticky="nesw")
+        self.widget_frame_code_text.rowconfigure(0, weight=1)
+        self.widget_frame_code_text.columnconfigure(1, weight=1)
 
-        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_text, wrap="none", width=32, height=0)
+        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_code_text, wrap="none", width=32, height=0)
         self.widget_text.grid(row=0, column=1, sticky="nesw")
         self.configure_tags()
 
-        self.widget_text_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_text,
+        self.widget_text_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_code_text,
                                                               orient="horizontal",
                                                               command=self.widget_text.xview)
         self.widget_text_scrollbar_horizontal.grid(row=1, column=1, sticky="we")
 
-        self.widget_text_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_text,
+        self.widget_text_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_code_text,
                                                             orient="vertical",
                                                             command=self.widget_text.yview)
         self.widget_text_scrollbar_vertical.grid(row=0, column=2, sticky="ns")
 
-        self.widget_text_line_numbers = pk.LineNumbers(self.widget_frame_text,
+        self.widget_text_line_numbers = pk.LineNumbers(self.widget_frame_code_text,
                                                        text_widget=self.widget_text,
                                                        scroll_widget=self.widget_text_scrollbar_vertical)
         self.widget_text_line_numbers.grid(row=0, column=0, sticky="ns")
@@ -332,6 +336,8 @@ class SidePanel(ttk.Frame):
 
     def frame_image(self):
         self.widget_frame_image.grid(row=2, column=0, sticky="nesw")
+        self.image_size_label.grid(row=3, column=0, sticky="w")
+        self.image_size_variable_label.grid(row=3, column=1, sticky="w")
         self.widget_canvas.delete("all")
 
         image_file = " ".join(self.tree.item(self.tree.focus())["tags"])
@@ -339,15 +345,18 @@ class SidePanel(ttk.Frame):
         image = Image.open(image_file)
         self.image = ImageTk.PhotoImage(image)
 
-        if self.tree.item(self.tree.focus())["text"] != "pack":
-            width = self.image.width()
-            height = self.image.height()
-            self.image = ImageTk.PhotoImage(image.resize((self.image.width() * 16, self.image.height() * 16)))
-
-        else:
+        if self.tree.item(self.tree.focus())["text"] == "pack":
             width = 16
             height = 16
-            self.image = ImageTk.PhotoImage(image.resize((self.image.width() * 2, self.image.height() * 2)))
+            times = 2
+
+        else:
+            width = self.image.width()
+            height = self.image.height()
+            times = 16
+
+        self.image = ImageTk.PhotoImage(image.resize((self.image.width() * times, self.image.height() * times)))
+        self.image_size_variable.set("{}x{}".format(self.image.width() // times, self.image.height() // times))
 
         self.widget_canvas.configure(scrollregion=(0, 0, self.image.width(), self.image.height()))
 
@@ -381,6 +390,8 @@ class SidePanel(ttk.Frame):
 
     def frame_code(self):
         self.widget_frame_code.grid(row=2, column=0, sticky="nesw")
+        self.image_size_label.grid_forget()
+        self.image_size_variable_label.grid_forget()
         self.widget_text.configure(state="normal")
         self.widget_text.delete(1.0, "end")
 
