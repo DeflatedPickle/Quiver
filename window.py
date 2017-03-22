@@ -1,4 +1,5 @@
 import tkinter as tk
+import _tkinter
 from tkinter import ttk
 from PIL import Image, ImageTk
 import json
@@ -9,6 +10,7 @@ import pkinter as pk
 import load_images
 import project_window
 import highlightingtext
+
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -54,8 +56,14 @@ class Window(tk.Tk):
         self.load_properties()
 
         self.style = ttk.Style()
-        self.style.theme_use(self.properties["theme"])
         # print(self.style.theme_names())
+        try:
+            self.style.theme_use(self.properties["theme"])
+        except _tkinter.TclError:
+            print("{} | TclError: '{}' is not a valid style,"
+                  " using system native instead.".format(datetime.now().strftime("%H:%M:%S"), self.properties["theme"]))
+        except AttributeError:
+            pass
 
         self.menu = Menu(self)
 
@@ -134,9 +142,12 @@ class Window(tk.Tk):
             os.startfile(self.widget_tree.item(self.widget_tree.focus())["tags"][0])
 
     def load_properties(self):
-        with open("properties.json", "r") as file:
-            self.properties = json.loads(file.read())
-            file.close()
+        try:
+            with open("properties.json", "r") as file:
+                self.properties = json.loads(file.read())
+                file.close()
+        except FileNotFoundError:
+            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
 
     def write_properties(self, key, value):
         with open("properties.json", "w+") as file:
@@ -222,18 +233,38 @@ class SidePanel(ttk.Frame):
         ##################################################
 
         self.widget_frame_image = ttk.Frame(self)
-        self.widget_frame_image.rowconfigure(0, weight=1)
+        self.widget_frame_image.rowconfigure(1, weight=1)
         self.widget_frame_image.columnconfigure(0, weight=1)
 
-        self.widget_canvas = tk.Canvas(self.widget_frame_image, width=256, height=256)
+        self.widget_frame_image_checks = ttk.Frame(self.widget_frame_image)
+        self.widget_frame_image_checks.grid(row=0, column=0, columnspan=2, sticky="we")
+
+        self.variable_show_chessboard = tk.BooleanVar()
+        self.variable_show_chessboard.set(False)
+        self.widget_check_chessboard = ttk.Checkbutton(self.widget_frame_image_checks, text="Hide Chessboard",
+                                                       variable=self.variable_show_chessboard, command=self.frame_image)
+        self.widget_check_chessboard.grid(row=0, column=0)
+
+        self.variable_show_grid = tk.BooleanVar()
+        self.variable_show_grid.set(False)
+        self.widget_check_grid = ttk.Checkbutton(self.widget_frame_image_checks, text="Hide Grid",
+                                                 variable=self.variable_show_grid, command=self.frame_image)
+        self.widget_check_grid.grid(row=0, column=1)
+
+        self.widget_frame_texture = ttk.Frame(self.widget_frame_image)
+        self.widget_frame_texture.grid(row=1, column=0, sticky="nesw")
+        self.widget_frame_texture.rowconfigure(0, weight=1)
+        self.widget_frame_texture.columnconfigure(0, weight=1)
+
+        self.widget_canvas = tk.Canvas(self.widget_frame_texture, width=256, height=256)
         self.widget_canvas.grid(row=0, column=0, sticky="nesw")
 
-        self.widget_canvas_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_image,
+        self.widget_canvas_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_texture,
                                                                 orient="horizontal",
                                                                 command=self.widget_canvas.xview)
         self.widget_canvas_scrollbar_horizontal.grid(row=1, column=0, sticky="we")
 
-        self.widget_canvas_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_image,
+        self.widget_canvas_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_texture,
                                                               orient="vertical",
                                                               command=self.widget_canvas.yview)
         self.widget_canvas_scrollbar_vertical.grid(row=0, column=1, sticky="ns")
@@ -251,11 +282,12 @@ class SidePanel(ttk.Frame):
         self.widget_frame_code_checks.grid(row=0, column=0, columnspan=2, sticky="we")
 
         self.variable_show_signs = tk.BooleanVar()
+        self.variable_show_signs.set(False)
         self.widget_check_signs = ttk.Checkbutton(self.widget_frame_code_checks, text="Hide Section Signs",
                                                   variable=self.variable_show_signs,
                                                   command=lambda: self.widget_text.tag_configure(
                                                       "section sign", elide=self.variable_show_signs.get()))
-        self.widget_check_signs.grid(row=0, column=2)
+        self.widget_check_signs.grid(row=0, column=0)
 
         self.widget_frame_text = ttk.Frame(self.widget_frame_code)
         self.widget_frame_text.grid(row=2, column=0, sticky="nesw")
@@ -310,20 +342,33 @@ class SidePanel(ttk.Frame):
 
         self.widget_canvas.configure(scrollregion=(0, 0, self.image.width(), self.image.height()))
 
-        colour1 = "white"
-        colour2 = "light grey"
-        colour = colour2
-        for row in range(height):
-            colour = colour1 if colour == colour2 else colour2
-            for col in range(width):
-                x1 = (col * 16)
-                y1 = (row * 16)
-                x2 = x1 + 16
-                y2 = y1 + 16
-                self.widget_canvas.create_rectangle(x1, y1, x2, y2, outline=colour, fill=colour)
+        if not self.variable_show_chessboard.get():
+            colour1 = "white"
+            colour2 = "light grey"
+            colour = colour2
+            for row in range(height):
                 colour = colour1 if colour == colour2 else colour2
+                for col in range(width):
+                    x1 = (col * 16)
+                    y1 = (row * 16)
+                    x2 = x1 + 16
+                    y2 = y1 + 16
+                    self.widget_canvas.create_rectangle(x1, y1, x2, y2, outline=colour, fill=colour)
+                    colour = colour1 if colour == colour2 else colour2
 
         self.widget_canvas.create_image(0, 0, anchor="nw", image=self.image)
+
+        if not self.variable_show_grid.get():
+            colour3 = "light grey"
+            for row in range(height):
+                colour = colour3
+                for col in range(width):
+                    x1 = (col * 16)
+                    y1 = (row * 16)
+                    x2 = x1 + 16
+                    y2 = y1 + 16
+                    self.widget_canvas.create_rectangle(x1, y1, x2, y2, outline=colour, fill=None)
+                    colour = colour
 
     def frame_code(self):
         self.widget_frame_code.grid(row=2, column=0, sticky="nesw")
@@ -432,14 +477,16 @@ class Menu(tk.Menu):
     def init_menu_application(self):
         self.menu_application = tk.Menu(self, name="apple")
 
-        self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left", command=self.parent.cmd.exit_program)
+        self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left",
+                                          command=self.parent.cmd.exit_program)
 
         self.add_cascade(label="Application", menu=self.menu_application)
 
     def init_menu_file(self):
         self.menu_file = tk.Menu(self)
 
-        self.menu_file.add_command(label="Open Project File", image=self.parent.image_folder_open, compound="left", command=lambda: os.startfile(self.parent.directory))
+        self.menu_file.add_command(label="Open Project File", image=self.parent.image_folder_open, compound="left",
+                                   command=lambda: os.startfile(self.parent.directory))
 
         self.add_cascade(label="File", menu=self.menu_file)
 
@@ -454,28 +501,12 @@ class Menu(tk.Menu):
     def init_menu_view(self):
         self.menu_view = tk.Menu(self)
 
-#        self.menu_style = tk.Menu(self.menu_view)
-#        self.menu_style.bind("<<MenuSelect>>", self.menu_item_get, "+")
-
-#        for i in self.parent.style.theme_names():
-#            self.menu_style.add_radiobutton(label=i)
-
-#        self.menu_view.add_cascade(label="Style", menu=self.menu_style)
-
-#        self.menu_view.add_separator()
-
         self.menu_view.add_command(label="Collapse the TreeView", command=self.parent.cmd.tree_collapse)
         self.menu_view.add_command(label="Expand the TreeView", command=self.parent.cmd.tree_expand)
         self.menu_view.add_command(label="Refresh the TreeView", image=self.parent.image_refresh, compound="left",
                                    command=self.parent.cmd.tree_refresh)
 
         self.add_cascade(label="View", menu=self.menu_view)
-
-#    def menu_item_get(self, event):
-#        index = self.parent.call(event.widget, "index", "active")
-#        label = self.menu_style.entrycget(index, "label")
-#        if index != "none":
-#            self.parent.write_properties("theme", self.menu_style.entrycget(index, "label"))
 
     def init_menu_window(self):
         self.menu_window = tk.Menu(self, name="window")
@@ -505,7 +536,8 @@ class Toolbar(ttk.Frame):
 
         # ttk.Separator(self, orient="vertical").grid(row=0, column=2, sticky="ns")
 
-        self.widget_button_refresh = ttk.Button(self, text="Refresh", image=self.parent.image_refresh, command=self.parent.cmd.tree_refresh,
+        self.widget_button_refresh = ttk.Button(self, text="Refresh", image=self.parent.image_refresh,
+                                                command=self.parent.cmd.tree_refresh,
                                                 style="Toolbutton")
         self.widget_button_refresh.grid(row=0, column=3)
 
@@ -568,7 +600,7 @@ class Commands:
         self.parent.widget_tree.insert(parent="",
                                        index="end",
                                        iid=self.parent.directory,
-                                       text=self.parent.directory.split("\\")[-1:],
+                                       text=self.parent.directory.split("/")[-1:],
                                        image=self.parent.image_folder_open,
                                        tags="Directory")
         # self.widget_tree.selection_set()
@@ -676,7 +708,7 @@ class Commands:
 
 def main():
     app = Window()
-    app2 = project_window.ProjectWindow(app)
+    project_window.ProjectWindow(app)
     # cmd = Commands(app)
     # app.load_files()
     # cmd.tree_refresh()

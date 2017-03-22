@@ -4,6 +4,7 @@ import os
 import json
 import zipfile  # https://docs.python.org/3.4/library/zipfile.html
 from datetime import datetime
+import platform
 
 import pkinter as pk
 import mod_detector
@@ -21,9 +22,13 @@ class ProjectWindow(tk.Toplevel):
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", self.exit_program)
 
-        self.minecraft_location = os.getenv("APPDATA") + "\\.minecraft"
-        self.minecraft_versions = self.minecraft_location + "\\versions"
-        self.minecraft_resource_packs = self.minecraft_location + "\\resourcepacks"
+        if platform.system() == "Windows":
+            self.minecraft_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft"
+        elif platform.system() == "Darwin":
+            self.minecraft_location = os.path.expanduser(os.path.join("~", "Library/Application Support/minecraft"))
+        self.minecraft_versions = self.minecraft_location + "/versions"
+        self.minecraft_resource_packs = self.minecraft_location + "/resourcepacks"
+        self.minecraft_mods = self.minecraft_location + "/mods"
 
         self.included_mods = ""
 
@@ -75,7 +80,11 @@ class ProjectWindow(tk.Toplevel):
         self.widget_button_create.pack(side="right")
 
         self.widget_button_detect_mods = ttk.Button(self.widget_frame_buttons, text="Detect Mods",
-                                                    command=lambda: mod_detector.ModDetector(self)).pack(side="left")
+                                                    command=lambda: mod_detector.ModDetector(self))
+        self.widget_button_detect_mods.pack(side="left")
+
+        if os.listdir(self.minecraft_mods) == []:
+            self.widget_button_detect_mods.configure(state="disabled")
 
         self.widget_combobox_version.configure(values=self.find_minecraft_versions())
         try:
@@ -88,7 +97,7 @@ class ProjectWindow(tk.Toplevel):
         list_versions = []
         try:
             for file in os.listdir(self.minecraft_versions):
-                if os.path.isdir(self.minecraft_versions + "\\" + file):
+                if os.path.isdir(self.minecraft_versions + "/" + file):
                     if not "forge" in file.lower() and not "liteloader" in file.lower():
                         list_versions.append(file)
         except:
@@ -105,20 +114,20 @@ class ProjectWindow(tk.Toplevel):
 
     def extract_minecraft_jar(self):
         minecraft_version = self.widget_combobox_version.get()
-        minecraft_jar_path = self.minecraft_versions + "\\" + minecraft_version + "\\" + minecraft_version + ".jar"
-        pack_location = self.minecraft_resource_packs + "\\" + self.variable_string_name.get()
+        minecraft_jar_path = self.minecraft_versions + "/" + minecraft_version + "/" + minecraft_version + ".jar"
+        pack_location = self.minecraft_resource_packs + "/" + self.variable_string_name.get()
 
         if not os.path.exists(pack_location):
             os.makedirs(pack_location)
 
         with zipfile.ZipFile(minecraft_jar_path, "r") as z:
-            # z.extractall(self.widget_directory_location.get() + "\\" + self.variable_string_name.get())
+            # z.extractall(self.widget_directory_location.get() + "/" + self.variable_string_name.get())
             for file in z.namelist():
                 if file.startswith("assets/") or file == "pack.png":
                     print("{} | Extracting: {}".format(datetime.now().strftime("%H:%M:%S"), file))
                     z.extract(file, pack_location)
 
-        with open(pack_location + "\\" + "pack.mcmeta", "w+") as file:
+        with open(pack_location + "/" + "pack.mcmeta", "w+") as file:
             file.write(json.dumps(
             {
                 "pack": {
