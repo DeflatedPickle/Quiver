@@ -83,10 +83,14 @@ class ProjectWindow(tk.Toplevel):
                                                     command=lambda: mod_detector.ModDetector(self))
         self.widget_button_detect_mods.pack(side="left")
 
-        if os.listdir(self.minecraft_mods) == []:
-            self.widget_button_detect_mods.configure(state="disabled")
+        try:
+            if os.listdir(self.minecraft_mods) == []:
+                self.widget_button_detect_mods.configure(state="disabled")
+        except FileNotFoundError:
+                self.widget_button_detect_mods.configure(state="disabled")
 
         self.widget_combobox_version.configure(values=self.find_minecraft_versions())
+
         try:
             self.widget_combobox_version.set(self.widget_combobox_version["values"][0])
         except IndexError:
