@@ -4,7 +4,6 @@ import os
 import json
 import zipfile  # https://docs.python.org/3.4/library/zipfile.html
 from datetime import datetime
-import platform
 
 import pkinter as pk
 import mod_detector
@@ -22,9 +21,9 @@ class ProjectWindow(tk.Toplevel):
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", self.exit_program)
 
-        if platform.system() == "Windows":
+        if self.parent.operating_system == "Windows":
             self.minecraft_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft"
-        elif platform.system() == "Darwin":
+        elif self.parent.operating_system == "Darwin":
             self.minecraft_location = os.path.expanduser(os.path.join("~", "Library/Application Support/minecraft"))
         self.minecraft_versions = self.minecraft_location + "/versions"
         self.minecraft_resource_packs = self.minecraft_location + "/resourcepacks"

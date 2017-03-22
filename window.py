@@ -4,6 +4,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import json
 import os
+import subprocess
+import platform
 from datetime import datetime
 
 import pkinter as pk
@@ -30,6 +32,8 @@ class Window(tk.Tk):
         self.minsize(width=500, height=300)
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.operating_system = platform.system()
 
         self.program_font_type = "Courier"
         self.program_font_size = 10
@@ -139,7 +143,12 @@ class Window(tk.Tk):
 
     def open_file(self, *args):
         if self.widget_tree.item(self.widget_tree.focus())["tags"][0] != "Directory":
-            os.startfile(self.widget_tree.item(self.widget_tree.focus())["tags"][0])
+            file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
+            if self.operating_system == "Windows":
+                os.startfile(file)
+            else:
+                opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                subprocess.call([opener, file])
 
     def load_properties(self):
         try:
