@@ -28,7 +28,6 @@ Download the .zip file and extract the sub-file, "Quiver". Do not delete anythin
 ---
 
 ### Planned Features:
-- Mod detector (would detect any mods installed and ask if you'd like to add them to the pack).
 - File selector before extraction (in case you don't want your pack to have everything)
 - Custom text-editor and image-editor.
 - More items for the menus.
