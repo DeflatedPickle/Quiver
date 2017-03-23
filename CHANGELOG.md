@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.5.9-alpha:
+### Version 0.8.9-alpha:
 - Switched to use `Pillow`, `PIL.Image` and `PIL.ImageTk` classes instead of the `tkinter.PhotoImage` class.
 - Moved images into a folder and switched to use those images instead of `base64` strings.
 - Added a maximum size for the `project_window`.
@@ -14,6 +14,9 @@
 - Changed the program to use `subprocess` to open files when on `OSX`.
 - Fixed an overlap of the variable, "`widget_frame_text`".
 - Added a label to show the size of the image.
+- Added a previous and next button to the search bar (these currently do nothing yet).
+- Added a window to tell the user the pack exists, if it exists and added a window to allow the pack to be replaced with a new one.
+- Added an about window.
 
 ### Version 0.1.0-alpha:
 - Initial release.

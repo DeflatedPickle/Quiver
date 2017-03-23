@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+"""The main window for Quiver."""
+
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
@@ -9,10 +12,11 @@ import platform
 from datetime import datetime
 
 import pkinter as pk
+
 import load_images
 import project_window
 import highlightingtext
-
+import about_window
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -489,7 +493,7 @@ class Menu(tk.Menu):
         # self.init_menu_edit()
         self.init_menu_view()
         self.init_menu_window()
-        # self.init_menu_help()
+        self.init_menu_help()
         self.init_menu_system()
 
         self.parent.configure(menu=self)
@@ -497,6 +501,7 @@ class Menu(tk.Menu):
     def init_menu_application(self):
         self.menu_application = tk.Menu(self, name="apple")
 
+        self.menu_application.add_command(label="About Quiver", command=lambda: about_window.AboutWindow(self.parent))
         self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left",
                                           command=self.parent.cmd.exit_program)
 
@@ -512,9 +517,6 @@ class Menu(tk.Menu):
 
     def init_menu_edit(self):
         self.menu_edit = tk.Menu(self)
-
-        self.menu_edit.add_command(label="Undo")
-        self.menu_edit.add_command(label="Redo")
 
         self.add_cascade(label="Edit", menu=self.menu_edit)
 
@@ -546,7 +548,7 @@ class Toolbar(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-        self.columnconfigure(8, weight=1)
+        self.columnconfigure(6, weight=1)
 
         # self.widget_button_undo = ttk.Button(self, text="Undo", style="Toolbutton")
         # self.widget_button_undo.grid(row=0, column=0)
@@ -562,7 +564,13 @@ class Toolbar(ttk.Frame):
         self.widget_button_refresh.grid(row=0, column=3)
 
         self.widget_entry_search = ttk.Entry(self)
-        self.widget_entry_search.grid(row=0, column=8, sticky="we")
+        self.widget_entry_search.grid(row=0, column=6, sticky="we")
+
+        self.widget_button_previous = ttk.Button(self, text="Previous", state="disabled")
+        self.widget_button_previous.grid(row=0, column=7)
+
+        self.widget_button_next = ttk.Button(self, text="Next", state="disabled")
+        self.widget_button_next.grid(row=0, column=8)
 
         self.widget_button_search = ttk.Button(self, text="Search", command=self.parent.cmd.search)
         self.widget_button_search.grid(row=0, column=9)
@@ -592,6 +600,10 @@ class Statusbar(pk.Statusbar):
         # self.bind_widget(parent.toolbar.widget_button_redo, self.status_variable, "Redo the last action", "")
         self.bind_widget(parent.toolbar.widget_button_refresh, self.status_variable,
                          "Refresh the files in the TreeView", "")
+        self.bind_widget(parent.toolbar.widget_button_previous, self.status_variable,
+                         "Search for the previous instance", "")
+        self.bind_widget(parent.toolbar.widget_button_next, self.status_variable,
+                         "Search for the next instance", "")
         self.bind_widget(parent.toolbar.widget_button_exit, self.status_variable, "Exit the program", "")
 
         self.add_sizegrip()

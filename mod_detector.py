@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+"""The mod detector window for Quiver."""
+
 import tkinter as tk
 import _tkinter
 from tkinter import ttk

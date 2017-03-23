@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+"""The project window for Quiver."""
+
 import tkinter as tk
+from tkinter import messagebox
 from tkinter import ttk
 import os
 import json
@@ -118,19 +122,27 @@ class ProjectWindow(tk.Toplevel):
     def extract_minecraft_jar(self):
         minecraft_version = self.widget_combobox_version.get()
         minecraft_jar_path = self.minecraft_versions + "/" + minecraft_version + "/" + minecraft_version + ".jar"
-        pack_location = self.minecraft_resource_packs + "/" + self.variable_string_name.get()
+        self.pack_location = self.minecraft_resource_packs + "/" + self.variable_string_name.get()
 
-        if not os.path.exists(pack_location):
-            os.makedirs(pack_location)
+        if os.path.isdir(self.pack_location):
+            # messagebox.showwarning("Warning", "The path '{}' already exists.".format(pack_location))
+            messagebox.showwarning("Warning", "The pack '{}' already exists.".format(self.variable_string_name.get()))
+            delete = messagebox.askyesnocancel("Delete Pack", "Would you like to delete the pack?")
+            if delete:
+                self.remove_previous_pack()
+            elif not delete:
+                return
+        elif not os.path.exists(self.pack_location):
+            os.makedirs(self.pack_location)
 
         with zipfile.ZipFile(minecraft_jar_path, "r") as z:
             # z.extractall(self.widget_directory_location.get() + "/" + self.variable_string_name.get())
             for file in z.namelist():
                 if file.startswith("assets/") or file == "pack.png":
                     print("{} | Extracting: {}".format(datetime.now().strftime("%H:%M:%S"), file))
-                    z.extract(file, pack_location)
+                    z.extract(file, self.pack_location)
 
-        with open(pack_location + "/" + "pack.mcmeta", "w+") as file:
+        with open(self.pack_location + "/" + "pack.mcmeta", "w+") as file:
             file.write(json.dumps(
             {
                 "pack": {
@@ -145,11 +157,22 @@ class ProjectWindow(tk.Toplevel):
                 for file in z.namelist():
                     if file.startswith("assets/"):
                         print("{} | Extracting: {}".format(datetime.now().strftime("%H:%M:%S"), file))
-                        z.extract(file, pack_location)
+                        z.extract(file, self.pack_location)
 
-        self.parent.directory = pack_location
+        self.parent.directory = self.pack_location
         self.parent.cmd.tree_refresh()
         self.destroy()
+
+    def remove_previous_pack(self):
+        for root, dirs, files in os.walk(self.pack_location, topdown=False):
+            for name in files:
+                    os.remove(os.path.join(root, name))
+                    print("{} | Deleting: {}".format(datetime.now().strftime("%H:%M:%S"), name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+                print("{} | Deleting: {}".format(datetime.now().strftime("%H:%M:%S"), name))
+        os.rmdir(self.pack_location)
+        print("{} | Deleting: {}".format(datetime.now().strftime("%H:%M:%S"), self.pack_location))
 
     def exit_program(self):
         raise SystemExit
@@ -157,7 +180,7 @@ class ProjectWindow(tk.Toplevel):
 
 def main():
     app = tk.Tk()
-    app2 = ProjectWindow(app)
+    ProjectWindow(app)
     app.mainloop()
 
 
