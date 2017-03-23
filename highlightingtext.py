@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+"""A subclass of the Text widget with functions for highlighting text."""
+
 import tkinter as tk
 
 # Credit: Bryan Oakley
