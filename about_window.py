@@ -45,16 +45,20 @@ Info:
 - GUI Toolkit: Tkinter.
 
 Credits:
-- MightyPork for ResourcePack Workbench.
-- Fredrik Lundh for Tkinter.
-- Alex Clark for Pillow.
-- Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.
-- GitHub for hosting the code.
-- Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
-- dotPDN, LLC for Paint.NET (used to program make icons/textures).
-- JetBrains for PyCharm (the IDE used).
-- Mojang for Minecraft.
-- Bryan Oakley on StackOverflow for occasional indirect help with code.""".format(__title__, __version__, __author__))
+    Libraries:
+        - Fredrik Lundh for Tkinter.
+        - Alex Clark for Pillow.
+        - okdana for jsonesque.
+    Programmes:
+        - MightyPork for ResourcePack Workbench.
+        - Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
+        - dotPDN, LLC for Paint.NET (used to program make icons/textures).
+        - JetBrains for PyCharm (the IDE used).
+        - Mojang for Minecraft.
+    Other:
+        - Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.
+        - GitHub for hosting the code.
+        - Bryan Oakley on StackOverflow for occasional indirect help with code.""".format(__title__, __version__, __author__))
 
         self.widget_text.configure(state="disabled")
 

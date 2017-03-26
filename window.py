@@ -4,7 +4,6 @@
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
-from PIL import Image, ImageTk
 import json
 import os
 import subprocess
@@ -12,11 +11,15 @@ import platform
 from datetime import datetime
 
 import pkinter as pk
+from PIL import Image, ImageTk
+import jsonesque
 
 import load_images
 import project_window
 import highlightingtext
 import about_window
+import text_editor
+import image_viewer
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -30,7 +33,6 @@ class Window(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("Quiver")
         image = load_images.LoadImages()
-
         self.iconphoto(self._w, image.icon)
         self.geometry("700x500")
         self.minsize(width=500, height=300)
@@ -148,16 +150,32 @@ class Window(tk.Tk):
     def open_file(self, *args):
         if self.widget_tree.item(self.widget_tree.focus())["tags"][0] != "Directory":
             file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
-            if self.operating_system == "Windows":
-                os.startfile(file)
-            else:
-                opener = "open" if self.operating_system == "Darwin" else "xdg-open"
-                subprocess.call([opener, file])
+            extension = self.widget_tree.item(self.widget_tree.focus())["values"][1]
+
+            if extension == ".txt" or extension == ".json" or extension == ".mcmeta":
+                if self.properties["text-editor"] == "default":
+                    editor = text_editor.TextEditor(self)
+                    editor.load_file(file=file)
+                elif self.properties["text-editor"] == "system":
+                    os.startfile(file)
+
+            elif extension == ".png":
+                if self.properties["image-viewer"] == "default":
+                    viewer = image_viewer.ImageViewer(self)
+                    viewer.load_image(image=file)
+                elif self.properties["image-viewer"] == "system":
+                    os.startfile(file)
+
+            # if self.operating_system == "Windows":
+            #     os.startfile(file)
+            # else:
+            #     opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+            #     subprocess.call([opener, file])
 
     def load_properties(self):
         try:
             with open("properties.json", "r") as file:
-                self.properties = json.loads(file.read())
+                self.properties = json.loads(jsonesque.process(file.read()))
                 file.close()
         except FileNotFoundError:
             print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))

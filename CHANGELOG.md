@@ -1,5 +1,10 @@
 ## Changelog
 
+### Version 0.10.1-alpha:
+- Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
+- Added an in-programme text-editor.
+- Added an in-programme image-viewer.
+
 ### Version 0.8.9-alpha:
 - Switched to use `Pillow`, `PIL.Image` and `PIL.ImageTk` classes instead of the `tkinter.PhotoImage` class.
 - Moved images into a folder and switched to use those images instead of `base64` strings.
