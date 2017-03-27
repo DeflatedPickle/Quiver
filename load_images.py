@@ -1,5 +1,9 @@
-import tkinter as tk
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Loads the images Quiver uses."""
+
 from PIL import Image, ImageTk
+
 
 class LoadImages:
     def __init__(self):

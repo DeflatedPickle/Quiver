@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The mod detector window for Quiver."""
 
 import tkinter as tk

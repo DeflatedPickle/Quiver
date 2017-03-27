@@ -1,9 +1,13 @@
 ## Changelog
 
-### Version 0.10.1-alpha:
+### Version 0.13.2-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
 - Added an in-programme text-editor.
 - Added an in-programme image-viewer.
+- Fixed opening of files if the value "system" is given.
+- Added a start window.
+- Added a resource pack installer.
+- Added a resource pack opener (opens resource packs into the program, only works with folders).
 
 ### Version 0.8.9-alpha:
 - Switched to use `Pillow`, `PIL.Image` and `PIL.ImageTk` classes instead of the `tkinter.PhotoImage` class.

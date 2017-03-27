@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The image-viewer for Quiver."""
 
 import tkinter as tk
@@ -28,7 +29,7 @@ class ImageViewer(tk.Toplevel):
         self.zoom_height = 0
 
         self.zoom_speed = 16
-        self.zoom_current = 0
+        self.zoom_current = 1
 
         self.scroll_past_horizontally = 50
         self.scroll_past_vertically = 50
@@ -159,12 +160,12 @@ class ImageViewer(tk.Toplevel):
         self.check_zoom()
 
     def check_zoom(self):
-        if self.zoom_current > 14:
+        if self.zoom_current > 15:
             self.toolbar.widget_button_zoom_in.configure(state="disabled")
         else:
             self.toolbar.widget_button_zoom_in.configure(state="enabled")
 
-        if self.zoom_current < 1:
+        if self.zoom_current < 2:
             self.toolbar.widget_button_zoom_out.configure(state="disabled")
         else:
             self.toolbar.widget_button_zoom_out.configure(state="enabled")

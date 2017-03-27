@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """A subclass of the Text widget with functions for highlighting text."""
 
 import tkinter as tk

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The main window for Quiver."""
 
 import tkinter as tk
@@ -20,6 +21,7 @@ import highlightingtext
 import about_window
 import text_editor
 import image_viewer
+import start_window
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -157,20 +159,22 @@ class Window(tk.Tk):
                     editor = text_editor.TextEditor(self)
                     editor.load_file(file=file)
                 elif self.properties["text-editor"] == "system":
-                    os.startfile(file)
+                    if self.operating_system == "Windows":
+                        os.startfile(file)
+                    else:
+                        opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                        subprocess.call([opener, file])
 
             elif extension == ".png":
                 if self.properties["image-viewer"] == "default":
                     viewer = image_viewer.ImageViewer(self)
                     viewer.load_image(image=file)
                 elif self.properties["image-viewer"] == "system":
-                    os.startfile(file)
-
-            # if self.operating_system == "Windows":
-            #     os.startfile(file)
-            # else:
-            #     opener = "open" if self.operating_system == "Darwin" else "xdg-open"
-            #     subprocess.call([opener, file])
+                    if self.operating_system == "Windows":
+                        os.startfile(file)
+                    else:
+                        opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                        subprocess.call([opener, file])
 
     def load_properties(self):
         try:
@@ -329,7 +333,8 @@ class SidePanel(ttk.Frame):
         self.widget_frame_code_text.rowconfigure(0, weight=1)
         self.widget_frame_code_text.columnconfigure(1, weight=1)
 
-        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_code_text, wrap="none", width=32, height=0)
+        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_code_text, wrap="none", width=32,
+                                                             height=0)
         self.widget_text.grid(row=0, column=1, sticky="nesw")
         self.configure_tags()
 
@@ -758,7 +763,8 @@ class Commands:
 
 def main():
     app = Window()
-    project_window.ProjectWindow(app)
+    # project_window.ProjectWindow(app)
+    start_window.StartWindow(app)
     # cmd = Commands(app)
     # app.load_files()
     # cmd.tree_refresh()

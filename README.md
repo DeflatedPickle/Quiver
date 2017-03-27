@@ -29,13 +29,12 @@ Download the .zip file and extract the sub-file, "Quiver". Do not delete anythin
 
 ### Planned Features:
 - File selector before extraction (in case you don't want your pack to have everything)
-- Custom text-editor and image-editor.
 - More items for the menus.
 - More uses for properties.json.
-- Resource Pack installer.
 - Resource Pack opener.
 - A resource pack patcher.
 - A theme designer/editor for the SAO-UI mod.
+- Add an option to create the pack as a folder or `.zip` file.
 
 ### Bugs:
 - Syntax highlighting for strings carries on until the final quotation is found.

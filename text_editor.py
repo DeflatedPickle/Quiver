@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The text-editor for Quiver."""
 
 import tkinter as tk
