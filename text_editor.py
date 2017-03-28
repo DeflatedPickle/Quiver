@@ -46,7 +46,7 @@ class TextEditor(tk.Toplevel):
         self.widget_scrollbar_horizontal.grid(row=1, column=1, sticky="we")
 
         self.widget_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_code, orient="vertical",
-                                                         command=self.widget_text_code.yview)
+                                                       command=self.widget_text_code.yview)
         self.widget_scrollbar_vertical.grid(row=0, column=2, sticky="ns")
 
         self.line_numbers = pk.LineNumbers(self.widget_frame_code, text_widget=self.widget_text_code,
@@ -54,7 +54,7 @@ class TextEditor(tk.Toplevel):
         self.line_numbers.grid(row=0, column=0, sticky="ns")
 
         self.widget_text_code.configure(xscrollcommand=self.widget_scrollbar_horizontal.set,
-                                   yscrollcommand=self.widget_scrollbar_vertical.set)
+                                        yscrollcommand=self.widget_scrollbar_vertical.set)
 
     def load_file(self, file=""):
         with open(file, "r") as f:
@@ -102,6 +102,7 @@ class Toolbar(ttk.Frame):
         self.widget_button_paste.grid(row=0, column=8)
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=9, sticky="ns")
+
 
 class Statusbar(pk.Statusbar):
     def __init__(self, parent, *args, **kwargs):

@@ -31,13 +31,17 @@ Download the .zip file and extract the sub-file, "Quiver". Do not delete anythin
 - File selector before extraction (in case you don't want your pack to have everything)
 - More items for the menus.
 - More uses for properties.json.
-- Resource Pack opener.
 - A resource pack patcher.
 - A theme designer/editor for the SAO-UI mod.
-- Add an option to create the pack as a folder or `.zip` file.
+- An option to create the pack as a folder or `.zip` file.
+- An option to swap a file out for another.
+- Add an installer/converter for server resource packs.
+- Add an item to the menu to allow zipping of the resource pack.
 
 ### Bugs:
 - Syntax highlighting for strings carries on until the final quotation is found.
+- The grid in the image viewer does not scale with the image.
+- The file counter in the main tree does not show the proper amount of files in a directory (or counts hidden files).
 
 ---
 

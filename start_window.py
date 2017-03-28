@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
-import zipfile
+# import zipfile
 import os
 import shutil
 
@@ -26,12 +26,22 @@ class StartWindow(tk.Toplevel):
         self.rowconfigure(0, weight=1)
         self.columnconfigure((0, 1), weight=1)
 
-        self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0, columnspan=2,
-                                                                             sticky="nesw")
-        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=2, column=0, sticky="nesw")
-        self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1, column=1, sticky="ew")
-        self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack, state="disabled").grid(row=2, column=1, sticky="ew")
-        self.widget_button_exit = ttk.Button(self, text="Exit", command=self.exit_program).grid(row=3, column=0, columnspan=2, sticky="ew")
+        self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0,
+                                                                                                 columnspan=2,
+                                                                                                 sticky="nesw")
+        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=3,
+                                                                                                  column=0,
+                                                                                                  sticky="nesw")
+        self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1,
+                                                                                                           column=1,
+                                                                                                           sticky="ew")
+        self.widget_button_patch = ttk.Button(self, text="Install Server Pack", command=self.install_server_pack,
+                                              state="disabled").grid(row=2, column=1, sticky="ew")
+        self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack,
+                                              state="disabled").grid(row=3, column=1, sticky="ew")
+        self.widget_button_exit = ttk.Button(self, text="Exit", command=self.exit_program).grid(row=4, column=0,
+                                                                                                columnspan=2,
+                                                                                                sticky="ew")
 
     def create_new(self):
         project_window.ProjectWindow(self.parent)
@@ -61,12 +71,27 @@ class StartWindow(tk.Toplevel):
         else:
             messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
 
-
     def install_pack(self):
-        pack = filedialog.askopenfile("r")
-        pack.close()
+        # pack = filedialog.askopenfile("r")
+        # pack.close()
+        #
+        # try:
+        #     shutil.move(pack.name, os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks/")
+        # except shutil.Error:
+        #     messagebox.showerror("Error", "This pack is already installed.")
 
-        shutil.move(pack.name, os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks/")
+        pack = filedialog.askdirectory()
+        if os.path.isfile(pack + "/pack.mcmeta"):
+            # messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
+            try:
+                shutil.move(pack, os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks/")
+            except shutil.Error:
+                messagebox.showerror("Error", "This pack is already installed.")
+        else:
+            messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
+
+    def install_server_pack(self):
+        pass
 
     def patch_pack(self):
         pass

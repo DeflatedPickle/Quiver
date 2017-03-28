@@ -92,13 +92,15 @@ class ModDetector(tk.Toplevel):
     def move_all_mods_right(self):
         for item in self.widget_tree_left.widget_tree.get_children():
             item = self.widget_tree_left.widget_tree.item(item)
-            self.widget_tree_right.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"], tags=item["tags"])
+            self.widget_tree_right.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"],
+                                                      tags=item["tags"])
         self.widget_tree_left.widget_tree.delete(*self.widget_tree_left.widget_tree.get_children())
 
     def move_all_mods_left(self):
         for item in self.widget_tree_right.widget_tree.get_children():
             item = self.widget_tree_right.widget_tree.item(item)
-            self.widget_tree_left.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"], tags=item["tags"])
+            self.widget_tree_left.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"],
+                                                     tags=item["tags"])
         self.widget_tree_right.widget_tree.delete(*self.widget_tree_right.widget_tree.get_children())
 
     def confirm_mods(self):

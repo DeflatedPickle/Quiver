@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.13.2-alpha:
+### Version 0.15.5-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
 - Added an in-programme text-editor.
 - Added an in-programme image-viewer.
@@ -8,6 +8,11 @@
 - Added a start window.
 - Added a resource pack installer.
 - Added a resource pack opener (opens resource packs into the program, only works with folders).
+- Fixed the zoom-in cap for the image-viewer.
+- Added textures to the buttons on the toolbar of the image-viewer.
+- Added `try`/`except` statements around each loading of an image.
+- Changed `install_pack` to install folders instead of `.zip`s.
+- Added a button to install server resource packs (will install a pack from a server, does not install packs to servers) (currently does nothing).
 
 ### Version 0.8.9-alpha:
 - Switched to use `Pillow`, `PIL.Image` and `PIL.ImageTk` classes instead of the `tkinter.PhotoImage` class.

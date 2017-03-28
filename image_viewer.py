@@ -9,6 +9,8 @@ import os
 import pkinter as pk
 from PIL import Image, ImageTk
 
+import load_images
+
 
 class ImageViewer(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):
@@ -70,11 +72,11 @@ class ImageViewer(tk.Toplevel):
 
     def mouse_wheel_handler(self, event):
         if event.delta == 120 or event.num == 4:
-            if self.zoom_current < 15:
+            if self.zoom_current < 16:
                 self.zoom_in()
 
         elif event.delta == -120:
-            if self.zoom_current > 0 or event.num == 5:
+            if self.zoom_current > 1 or event.num == 5:
                 self.zoom_out()
 
     def load_image(self, image=""):
@@ -88,7 +90,8 @@ class ImageViewer(tk.Toplevel):
 
         self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
         self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
-        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
+        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
+                                                                 tags="image")
         self.title("{} - {}".format(self.title(), "".join(os.path.splitext(image))))
 
         self.draw_background()
@@ -108,7 +111,8 @@ class ImageViewer(tk.Toplevel):
                     y1 = (row * 16)
                     x2 = x1 + 16
                     y2 = y1 + 16
-                    self.widget_canvas_image.create_rectangle(x1, y1, x2, y2, outline=colour, fill=colour, tags="chessboard")
+                    self.widget_canvas_image.create_rectangle(x1, y1, x2, y2, outline=colour, fill=colour,
+                                                              tags="chessboard")
                     colour = colour1 if colour == colour2 else colour2
 
         self.widget_canvas_image.lift(self.drawn_image)
@@ -128,10 +132,14 @@ class ImageViewer(tk.Toplevel):
     def zoom_in(self):
         self.widget_canvas_image.delete("image")
 
-        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() + self.original_width, self.image_photo.height() + self.original_height)))
+        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() +
+                                                                      self.original_width,
+                                                                      self.image_photo.height() +
+                                                                      self.original_height)))
         self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
         self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
-        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
+        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
+                                                                 tags="image")
 
         self.zoom_current += 1
         # print(self.zoom_current)
@@ -145,10 +153,14 @@ class ImageViewer(tk.Toplevel):
     def zoom_out(self):
         self.widget_canvas_image.delete("image")
 
-        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() - self.original_width, self.image_photo.height() - self.original_height)))
+        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() -
+                                                                      self.original_width,
+                                                                      self.image_photo.height() -
+                                                                      self.original_height)))
         self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
         self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
-        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
+        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
+                                                                 tags="image")
 
         self.zoom_current -= 1
         # print(self.zoom_current)
@@ -183,28 +195,40 @@ class Toolbar(ttk.Frame):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
+        image = load_images.LoadImages()
+        self.image_chessboard = image.image_chessboard
+        self.image_grid = image.image_grid
+        self.image_zoom_in = image.image_zoom_in
+        self.image_zoom_out = image.image_zoom_out
+
         self.variable_chessboard = tk.BooleanVar()
         self.variable_chessboard.set(True)
-        self.widget_check_chessboard = ttk.Checkbutton(self, text="Chessboard", variable=self.variable_chessboard, command=self.parent.draw_background, style="Toolbutton")
+        self.widget_check_chessboard = ttk.Checkbutton(self, text="Chessboard", image=self.image_chessboard,
+                                                       variable=self.variable_chessboard,
+                                                       command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_chessboard.grid(row=0, column=0)
 
         self.variable_grid = tk.BooleanVar()
         self.variable_grid.set(False)
-        self.widget_check_grid = ttk.Checkbutton(self, text="Grid",variable=self.variable_grid, command=self.parent.draw_background, style="Toolbutton")
+        self.widget_check_grid = ttk.Checkbutton(self, text="Grid", image=self.image_grid, variable=self.variable_grid,
+                                                 command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_grid.grid(row=0, column=1)
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=2, sticky="ns")
 
-        self.widget_button_zoom_in = ttk.Button(self, text="Zoom In", command=self.parent.zoom_in, style="Toolbutton")
+        self.widget_button_zoom_in = ttk.Button(self, text="Zoom In", image=self.image_zoom_in,
+                                                command=self.parent.zoom_in, style="Toolbutton")
         self.widget_button_zoom_in.grid(row=0, column=3)
 
-        self.widget_button_zoom_out = ttk.Button(self, text="Zoom Out", command=self.parent.zoom_out, style="Toolbutton")
+        self.widget_button_zoom_out = ttk.Button(self, text="Zoom Out", image=self.image_zoom_out,
+                                                 command=self.parent.zoom_out, style="Toolbutton")
         self.widget_button_zoom_out.grid(row=0, column=4)
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=5, sticky="ns")
 
         self.variable_tile = tk.BooleanVar()
-        self.widget_button_tile = ttk.Checkbutton(self, text="Tile", variable=self.variable_tile, style="Toolbutton", state="disabled")
+        self.widget_button_tile = ttk.Checkbutton(self, text="Tile", variable=self.variable_tile,
+                                                  style="Toolbutton", state="disabled")
         self.widget_button_tile.grid(row=0, column=6)
 
 
@@ -215,7 +239,8 @@ class Statusbar(pk.Statusbar):
         self.status_variable = tk.StringVar()
         self.add_variable(textvariable=self.status_variable)
 
-        self.bind_widget(parent.toolbar.widget_check_chessboard, self.status_variable, "Show or hide the chessboard", "")
+        self.bind_widget(parent.toolbar.widget_check_chessboard, self.status_variable, "Show or hide the chessboard",
+                         "")
         self.bind_widget(parent.toolbar.widget_check_grid, self.status_variable, "Show or hide the grid", "")
 
         self.bind_widget(parent.toolbar.widget_button_zoom_in, self.status_variable, "Zoom the image in", "")
@@ -223,10 +248,10 @@ class Statusbar(pk.Statusbar):
 
         self.add_sizegrip()
 
+
 def main():
     app = tk.Tk()
     ImageViewer(app).load_image("icons/exit.png")
-    # ImageViewer(app).load_image("C:/Users/PabloPatato/AppData/Roaming/.minecraft/resourcepacks/Minecraft_Resource_Pack/assets/minecraft/textures/blocks/fire_layer_0.png")
     app.mainloop()
 
 

@@ -62,8 +62,6 @@ class Window(tk.Tk):
 
         self.image_refresh = image.image_refresh
 
-        self.image_find = image.image_find
-
         self.cmd = Commands(self)
         self.load_properties()
 
@@ -212,12 +210,18 @@ class Tree(ttk.Treeview):
         self.widget_menu_tree.add_command(label="Delete", command=self.parent.cmd.tree_delete_selected)
 
     def open_folder(self, *args):
-        if self.item(self.focus())["image"][0] == "pyimage2":
-            self.item(self.focus(), image=self.parent.image_folder_open)
+        try:
+            if self.item(self.focus())["image"][0] == "pyimage2":
+                self.item(self.focus(), image=self.parent.image_folder_open)
+        except IndexError:
+            pass
 
     def close_folder(self, *args):
-        if self.item(self.focus())["image"][0] == "pyimage3":
-            self.item(self.focus(), image=self.parent.image_folder_close)
+        try:
+            if self.item(self.focus())["image"][0] == "pyimage3":
+                self.item(self.focus(), image=self.parent.image_folder_close)
+        except IndexError:
+            pass
 
     def show_menu(self, event):
         # name = self.item(self.identify("item", event.x, event.y))["text"]
@@ -268,6 +272,9 @@ class SidePanel(ttk.Frame):
 
         self.widget_button_edit = ttk.Button(self.widget_frame_code_buttons, text="Edit", state="disabled")
         self.widget_button_edit.grid(row=0, column=1)
+
+        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", state="disabled")
+        self.widget_button_replace.grid(row=0, column=2)
 
         ##################################################
 
@@ -619,6 +626,9 @@ class Statusbar(pk.Statusbar):
         self.bind_menu(parent.menu.menu_view, self.status_variable, ["Collapse the items in the TreeView",
                                                                      "Expand the items in the TreeView",
                                                                      "Refresh the items in the TreeView"])
+
+        self.bind_widget(parent, self.status_variable, "Open the selected file", "")
+
         # self.bind_widget(parent.toolbar.widget_button_undo, self.status_variable, "Undo the last action", "")
         # self.bind_widget(parent.toolbar.widget_button_redo, self.status_variable, "Redo the last action", "")
         self.bind_widget(parent.toolbar.widget_button_refresh, self.status_variable,
