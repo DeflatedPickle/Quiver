@@ -91,7 +91,7 @@ class ProjectWindow(tk.Toplevel):
             if os.listdir(self.minecraft_mods) == []:
                 self.widget_button_detect_mods.configure(state="disabled")
         except FileNotFoundError:
-                self.widget_button_detect_mods.configure(state="disabled")
+            self.widget_button_detect_mods.configure(state="disabled")
 
         self.widget_combobox_version.configure(values=self.find_minecraft_versions())
 

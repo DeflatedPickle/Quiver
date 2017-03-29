@@ -4,6 +4,7 @@
 
 import tkinter as tk
 from tkinter import ttk
+import idlelib.ToolTip
 import os
 
 import pkinter as pk
@@ -50,9 +51,11 @@ class ImageViewer(tk.Toplevel):
         self.widget_frame_image.grid(row=1, column=0, sticky="nesw")
         self.widget_frame_image.rowconfigure(0, weight=1)
         self.widget_frame_image.columnconfigure(0, weight=1)
-        self.widget_frame_image.bind_all("<Control-MouseWheel>", self.mouse_wheel_handler)
-        self.widget_frame_image.bind_all("<Control-Button-4>", self.mouse_wheel_handler)
-        self.widget_frame_image.bind_all("<Control-Button-5>", self.mouse_wheel_handler)
+        self.widget_frame_image.bind_all("<Control-MouseWheel>", self.zoom_handler)
+        self.widget_frame_image.bind_all("<Control-Button-4>", self.zoom_handler)
+        self.widget_frame_image.bind_all("<Control-Button-5>", self.zoom_handler)
+        self.widget_frame_image.bind_all("<Enter>", self.on_enter)
+        self.widget_frame_image.bind_all("<Leave>", self.on_leave)
 
         self.widget_canvas_image = tk.Canvas(self.widget_frame_image)
         self.widget_canvas_image.grid(row=0, column=0)
@@ -70,7 +73,7 @@ class ImageViewer(tk.Toplevel):
 
         self.check_zoom()
 
-    def mouse_wheel_handler(self, event):
+    def zoom_handler(self, event):
         if event.delta == 120 or event.num == 4:
             if self.zoom_current < 16:
                 self.zoom_in()
@@ -181,6 +184,20 @@ class ImageViewer(tk.Toplevel):
             self.toolbar.widget_button_zoom_out.configure(state="disabled")
         else:
             self.toolbar.widget_button_zoom_out.configure(state="enabled")
+            
+    def on_enter(self, *args):
+        self.widget_frame_image.bind_all("<MouseWheel>", self.on_scroll_vertical)
+        self.widget_frame_image.bind_all("<Shift-MouseWheel>", self.on_scroll_horizontal)
+    
+    def on_leave(self, *args):
+        self.widget_frame_image.unbind_all("<MouseWheel>")
+        self.widget_frame_image.unbind_all("<Shift-MouseWheel>")
+
+    def on_scroll_vertical(self, event):
+        self.widget_canvas_image.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    def on_scroll_horizontal(self, event):
+        self.widget_canvas_image.xview_scroll(int(-1 * (event.delta / 120)), "units")
 
 
 class Menu(tk.Menu):
@@ -207,22 +224,26 @@ class Toolbar(ttk.Frame):
                                                        variable=self.variable_chessboard,
                                                        command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_chessboard.grid(row=0, column=0)
+        idlelib.ToolTip.ToolTip(self.widget_check_chessboard, "Show or hide the chessboard")
 
         self.variable_grid = tk.BooleanVar()
         self.variable_grid.set(False)
         self.widget_check_grid = ttk.Checkbutton(self, text="Grid", image=self.image_grid, variable=self.variable_grid,
                                                  command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_grid.grid(row=0, column=1)
+        idlelib.ToolTip.ToolTip(self.widget_check_grid, "Show or hide the grid")
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=2, sticky="ns")
 
         self.widget_button_zoom_in = ttk.Button(self, text="Zoom In", image=self.image_zoom_in,
                                                 command=self.parent.zoom_in, style="Toolbutton")
         self.widget_button_zoom_in.grid(row=0, column=3)
+        idlelib.ToolTip.ToolTip(self.widget_button_zoom_in, "Zoom the image in")
 
         self.widget_button_zoom_out = ttk.Button(self, text="Zoom Out", image=self.image_zoom_out,
                                                  command=self.parent.zoom_out, style="Toolbutton")
         self.widget_button_zoom_out.grid(row=0, column=4)
+        idlelib.ToolTip.ToolTip(self.widget_button_zoom_out, "Zoom the image out")
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=5, sticky="ns")
 

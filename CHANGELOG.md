@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.15.5-alpha:
+### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
 - Added an in-programme text-editor.
 - Added an in-programme image-viewer.
@@ -12,7 +12,10 @@
 - Added textures to the buttons on the toolbar of the image-viewer.
 - Added `try`/`except` statements around each loading of an image.
 - Changed `install_pack` to install folders instead of `.zip`s.
-- Added a button to install server resource packs (will install a pack from a server, does not install packs to servers) (currently does nothing).
+- Added a button to install server resource packs (currently does nothing).
+- Added ToolTips to Buttons on Toolbars.
+- Changed the program to use default editors/viewers if `properties.json` is not found.
+- Changed the image in the image-viewer to scroll with the mouse wheel.
 
 ### Version 0.8.9-alpha:
 - Switched to use `Pillow`, `PIL.Image` and `PIL.ImageTk` classes instead of the `tkinter.PhotoImage` class.
