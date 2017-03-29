@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The about window for Quiver."""
 
 import tkinter as tk
@@ -6,7 +7,7 @@ from tkinter import ttk
 
 __title__ = "Quiver"
 __author__ = "DeflatedPickle"
-__version__ = "0.8.9-alpha"
+__version__ = "0.15.5-alpha"
 
 
 class AboutWindow(tk.Toplevel):
@@ -27,13 +28,16 @@ class AboutWindow(tk.Toplevel):
         self.widget_text = tk.Text(self.widget_frame_text, wrap="none", width=0, height=0)
         self.widget_text.grid(row=0, column=0, sticky="nesw")
 
-        self.widget_text_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_text, orient="horizontal", command=self.widget_text.xview)
+        self.widget_text_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_text, orient="horizontal",
+                                                              command=self.widget_text.xview)
         self.widget_text_scrollbar_horizontal.grid(row=1, column=0, sticky="we")
 
-        self.widget_text_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_text, orient="vertical", command=self.widget_text.yview)
+        self.widget_text_scrollbar_vertical = ttk.Scrollbar(self.widget_frame_text, orient="vertical",
+                                                            command=self.widget_text.yview)
         self.widget_text_scrollbar_vertical.grid(row=0, column=1, sticky="ns")
 
-        self.widget_text.configure(xscrollcommand=self.widget_text_scrollbar_horizontal.set, yscrollcommand=self.widget_text_scrollbar_vertical.set)
+        self.widget_text.configure(xscrollcommand=self.widget_text_scrollbar_horizontal.set,
+                                   yscrollcommand=self.widget_text_scrollbar_vertical.set)
 
         self.widget_text.insert("end",
 """{} v{}:
@@ -45,16 +49,22 @@ Info:
 - GUI Toolkit: Tkinter.
 
 Credits:
-- MightyPork for ResourcePack Workbench.
-- Fredrik Lundh for Tkinter.
-- Alex Clark for Pillow.
-- Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.
-- GitHub for hosting the code.
-- Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
-- dotPDN, LLC for Paint.NET (used to program make icons/textures).
-- JetBrains for PyCharm (the IDE used).
-- Mojang for Minecraft.
-- Bryan Oakley on StackOverflow for occasional indirect help with code.""".format(__title__, __version__, __author__))
+    Libraries:
+        - Fredrik Lundh for Tkinter.
+        - Alex Clark for Pillow.
+        - okdana for jsonesque.
+    Programmes:
+        - MightyPork for ResourcePack Workbench.
+        - Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
+        - dotPDN, LLC for Paint.NET (used to program make icons/textures).
+        - JetBrains for PyCharm (the IDE used).
+        - Mojang for Minecraft.
+    Other:
+        - Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.
+        - GitHub for hosting the code.
+        - Bryan Oakley on StackOverflow for occasional indirect help with code.""".format(__title__,
+                                                                                          __version__,
+                                                                                          __author__))
 
         self.widget_text.configure(state="disabled")
 

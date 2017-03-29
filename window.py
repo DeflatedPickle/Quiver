@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The main window for Quiver."""
 
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
-from PIL import Image, ImageTk
+import idlelib.ToolTip
 import json
 import os
 import subprocess
@@ -12,11 +13,16 @@ import platform
 from datetime import datetime
 
 import pkinter as pk
+from PIL import Image, ImageTk
+import jsonesque
 
 import load_images
 import project_window
 import highlightingtext
 import about_window
+import text_editor
+import image_viewer
+import start_window
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -30,7 +36,6 @@ class Window(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("Quiver")
         image = load_images.LoadImages()
-
         self.iconphoto(self._w, image.icon)
         self.geometry("700x500")
         self.minsize(width=500, height=300)
@@ -57,8 +62,6 @@ class Window(tk.Tk):
         self.image_exit = image.image_exit
 
         self.image_refresh = image.image_refresh
-
-        self.image_find = image.image_find
 
         self.cmd = Commands(self)
         self.load_properties()
@@ -148,26 +151,55 @@ class Window(tk.Tk):
     def open_file(self, *args):
         if self.widget_tree.item(self.widget_tree.focus())["tags"][0] != "Directory":
             file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
-            if self.operating_system == "Windows":
-                os.startfile(file)
-            else:
-                opener = "open" if self.operating_system == "Darwin" else "xdg-open"
-                subprocess.call([opener, file])
+            extension = self.widget_tree.item(self.widget_tree.focus())["values"][1]
+
+            if extension == ".txt" or extension == ".json" or extension == ".mcmeta":
+                try:
+                    if self.properties["text-editor"] == "default":
+                        editor = text_editor.TextEditor(self)
+                        editor.load_file(file=file)
+                    elif self.properties["text-editor"] == "system":
+                        if self.operating_system == "Windows":
+                            os.startfile(file)
+                        else:
+                            opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                            subprocess.call([opener, file])
+                except AttributeError:
+                    editor = text_editor.TextEditor(self)
+                    editor.load_file(file=file)
+
+            elif extension == ".png":
+                try:
+                    if self.properties["image-viewer"] == "default":
+                        viewer = image_viewer.ImageViewer(self)
+                        viewer.load_image(image=file)
+                    elif self.properties["image-viewer"] == "system":
+                        if self.operating_system == "Windows":
+                            os.startfile(file)
+                        else:
+                            opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                            subprocess.call([opener, file])
+                except AttributeError:
+                    viewer = image_viewer.ImageViewer(self)
+                    viewer.load_image(image=file)
 
     def load_properties(self):
         try:
             with open("properties.json", "r") as file:
-                self.properties = json.loads(file.read())
+                self.properties = json.loads(jsonesque.process(file.read()))
                 file.close()
         except FileNotFoundError:
             print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
 
     def write_properties(self, key, value):
-        with open("properties.json", "w+") as file:
-            self.properties[key] = value
-            print(self.properties)
-            file.write(json.dumps(self.properties, sort_keys=False, indent=2))
-            file.close()
+        try:
+            with open("properties.json", "w+") as file:
+                self.properties[key] = value
+                print(self.properties)
+                file.write(json.dumps(self.properties, sort_keys=False, indent=2))
+                file.close()
+        except FileNotFoundError:
+            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
 
 
 class Tree(ttk.Treeview):
@@ -190,12 +222,18 @@ class Tree(ttk.Treeview):
         self.widget_menu_tree.add_command(label="Delete", command=self.parent.cmd.tree_delete_selected)
 
     def open_folder(self, *args):
-        if self.item(self.focus())["image"][0] == "pyimage2":
-            self.item(self.focus(), image=self.parent.image_folder_open)
+        try:
+            if self.item(self.focus())["image"][0] == "pyimage2":
+                self.item(self.focus(), image=self.parent.image_folder_open)
+        except IndexError:
+            pass
 
     def close_folder(self, *args):
-        if self.item(self.focus())["image"][0] == "pyimage3":
-            self.item(self.focus(), image=self.parent.image_folder_close)
+        try:
+            if self.item(self.focus())["image"][0] == "pyimage3":
+                self.item(self.focus(), image=self.parent.image_folder_close)
+        except IndexError:
+            pass
 
     def show_menu(self, event):
         # name = self.item(self.identify("item", event.x, event.y))["text"]
@@ -246,6 +284,9 @@ class SidePanel(ttk.Frame):
 
         self.widget_button_edit = ttk.Button(self.widget_frame_code_buttons, text="Edit", state="disabled")
         self.widget_button_edit.grid(row=0, column=1)
+
+        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", state="disabled")
+        self.widget_button_replace.grid(row=0, column=2)
 
         ##################################################
 
@@ -311,7 +352,8 @@ class SidePanel(ttk.Frame):
         self.widget_frame_code_text.rowconfigure(0, weight=1)
         self.widget_frame_code_text.columnconfigure(1, weight=1)
 
-        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_code_text, wrap="none", width=32, height=0)
+        self.widget_text = highlightingtext.HighlightingText(self.widget_frame_code_text, wrap="none", width=32,
+                                                             height=0)
         self.widget_text.grid(row=0, column=1, sticky="nesw")
         self.configure_tags()
 
@@ -562,23 +604,26 @@ class Toolbar(ttk.Frame):
                                                 command=self.parent.cmd.tree_refresh,
                                                 style="Toolbutton")
         self.widget_button_refresh.grid(row=0, column=3)
+        idlelib.ToolTip.ToolTip(self.widget_button_refresh, "Refresh the files in the TreeView")
 
         self.widget_entry_search = ttk.Entry(self)
         self.widget_entry_search.grid(row=0, column=6, sticky="we")
 
-        self.widget_button_previous = ttk.Button(self, text="Previous", state="disabled")
-        self.widget_button_previous.grid(row=0, column=7)
-
-        self.widget_button_next = ttk.Button(self, text="Next", state="disabled")
-        self.widget_button_next.grid(row=0, column=8)
+        # self.widget_button_previous = ttk.Button(self, text="Previous", state="disabled")
+        # self.widget_button_previous.grid(row=0, column=7)
+        #
+        # self.widget_button_next = ttk.Button(self, text="Next", state="disabled")
+        # self.widget_button_next.grid(row=0, column=8)
 
         self.widget_button_search = ttk.Button(self, text="Search", command=self.parent.cmd.search)
         self.widget_button_search.grid(row=0, column=9)
+        idlelib.ToolTip.ToolTip(self.widget_button_search, "Search the TreeView for a file")
 
         self.widget_button_exit = ttk.Button(self, text="Exit", image=self.parent.image_exit,
                                              command=self.parent.cmd.exit_program,
                                              style="Toolbutton")
         self.widget_button_exit.grid(row=0, column=10, sticky="e")
+        idlelib.ToolTip.ToolTip(self.widget_button_exit, "Exit the program")
 
 
 class Statusbar(pk.Statusbar):
@@ -596,14 +641,17 @@ class Statusbar(pk.Statusbar):
         self.bind_menu(parent.menu.menu_view, self.status_variable, ["Collapse the items in the TreeView",
                                                                      "Expand the items in the TreeView",
                                                                      "Refresh the items in the TreeView"])
+
         # self.bind_widget(parent.toolbar.widget_button_undo, self.status_variable, "Undo the last action", "")
         # self.bind_widget(parent.toolbar.widget_button_redo, self.status_variable, "Redo the last action", "")
         self.bind_widget(parent.toolbar.widget_button_refresh, self.status_variable,
                          "Refresh the files in the TreeView", "")
-        self.bind_widget(parent.toolbar.widget_button_previous, self.status_variable,
-                         "Search for the previous instance", "")
-        self.bind_widget(parent.toolbar.widget_button_next, self.status_variable,
-                         "Search for the next instance", "")
+        # self.bind_widget(parent.toolbar.widget_button_previous, self.status_variable,
+        #                  "Search for the previous instance", "")
+        # self.bind_widget(parent.toolbar.widget_button_next, self.status_variable,
+        #                  "Search for the next instance", "")
+        self.bind_widget(parent.toolbar.widget_button_search, self.status_variable, "Search the TreeView for a file",
+                         "")
         self.bind_widget(parent.toolbar.widget_button_exit, self.status_variable, "Exit the program", "")
 
         self.add_sizegrip()
@@ -740,7 +788,8 @@ class Commands:
 
 def main():
     app = Window()
-    project_window.ProjectWindow(app)
+    # project_window.ProjectWindow(app)
+    start_window.StartWindow(app)
     # cmd = Commands(app)
     # app.load_files()
     # cmd.tree_refresh()

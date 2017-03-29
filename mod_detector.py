@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """The mod detector window for Quiver."""
 
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
+import idlelib.ToolTip
 import os
 
 
@@ -36,16 +38,20 @@ class ModDetector(tk.Toplevel):
         self.widget_button_right_all = ttk.Button(self.widget_frame_buttons, text=">>>",
                                                   command=self.move_all_mods_right, style="All.TButton")
         self.widget_button_right_all.grid(row=0, column=0, sticky="we")
+        idlelib.ToolTip.ToolTip(self.widget_button_right_all, "Add all of the mods")
 
         self.widget_button_right = ttk.Button(self.widget_frame_buttons, text=">>>", command=self.move_mod_right)
         self.widget_button_right.grid(row=1, column=0, sticky="we")
+        idlelib.ToolTip.ToolTip(self.widget_button_right, "Add the selected mod")
 
         self.widget_button_left = ttk.Button(self.widget_frame_buttons, text="<<<", command=self.move_mod_left)
         self.widget_button_left.grid(row=2, column=0, sticky="we")
+        idlelib.ToolTip.ToolTip(self.widget_button_left, "Remove the selected mod")
 
         self.widget_button_left_all = ttk.Button(self.widget_frame_buttons, text="<<<",
                                                  command=self.move_all_mods_left, style="All.TButton")
         self.widget_button_left_all.grid(row=3, column=0, sticky="we")
+        idlelib.ToolTip.ToolTip(self.widget_button_left_all, "Remove all of the mods")
 
         self.widget_tree_right = Tree(self.widget_frame_main)
         self.widget_tree_right.grid(row=0, column=2, sticky="nesw")
@@ -91,13 +97,15 @@ class ModDetector(tk.Toplevel):
     def move_all_mods_right(self):
         for item in self.widget_tree_left.widget_tree.get_children():
             item = self.widget_tree_left.widget_tree.item(item)
-            self.widget_tree_right.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"], tags=item["tags"])
+            self.widget_tree_right.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"],
+                                                      tags=item["tags"])
         self.widget_tree_left.widget_tree.delete(*self.widget_tree_left.widget_tree.get_children())
 
     def move_all_mods_left(self):
         for item in self.widget_tree_right.widget_tree.get_children():
             item = self.widget_tree_right.widget_tree.item(item)
-            self.widget_tree_left.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"], tags=item["tags"])
+            self.widget_tree_left.widget_tree.insert(parent="", index="end", text=item["text"], values=item["values"],
+                                                     tags=item["tags"])
         self.widget_tree_right.widget_tree.delete(*self.widget_tree_right.widget_tree.get_children())
 
     def confirm_mods(self):

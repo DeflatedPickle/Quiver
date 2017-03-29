@@ -1,1 +1,5 @@
-{"theme": "vista"}
+{
+	"theme": "vista", // The TTK style to use for the program.
+	"text-editor": "default", // The text-editor to use, "default" uses the program default, "system" uses the system default.
+	"image-viewer": "default" // The image-editor to use, "default" uses the program default, "system" uses the system default.
+}
