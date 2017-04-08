@@ -17,7 +17,7 @@ from PIL import Image, ImageTk
 import jsonesque
 
 import load_images
-import project_window
+# import project_window
 import highlightingtext
 import about_window
 import text_editor

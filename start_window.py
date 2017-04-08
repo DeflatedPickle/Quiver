@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
-# import zipfile
+import zipfile
 import os
 import shutil
 
@@ -26,6 +26,10 @@ class StartWindow(tk.Toplevel):
         self.rowconfigure(0, weight=1)
         self.columnconfigure((0, 1), weight=1)
 
+        self.resourcepack_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks"
+        self.resourcepack_location_server = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/" \
+                                                                                      "server-resource-packs"
+
         self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0,
                                                                                                  columnspan=2,
                                                                                                  sticky="nesw")
@@ -35,8 +39,8 @@ class StartWindow(tk.Toplevel):
         self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1,
                                                                                                            column=1,
                                                                                                            sticky="ew")
-        self.widget_button_patch = ttk.Button(self, text="Install Server Pack", command=self.install_server_pack,
-                                              state="disabled").grid(row=2, column=1, sticky="ew")
+        self.widget_button_patch = ttk.Button(self, text="Install Server Pack",
+                                              command=self.install_server_pack).grid(row=2, column=1, sticky="ew")
         self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack,
                                               state="disabled").grid(row=3, column=1, sticky="ew")
         self.widget_button_exit = ttk.Button(self, text="Exit", command=self.exit_program).grid(row=4, column=0,
@@ -62,7 +66,7 @@ class StartWindow(tk.Toplevel):
         #     if not found_pack:
         #         messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
 
-        pack = filedialog.askdirectory(initialdir=os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks")
+        pack = filedialog.askdirectory(initialdir=self.resourcepack_location)
         if os.path.isfile(pack + "/pack.mcmeta"):
             # messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
             self.parent.directory = pack
@@ -84,14 +88,17 @@ class StartWindow(tk.Toplevel):
         if os.path.isfile(pack + "/pack.mcmeta"):
             # messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
             try:
-                shutil.move(pack, os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks/")
+                shutil.move(pack, self.resourcepack_location)
             except shutil.Error:
                 messagebox.showerror("Error", "This pack is already installed.")
         else:
             messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
 
     def install_server_pack(self):
-        pass
+        pack = filedialog.askopenfile(initialdir=self.resourcepack_location_server)
+        pack.close()
+        os.rename(pack.name, pack.name + ".zip")
+        shutil.move(pack.name + ".zip", self.resourcepack_location)
 
     def patch_pack(self):
         pass

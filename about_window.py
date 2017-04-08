@@ -7,7 +7,7 @@ from tkinter import ttk
 
 __title__ = "Quiver"
 __author__ = "DeflatedPickle"
-__version__ = "0.15.5-alpha"
+__version__ = "0.18.0-alpha"
 
 
 class AboutWindow(tk.Toplevel):

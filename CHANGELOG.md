@@ -1,5 +1,8 @@
 ## Changelog
 
+### Version 0.18.0-alpha:
+- Added a function to install and convert server packs.
+
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
 - Added an in-programme text-editor.
