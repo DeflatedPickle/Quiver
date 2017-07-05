@@ -1,11 +1,23 @@
 ## To-Do:
-- Write a text editor for the programme.
-- Write an image editor for the programme.
-- Write an image viewer for the programme.
-- Make more use of properties.json.
-- Write a mod detector.
-- Write window that allows you to select which folders are extracted from the Minecraft jar.
-- Add more items to the menus.
+- File selector before extraction (in case you don't want your pack to have everything)
+- More items for the menus.
+- More uses for properties.json.
+- A resource pack patcher.
+- A theme designer/editor for the SAO-UI mod.
+- An option to swap a file out for another.
+- Add an installer/converter for server resource packs.
+- Add an item to the menu to allow zipping of the resource pack.
+- Add options to change the install location and the versions location.
+- Allow adding of mods after the pack is created.
+- Add pixel highlighting for the image-editor.
+- Add an NBT Explorer.
+- Add an option to be able to expand NBT files in the main Treeview.
+- Add an icon for un-supported file extensions.
+- Change the items in the mod detector to use information from the mod's mcmod.info file instead of the file name.
+- Add an information window.
+- Add a check for if icons do not exist and then download them from GitHub if they don't.
+- Add a tutorial on how to compile the source code.
+- Move the text-editor and image-viewer to their own .exe files.
 
 ## Bugs:
 - Syntax highlighting for strings carries on until the final quotation is found.

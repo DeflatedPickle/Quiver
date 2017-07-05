@@ -5,9 +5,11 @@
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
+from tkinter import filedialog
 import idlelib.ToolTip
 import json
 import os
+import shutil
 import subprocess
 import platform
 from datetime import datetime
@@ -183,6 +185,14 @@ class Window(tk.Tk):
                     viewer = image_viewer.ImageViewer(self)
                     viewer.load_image(image=file)
 
+    def replace_file(self):
+        old_file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
+        new_file = filedialog.askopenfile().name
+
+        # os.replace(new_file, old_file)
+        shutil.copy2(new_file, old_file)
+        self.cmd.tree_refresh()
+
     def load_properties(self):
         try:
             with open("properties.json", "r") as file:
@@ -285,7 +295,7 @@ class SidePanel(ttk.Frame):
         self.widget_button_edit = ttk.Button(self.widget_frame_code_buttons, text="Edit", state="disabled")
         self.widget_button_edit.grid(row=0, column=1)
 
-        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", state="disabled")
+        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", command=self.window.replace_file)
         self.widget_button_replace.grid(row=0, column=2)
 
         ##################################################
