@@ -53,6 +53,7 @@ Credits:
         - Fredrik Lundh for Tkinter.
         - Alex Clark for Pillow.
         - okdana for jsonesque.
+        - twoolie for NBT.
     Programmes:
         - MightyPork for ResourcePack Workbench.
         - Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
