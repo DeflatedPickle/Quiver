@@ -27,6 +27,8 @@ class TextEditor(tk.Toplevel):
         self.columnconfigure(0, weight=1)
 
         self.image_find = image.image_find
+        self.image_find_next = image.image_find_next
+        self.image_find_previous = image.image_find_previous
 
         self.image_replace = image.image_replace
 
@@ -41,6 +43,8 @@ class TextEditor(tk.Toplevel):
         self.image_exit = image.image_exit
 
         self.file = None
+
+        self.previous = 1.0
 
         self.menu = Menu(self)
 
@@ -64,6 +68,7 @@ class TextEditor(tk.Toplevel):
 
         self.widget_text_code = tk.Text(self.widget_frame_code, wrap="none", undo=True, width=0, height=0)
         self.widget_text_code.grid(row=0, column=1, sticky="nesw")
+        self.widget_text_code.tag_configure("search", background="lime")
 
         self.widget_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_code, orient="horizontal",
                                                          command=self.widget_text_code.xview)
@@ -136,6 +141,7 @@ class TextEditor(tk.Toplevel):
         else:
             self.widget_frame_search.grid_remove()
             self.findbar.grid_remove()
+            self.widget_text_code.tag_remove("search", "1.0", "end")
 
     def replace(self):
         if self.toolbar.variable_replace.get():
@@ -146,6 +152,30 @@ class TextEditor(tk.Toplevel):
         else:
             self.find()
             self.replacebar.grid_remove()
+
+    def search(self, all_=None, next_=None, previous=None, match_case=None):
+        if not all_:
+            self.widget_text_code.tag_remove("search", "1.0", "end")
+
+        variable_search = tk.StringVar()
+
+        if self.previous == "":
+            self.previous = 1.0
+
+        position = self.widget_text_code.search(self.findbar.search_entry.entry.get(), self.previous, stopindex="end", forwards=next_, backwards=previous, nocase=match_case, count=variable_search)
+
+        try:
+            self.widget_text_code.tag_add("search", position, "{} + {} chars".format(position, variable_search.get()))
+        except TclError:
+            self.previous = 1.0
+
+        self.previous = position + variable_search.get()
+
+    def search_all(self):
+        self.widget_text_code.tag_remove("search", "1.0", "end")
+
+        for character in self.widget_text_code.get(1.0, "end"):
+            self.search(all_=True, match_case=not self.findbar.variable_match_case.get())
 
 
 class Menu(tk.Menu):
@@ -224,13 +254,13 @@ class Findbar(ttk.Frame):
 
         ttk.Separator(self, orient="vertical").pack(side="left", fill="y", padx=3, pady=1)
 
-        self.button_previous = ttk.Button(self, text="Previous")
+        self.button_previous = ttk.Button(self, text="Previous", image=self.parent.master.image_find_previous, command=lambda: self.parent.master.search(previous=True, match_case=not self.parent.master.findbar.variable_match_case.get()), state="disabled")
         self.button_previous.pack(side="left")
 
-        self.button_next = ttk.Button(self, text="Next")
+        self.button_next = ttk.Button(self, text="Next", image=self.parent.master.image_find_next, command=lambda: self.parent.master.search(next_=True, match_case=not self.parent.master.findbar.variable_match_case.get()))
         self.button_next.pack(side="left")
 
-        self.button_find_all = ttk.Button(self, text="Find All")
+        self.button_find_all = ttk.Button(self, text="Find All", command=self.parent.master.search_all)
         self.button_find_all.pack(side="left")
 
         ttk.Separator(self, orient="vertical").pack(side="left", fill="y", padx=3, pady=1)
@@ -263,7 +293,7 @@ class SearchEntry(ttk.Frame):
         self.parent = parent
         self.columnconfigure(1, weight=1)
 
-        self.button_search = ttk.Button(self, text="Search", image=self.parent.parent.master.image_find)
+        self.button_search = ttk.Button(self, text="Search", image=self.parent.parent.master.image_find, command=lambda: self.parent.parent.master.search(match_case=not self.parent.parent.master.findbar.variable_match_case.get()))
         self.button_search.grid(row=0, column=0)
 
         self.entry = ttk.Entry(self)
@@ -273,6 +303,7 @@ class SearchEntry(ttk.Frame):
         self.button_clear.grid(row=0, column=2)
 
     def clear(self):
+        self.parent.parent.master.widget_text_code.tag_remove("search", "1.0", "end")
         self.entry.delete(0, "end")
 
 
