@@ -115,9 +115,9 @@ class Menu(tk.Menu):
         self.parent = parent
 
 
-class Toolbar(ttk.Frame):
+class Toolbar(pk.Toolbar):
     def __init__(self, parent, *args, **kwargs):
-        ttk.Frame.__init__(self, parent, *args, **kwargs)
+        pk.Toolbar.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
 

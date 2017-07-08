@@ -60,9 +60,7 @@ class Window(tk.Tk):
         self.image_fragment = image.image_fragment
         self.image_vertex = image.image_vertex
         self.image_nbt = image.image_nbt
-
         self.image_exit = image.image_exit
-
         self.image_refresh = image.image_refresh
 
         self.cmd = Commands(self)
@@ -798,8 +796,12 @@ class Commands:
 
 def main():
     app = Window()
+    app.update()
+    pk.center_on_screen(app)
     # project_window.ProjectWindow(app)
-    start_window.StartWindow(app)
+    start = start_window.StartWindow(app)
+    start.update()
+    pk.center_on_parent(start)
     # cmd = Commands(app)
     # app.load_files()
     # cmd.tree_refresh()
