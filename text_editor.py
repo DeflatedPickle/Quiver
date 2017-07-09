@@ -19,7 +19,7 @@ class TextEditor(tk.Toplevel):
         self.parent = parent
         self.title("Redstone")
         image = load_images.LoadImages()
-        self.geometry("500x400")
+        self.geometry("600x400")
         self.minsize(width=300, height=200)
         self.maxsize(width=1000, height=800)
         self.transient(parent)
@@ -51,13 +51,13 @@ class TextEditor(tk.Toplevel):
         self.toolbar = Toolbar(self)
         self.toolbar.grid(row=0, column=0, sticky="we")
 
-        self.statusbar = Statusbar(self)
-        self.statusbar.grid(row=2, column=0, sticky="we")
-
         self.widget_frame_search = ttk.Frame(self)
 
         self.findbar = Findbar(self.widget_frame_search)
         self.replacebar = Replacebar(self.widget_frame_search)
+
+        self.statusbar = Statusbar(self)
+        self.statusbar.grid(row=3, column=0, sticky="we")
 
         ##################################################
 
@@ -69,6 +69,7 @@ class TextEditor(tk.Toplevel):
         self.widget_text_code = tk.Text(self.widget_frame_code, wrap="none", undo=True, width=0, height=0)
         self.widget_text_code.grid(row=0, column=1, sticky="nesw")
         self.widget_text_code.tag_configure("search", background="lime")
+        self.widget_text_code.tag_raise("sel")
 
         self.widget_scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_code, orient="horizontal",
                                                          command=self.widget_text_code.xview)
@@ -141,7 +142,20 @@ class TextEditor(tk.Toplevel):
         else:
             self.widget_frame_search.grid_remove()
             self.findbar.grid_remove()
+            self.previous = 1.0
+            self.widget_text_code.tag_remove("sel", "1.0", "end")
+
+            search = self.widget_text_code.tag_nextrange("search", "1.0", "end")
+            try:
+                self.widget_text_code.tag_add("sel", search[0], search[1])
+                self.widget_text_code.mark_set("insert", search[1])
+            except IndexError:
+                pass
+
+            self.widget_text_code.focus_set()
+
             self.widget_text_code.tag_remove("search", "1.0", "end")
+            self.findbar.search_entry.variable_search.set(False)
 
     def replace(self):
         if self.toolbar.variable_replace.get():
@@ -153,19 +167,23 @@ class TextEditor(tk.Toplevel):
             self.find()
             self.replacebar.grid_remove()
 
-    def search(self, all_=None, next_=None, previous=None, match_case=None):
+    def search(self, all_=None, next_=None, previous=None, match_case=None, exact=None, regular_expression=None):
         if not all_:
             self.widget_text_code.tag_remove("search", "1.0", "end")
+
+        if not next_ and not previous:
+            self.findbar.search_entry.variable_search.set(True)
 
         variable_search = tk.StringVar()
 
         if self.previous == "":
             self.previous = 1.0
 
-        position = self.widget_text_code.search(self.findbar.search_entry.entry.get(), self.previous, stopindex="end", forwards=next_, backwards=previous, nocase=match_case, count=variable_search)
+        position = self.widget_text_code.search(self.findbar.search_entry.entry.get(), self.previous if next_ else 1.0 if previous else 1.0, stopindex="end", forwards=next_, backwards=previous, nocase=match_case, exact=exact, regexp=regular_expression, count=variable_search)
 
         try:
             self.widget_text_code.tag_add("search", position, "{} + {} chars".format(position, variable_search.get()))
+            self.widget_text_code.see(position)
         except TclError:
             self.previous = 1.0
 
@@ -175,7 +193,10 @@ class TextEditor(tk.Toplevel):
         self.widget_text_code.tag_remove("search", "1.0", "end")
 
         for character in self.widget_text_code.get(1.0, "end"):
-            self.search(all_=True, match_case=not self.findbar.variable_match_case.get())
+            self.search(all_=True,
+                        match_case=not self.findbar.variable_match_case.get(),
+                        exact=not self.findbar.variable_exact.get(),
+                        regular_expression=not self.findbar.variable_regular_expression.get())
 
 
 class Menu(tk.Menu):
@@ -223,25 +244,46 @@ class Statusbar(pk.Statusbar):
         self.status_variable = tk.StringVar()
         self.add_variable(textvariable=self.status_variable)
 
-        self.bind_widget(parent.toolbar.widget_button_save, self.status_variable, "Save the file", "")
-        self.bind_widget(parent.toolbar.widget_button_reload, self.status_variable, "Reload the file", "")
-
-        self.bind_widget(parent.toolbar.widget_button_cut, self.status_variable,
-                         "Cut the selected text to the clipboard", "")
-        self.bind_widget(parent.toolbar.widget_button_copy, self.status_variable,
-                         "Copy the selected text to the clipboard", "")
-        self.bind_widget(parent.toolbar.widget_button_paste, self.status_variable,
-                         "Paste the text from the clipboard", "")
-
-        self.bind_widget(parent.toolbar.widget_button_undo, self.status_variable, "Undo the last action", "")
-        self.bind_widget(parent.toolbar.widget_button_redo, self.status_variable, "Redo the last action", "")
-
-        self.bind_widget(parent.toolbar.widget_button_find, self.status_variable, "Find a piece of text", "")
-        self.bind_widget(parent.toolbar.widget_button_replace, self.status_variable, "Replace a piece of text", "")
-
-        self.bind_widget(parent.toolbar.widget_button_exit, self.status_variable, "Exit the program", "")
-
         self.add_sizegrip()
+
+        self.toolbar()
+        self.findbar()
+        self.replacebar()
+
+    def toolbar(self):
+        self.bind_widget(self.parent.toolbar.widget_button_save, self.status_variable, "Save the file", "")
+        self.bind_widget(self.parent.toolbar.widget_button_reload, self.status_variable, "Reload the file", "")
+
+        self.bind_widget(self.parent.toolbar.widget_button_cut, self.status_variable, "Cut the selected text to the clipboard", "")
+        self.bind_widget(self.parent.toolbar.widget_button_copy, self.status_variable, "Copy the selected text to the clipboard", "")
+        self.bind_widget(self.parent.toolbar.widget_button_paste, self.status_variable, "Paste the text from the clipboard", "")
+        self.bind_widget(self.parent.toolbar.widget_button_delete, self.status_variable, "Delete the selected text", "")
+
+        self.bind_widget(self.parent.toolbar.widget_button_undo, self.status_variable, "Undo the last action", "")
+        self.bind_widget(self.parent.toolbar.widget_button_redo, self.status_variable, "Redo the last action", "")
+
+        self.bind_widget(self.parent.toolbar.widget_button_find, self.status_variable, "Open the findbar", "")
+        self.bind_widget(self.parent.toolbar.widget_button_replace, self.status_variable, "Open the replacebar", "")
+
+        self.bind_widget(self.parent.toolbar.widget_button_exit, self.status_variable, "Exit the program", "")
+
+    def findbar(self):
+        self.bind_widget(self.parent.findbar.search_entry.button_search, self.status_variable, "Find the first instance of the text in the entry", "")
+        self.bind_widget(self.parent.findbar.search_entry.button_clear, self.status_variable, "Clear the text in the entry", "")
+
+        self.bind_widget(self.parent.findbar.button_previous, self.status_variable, "Find the previous instance of the text in the entry", "")
+        self.bind_widget(self.parent.findbar.button_next, self.status_variable, "Find the next instance of the text in the entry", "")
+        self.bind_widget(self.parent.findbar.button_find_all, self.status_variable, "Find all instances of the text in the entry", "")
+
+        self.bind_widget(self.parent.findbar.checkbutton_match_case, self.status_variable, "", "")
+        self.bind_widget(self.parent.findbar.checkbutton_exact, self.status_variable, "", "")
+        self.bind_widget(self.parent.findbar.checkbutton_regular_expression, self.status_variable, "", "")
+
+    def replacebar(self):
+        self.bind_widget(self.parent.replacebar.search_entry.button_clear, self.status_variable, "Clear the text in the entry", "")
+
+        self.bind_widget(self.parent.replacebar.button_replace, self.status_variable, "Replace the selected instance of the text in the first entry with the text in the second entry", "")
+        self.bind_widget(self.parent.replacebar.button_replace_all, self.status_variable, "Replace all instances of the text in the first entry with the text in the second entry", "")
 
 
 class Findbar(ttk.Frame):
@@ -249,15 +291,22 @@ class Findbar(ttk.Frame):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
+        self.is_text_valid = False
         self.search_entry = SearchEntry(self)
         self.search_entry.pack(side="left")
 
         ttk.Separator(self, orient="vertical").pack(side="left", fill="y", padx=3, pady=1)
 
-        self.button_previous = ttk.Button(self, text="Previous", image=self.parent.master.image_find_previous, command=lambda: self.parent.master.search(previous=True, match_case=not self.parent.master.findbar.variable_match_case.get()), state="disabled")
+        self.button_previous = ttk.Button(self, text="Previous", image=self.parent.master.image_find_previous, command=lambda: self.parent.master.search(previous=True,
+                                                                                                                                                         match_case=not self.variable_match_case.get(),
+                                                                                                                                                         exact=not self.variable_exact.get(),
+                                                                                                                                                         regular_expression=not self.variable_regular_expression.get()))
         self.button_previous.pack(side="left")
 
-        self.button_next = ttk.Button(self, text="Next", image=self.parent.master.image_find_next, command=lambda: self.parent.master.search(next_=True, match_case=not self.parent.master.findbar.variable_match_case.get()))
+        self.button_next = ttk.Button(self, text="Next", image=self.parent.master.image_find_next, command=lambda: self.parent.master.search(next_=True,
+                                                                                                                                             match_case=not self.variable_match_case.get(),
+                                                                                                                                             exact=not self.variable_exact.get(),
+                                                                                                                                             regular_expression=not self.variable_regular_expression.get()))
         self.button_next.pack(side="left")
 
         self.button_find_all = ttk.Button(self, text="Find All", command=self.parent.master.search_all)
@@ -269,13 +318,24 @@ class Findbar(ttk.Frame):
         self.checkbutton_match_case = ttk.Checkbutton(self, text="Match Case", variable=self.variable_match_case)
         self.checkbutton_match_case.pack(side="left")
 
+        self.variable_exact = tk.BooleanVar(value=0)
+        self.checkbutton_exact = ttk.Checkbutton(self, text="Exact", variable=self.variable_exact)
+        self.checkbutton_exact.pack(side="left")
+
+        self.variable_regular_expression = tk.BooleanVar(value=0)
+        self.checkbutton_regular_expression = ttk.Checkbutton(self, text="Regular Expression", variable=self.variable_regular_expression)
+        self.checkbutton_regular_expression.pack(side="left")
+
+        self.search_entry.check_search()
+
 
 class Replacebar(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.search_entry = SearchEntry(self)
+        self.is_text_valid = False
+        self.search_entry = SearchEntry(self, replace=True)
         self.search_entry.pack(side="left")
 
         ttk.Separator(self, orient="vertical").pack(side="left", fill="y", padx=3, pady=1)
@@ -288,23 +348,54 @@ class Replacebar(ttk.Frame):
 
 
 class SearchEntry(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent, replace=False, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        self.replace = replace
+
         self.columnconfigure(1, weight=1)
 
-        self.button_search = ttk.Button(self, text="Search", image=self.parent.parent.master.image_find, command=lambda: self.parent.parent.master.search(match_case=not self.parent.parent.master.findbar.variable_match_case.get()))
-        self.button_search.grid(row=0, column=0)
+        if not self.replace:
+            self.variable_search = tk.BooleanVar()
+            self.variable_search.trace("w", self.check_search)
 
-        self.entry = ttk.Entry(self)
+            self.button_search = ttk.Button(self, text="Search", image=self.parent.parent.master.image_find, command=lambda: self.parent.parent.master.search(match_case=not self.parent.parent.master.findbar.variable_match_case.get(),
+                                                                                                                                                              exact=not self.parent.parent.master.findbar.variable_exact.get(),
+                                                                                                                                                              regular_expression=not self.parent.parent.master.findbar.variable_regular_expression.get()))
+            self.button_search.grid(row=0, column=0)
+
+            self.variable_entry = tk.StringVar()
+            self.variable_entry.trace("w", self.check_entry)
+
+        self.entry = ttk.Entry(self, textvariable=self.variable_entry if not self.replace else None)
         self.entry.grid(row=0, column=1)
 
         self.button_clear = ttk.Button(self, text="Clear", image=self.parent.parent.master.image_exit, command=self.clear)
         self.button_clear.grid(row=0, column=2)
 
+        if not self.replace:
+            self.check_entry()
+
     def clear(self):
         self.parent.parent.master.widget_text_code.tag_remove("search", "1.0", "end")
         self.entry.delete(0, "end")
+
+    def check_entry(self, *args):
+        if self.variable_entry.get() != "":
+            self.entry.master.button_search.configure(state="normal")
+
+        else:
+            self.entry.master.button_search.configure(state="disabled")
+
+    def check_search(self, *args):
+        if not self.replace:
+            if self.variable_search.get():
+                self.parent.button_next.configure(state="normal")
+                self.parent.button_previous.configure(state="normal")
+
+            else:
+                self.parent.button_next.configure(state="disabled")
+                self.parent.button_previous.configure(state="disabled")
 
 
 def main():
