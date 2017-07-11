@@ -45,6 +45,8 @@ class TextEditor(tk.Toplevel):
         self.file = None
 
         self.previous = 1.0
+        self.stop_searching = False
+        self.stop_replacing = False
 
         self.menu = Menu(self)
 
@@ -137,6 +139,9 @@ class TextEditor(tk.Toplevel):
             pass
 
     def open_findbar(self):
+        self.stop_searching = False
+        self.stop_replacing = False
+
         if self.toolbar.variable_find.get():
             self.widget_frame_search.grid(row=1, column=0, sticky="ew")
             self.findbar.grid(row=0, column=0, sticky="ew")
@@ -164,6 +169,9 @@ class TextEditor(tk.Toplevel):
             self.findbar.search_entry.variable_search.set(False)
 
     def open_replacebar(self):
+        self.stop_searching = False
+        self.stop_replacing = False
+
         if self.toolbar.variable_replace.get():
             self.toolbar.variable_find.set(True)
             self.open_findbar()
@@ -184,6 +192,7 @@ class TextEditor(tk.Toplevel):
 
         if self.previous == "":
             self.previous = 1.0
+            self.stop_searching = True
 
         position = self.widget_text_code.search(self.findbar.search_entry.entry.get(), self.previous if next_ else 1.0 if previous else 1.0, stopindex="end", forwards=next_, backwards=previous, nocase=match_case, exact=exact, regexp=regular_expression, count=variable_search)
 
@@ -196,10 +205,12 @@ class TextEditor(tk.Toplevel):
         self.previous = position + variable_search.get()
 
     def search_all(self):
+        self.stop_searching = False
         self.widget_text_code.tag_remove("search", "1.0", "end")
 
-        for character in self.widget_text_code.get(1.0, "end"):
+        while not self.stop_searching:
             self.search(all_=True,
+                        next_=True,
                         match_case=not self.findbar.variable_match_case.get(),
                         exact=not self.findbar.variable_exact.get(),
                         regular_expression=not self.findbar.variable_regular_expression.get())
@@ -207,11 +218,16 @@ class TextEditor(tk.Toplevel):
     def replace(self):
         search = self.widget_text_code.tag_nextrange("search", "1.0", "end")
 
-        self.widget_text_code.delete(search[0], search[1])
-        self.widget_text_code.insert(search[0], self.replacebar.search_entry.entry.get())
+        try:
+            self.widget_text_code.delete(search[0], search[1])
+            self.widget_text_code.insert(search[0], self.replacebar.search_entry.entry.get())
+        except IndexError:
+            self.stop_replacing = True
 
     def replace_all(self):
-        for character in self.widget_text_code.get(1.0, "end"):
+        self.stop_replacing = False
+
+        while not self.stop_replacing:
             self.replace()
 
 
@@ -313,11 +329,6 @@ class Statusbar(pk.Statusbar):
         index = str(self.parent.widget_text_code.index("insert")).split(".")
         self.variable_column.set("Column: {}".format(index[1]))
         self.variable_line.set("Line: {},".format(index[0]))
-
-        try:
-            print(event.char)
-        except AttributeError:
-            pass
 
 
 class Findbar(ttk.Frame):
