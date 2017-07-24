@@ -126,7 +126,7 @@ class Statusbar(pk.Statusbar):
         pk.Statusbar.__init__(self, parent, *args, **kwargs)
 
         self.status_variable = tk.StringVar()
-        self.add_variable(textvariable=self.status_variable)
+        self.add_variable(variable=self.status_variable)
 
         self.add_sizegrip()
 

@@ -5,7 +5,6 @@
 import tkinter as tk
 from _tkinter import TclError
 from tkinter import ttk
-import os
 import sys
 
 import pkinter as pk
@@ -25,6 +24,10 @@ class TextEditor(tk.Toplevel):
         self.transient(parent)
         self.rowconfigure(2, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.image_save = image.image_save
+
+        self.image_refresh = image.image_refresh
 
         self.image_find = image.image_find
         self.image_find_next = image.image_find_next
@@ -96,11 +99,20 @@ class TextEditor(tk.Toplevel):
 
     def load_file(self, file=""):
         self.file = file
+
         with open(file, "r") as f:
             self.widget_text_code.delete(1.0, "end")
             self.widget_text_code.insert(1.0, f.read())
-            self.title("{} - {}".format(self.title(), "".join(os.path.splitext(file))))
+            self.title("{} - {}".format("Redstone", self.file))
             f.close()
+
+    def save(self):
+        with open(self.file, "w") as f:
+            f.write(self.widget_text_code.get(1.0, "end"))
+            f.close()
+
+    def reload(self):
+        self.load_file(self.file)
 
     def cut(self):
         self.copy()
@@ -129,12 +141,14 @@ class TextEditor(tk.Toplevel):
     def undo(self):
         try:
             self.widget_text_code.edit_undo()
+            self.line_numbers._redraw()
         except TclError:
             pass
 
     def redo(self):
         try:
             self.widget_text_code.edit_redo()
+            self.line_numbers._redraw()
         except TclError:
             pass
 
@@ -243,8 +257,8 @@ class Toolbar(pk.Toolbar):
         pk.Toolbar.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.widget_button_save = self.add_button(text="Save")
-        self.widget_button_reload = self.add_button(text="Reload")
+        self.widget_button_save = self.add_button(text="Save", image=self.parent.image_save, command=self.parent.save)
+        self.widget_button_reload = self.add_button(text="Reload", image=self.parent.image_refresh, command=self.parent.reload)
 
         self.add_separator()
 
@@ -278,11 +292,8 @@ class Statusbar(pk.Statusbar):
 
         self.add_sizegrip()
 
-        self.variable_column = tk.StringVar()
-        self.add_variable(variable=self.variable_column, side="right")
-
-        self.variable_line = tk.StringVar()
-        self.add_variable(variable=self.variable_line, side="right")
+        self.variable_caret = tk.StringVar()
+        self.add_variable(variable=self.variable_caret, side="right")
 
         self.add_separator(side="right")
 
@@ -327,8 +338,7 @@ class Statusbar(pk.Statusbar):
 
     def check_caret(self, event=None):
         index = str(self.parent.widget_text_code.index("insert")).split(".")
-        self.variable_column.set("Column: {}".format(index[1]))
-        self.variable_line.set("Line: {},".format(index[0]))
+        self.variable_caret.set("Line: {}, Column: {}".format(index[0], index[1]))
 
 
 class Findbar(ttk.Frame):

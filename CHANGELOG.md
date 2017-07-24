@@ -1,8 +1,15 @@
 ## Changelog
 
-### Version 0.19.0-alpha:
+### Version 0.22.2-alpha:
 - Added a function to install and convert server packs.
 - Added a function to replace files.
+- Added icons to every Button on the Toolbar of the text-editor.
+- Added cut, copy, paste and delete Buttons to the Toolbar of the text-editor.
+- Added a Findbar to the text-editor.
+- Added a Replacebar to the text-editor.
+- Added a reload function to the text-editor.
+- Added a save function to the text-editor.
+- Changed the line/column counter to only be one label.
 
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
