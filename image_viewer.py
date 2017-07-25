@@ -12,6 +12,10 @@ from PIL import Image, ImageTk
 
 import load_images
 
+__title__ = "Painting"
+__author__ = "DeflatedPickle"
+__version__ = "1.10.0"
+
 
 class ImageViewer(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):

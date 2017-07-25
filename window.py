@@ -32,6 +32,10 @@ import start_window
 
 # http://minecraft.gamepedia.com/Formatting_codes
 
+__title__ = "Main"
+__author__ = "DeflatedPickle"
+__version__ = "1.19.1"
+
 
 class Window(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -455,7 +459,7 @@ class SidePanel(ttk.Frame):
             self.widget_text.insert(1.0, file.read())
             file.close()
 
-        self.widget_text_line_numbers.redraw()
+        self.widget_text_line_numbers._redraw()
         self.widget_text.highlight_until('"', '"', "string")
         self.widget_text.highlight_pattern("{", "curly bracket")
         self.widget_text.highlight_pattern("}", "curly bracket")

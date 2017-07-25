@@ -13,6 +13,10 @@ from datetime import datetime
 import pkinter as pk
 import mod_detector
 
+__title__ = "Project Window"
+__author__ = "DeflatedPickle"
+__version__ = "1.3.0"
+
 
 class ProjectWindow(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):

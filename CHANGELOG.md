@@ -1,12 +1,14 @@
 ## Changelog
 
-### Version 0.22.2-alpha:
+### Version 0.22.4-alpha:
 - Added a function to install and convert server packs.
 - Added a function to replace files.
 - Added icons to every Button on the Toolbar of the text-editor.
 - Added cut, copy, paste and delete Buttons to the Toolbar of the text-editor.
 - Added a Findbar to the text-editor.
 - Added a Replacebar to the text-editor.
+- Changed the main window to center on the screen.
+- Changed the start window to center on the main window.
 - Added a reload function to the text-editor.
 - Added a save function to the text-editor.
 - Changed the line/column counter to only be one label.

@@ -8,6 +8,10 @@ from tkinter import ttk
 import pkinter as pk
 from nbt import nbt
 
+__title__ = "Feather"
+__author__ = "DeflatedPickle"
+__version__ = "1.1.2"
+
 
 class NBTViewer(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):
@@ -60,48 +64,70 @@ class NBTViewer(tk.Toplevel):
         self.file = file
         nbt_file = nbt.NBTFile(file, "rb")
 
-        parent = ""
+        self.widget_treeview.insert(parent="",
+                                    index="end",
+                                    iid=nbt_file.name,
+                                    text=nbt_file.name,
+                                    tags="Bold")
+
+        parent = nbt_file.name
 
         for tag in nbt_file.tags:
             # print(tag.name, tag.valuestr(), tag.__class__.__name__)
+
             self.widget_treeview.insert(parent=parent,
-                                        index=0,
+                                        index="end",
                                         iid=tag.name,
-                                        text="",
-                                        values=["",
-                                                tag.name,
-                                                tag.valuestr(),
-                                                tag.__class__.__name__])
+                                        text=tag.name,
+                                        values=[tag.valuestr(),
+                                                tag.__class__.__name__],
+                                        tags="Bold" if tag.__class__.__name__ in ["TAG_Compound", "TAG_List"] else "")
 
-            if tag.__class__.__name__ == "TAG_Compound" or tag.__class__.__name__ == "TAG_List":
+            if tag.__class__.__name__ in ["TAG_Compound", "TAG_List"]:
                 parent = tag.name
-                for compound_tag in nbt_file[tag.name].tags:
-                    self.widget_treeview.insert(parent=parent,
-                                                index=0,
-                                                iid=compound_tag.name,
-                                                text="",
-                                                values=["",
-                                                        compound_tag.name,
-                                                        compound_tag.valuestr(),
-                                                        compound_tag.__class__.__name__])
-                parent = ""
 
-        self.title("Feather - {}".format(nbt_file.name))
+                for compound_tag in nbt_file[tag.name].tags:
+                    self.load_nested(parent, nbt_file, compound_tag, tag)
+
+                parent = nbt_file.name
+
+        for child in self.widget_treeview.get_children():
+            if self.widget_treeview.item(child)["tags"][0] == "Bold":
+                self.widget_treeview.item(child, open=True)
+
+        self.title("Feather - {}".format(file))
+
+    def load_nested(self, parent, nbt_file, tag, compound_tag=None):
+        print("Name: " + (tag.name if tag.name else ""), "Value: " + tag.valuestr(), "Type: " + tag.__class__.__name__, sep=" | ")
+
+        self.widget_treeview.insert(parent=parent,
+                                    index="end",
+                                    iid="" if tag.name in ["name", "value"] else tag.name,
+                                    text=tag.name if tag.name else "",
+                                    values=[tag.valuestr(),
+                                            tag.__class__.__name__],
+                                    tags="Bold" if tag.__class__.__name__ in ["TAG_Compound", "TAG_List"] else "")
+
+        if tag.__class__.__name__ in ["TAG_Compound", "TAG_List"]:
+            try:
+                for compound in nbt_file[compound_tag.name][tag.name].tags:
+                    self.load_nested(tag.name, nbt_file, compound)
+            except TypeError:
+                pass
 
 
 class Tree(ttk.Treeview):
     def __init__(self, parent, window, *args, **kwargs):
-        ttk.Treeview.__init__(self, parent, selectmode="browse", columns=["", "", "", ""], *args, **kwargs)
+        ttk.Treeview.__init__(self, parent, selectmode="browse", columns=["", "", ""], *args, **kwargs)
         self.parent = window
 
-        self.heading("#0", text="Position")
-        self.column("#0", width=100, stretch=False)
-        self.heading("#1", text="Offset")
-        self.column("#1", width=100, stretch=False)
-        self.heading("#2", text="Element")
-        self.heading("#3", text="Value")
-        self.heading("#4", text="Type")
-        self.column("#4", width=100, stretch=False)
+        self.heading("#0", text="Element")
+        self.heading("#1", text="Value")
+        self.column("#1", width=250)
+        self.heading("#2", text="Type")
+        self.column("#2", width=120, stretch=False)
+
+        self.tag_configure("Bold", font=("", "10", "bold"))
 
     def refresh(self):
         self.delete(*self.parent.widget_tree.get_children())

@@ -11,6 +11,10 @@ import pkinter as pk
 
 import load_images
 
+__title__ = "Redstone"
+__author__ = "DeflatedPickle"
+__version__ = "1.20.0"
+
 
 class TextEditor(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):
@@ -103,8 +107,11 @@ class TextEditor(tk.Toplevel):
         with open(file, "r") as f:
             self.widget_text_code.delete(1.0, "end")
             self.widget_text_code.insert(1.0, f.read())
-            self.title("{} - {}".format("Redstone", self.file))
+            self.title("{} - {}".format("Redstone", file))
             f.close()
+
+        self.line_numbers._redraw()
+        self.statusbar.check_caret()
 
     def save(self):
         with open(self.file, "w") as f:

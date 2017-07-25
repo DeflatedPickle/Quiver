@@ -12,6 +12,10 @@ import shutil
 
 import project_window
 
+__title__ = "Start Window"
+__author__ = "DeflatedPickle"
+__version__ = "1.0.0"
+
 
 class StartWindow(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):

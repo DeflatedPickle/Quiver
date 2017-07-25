@@ -8,6 +8,10 @@ from tkinter import ttk
 import idlelib.ToolTip
 import os
 
+__title__ = "Mod Detector"
+__author__ = "DeflatedPickle"
+__version__ = "1.7.4"
+
 
 class ModDetector(tk.Toplevel):
     def __init__(self, parent, *args, **kwargs):
