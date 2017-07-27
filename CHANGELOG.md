@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.22.4-alpha:
+### Version 0.24.4-alpha:
 - Added a function to install and convert server packs.
 - Added a function to replace files.
 - Added icons to every Button on the Toolbar of the text-editor.
@@ -12,6 +12,8 @@
 - Added a reload function to the text-editor.
 - Added a save function to the text-editor.
 - Changed the line/column counter to only be one label.
+- Added an NBT-viewer.
+- Added a function to zip up the opened pack.
 
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.

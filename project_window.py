@@ -39,6 +39,7 @@ class ProjectWindow(tk.Toplevel):
         self.minecraft_mods = self.minecraft_location + "/mods"
 
         self.included_mods = ""
+        self.pack_location = None
 
         self.widget_frame_body = ttk.Frame(self)
         self.widget_frame_body.pack(side="top", fill="both", expand=True)
@@ -62,7 +63,7 @@ class ProjectWindow(tk.Toplevel):
         ttk.Label(self.widget_frame_body, text="Project Location:").grid(row=2, column=0, sticky="w")
         self.widget_directory_location = pk.DirectoryPicker(self.widget_frame_body)
         self.widget_directory_location.grid(row=2, column=1, sticky="we")
-        self.widget_directory_location.variable.set(self.minecraft_resource_packs)
+        self.widget_directory_location._variable.set(self.minecraft_resource_packs)
 
         ttk.Label(self.widget_frame_body, text="Minecraft Version:").grid(row=3, column=0, sticky="w")
         self.widget_combobox_version = ttk.Combobox(self.widget_frame_body, state="readonly")
@@ -92,7 +93,7 @@ class ProjectWindow(tk.Toplevel):
         self.widget_button_detect_mods.pack(side="left")
 
         try:
-            if os.listdir(self.minecraft_mods) == []:
+            if not os.listdir(self.minecraft_mods):
                 self.widget_button_detect_mods.configure(state="disabled")
         except FileNotFoundError:
             self.widget_button_detect_mods.configure(state="disabled")
@@ -117,8 +118,8 @@ class ProjectWindow(tk.Toplevel):
             self.widget_entry_title.configure(state="disabled")
             self.widget_entry_name.configure(state="disabled")
             self.widget_combobox_version.configure(state="disabled")
-            self.widget_directory_location.entry.configure(state="disabled")
-            self.widget_directory_location.button.configure(state="disabled")
+            self.widget_directory_location._entry.configure(state="disabled")
+            self.widget_directory_location._button.configure(state="disabled")
             self.widget_text_description.configure(state="disabled")
             self.widget_button_create.configure(state="disabled")
 
@@ -130,7 +131,6 @@ class ProjectWindow(tk.Toplevel):
         self.pack_location = self.minecraft_resource_packs + "/" + self.variable_string_name.get()
 
         if os.path.isdir(self.pack_location):
-            # messagebox.showwarning("Warning", "The path '{}' already exists.".format(pack_location))
             messagebox.showwarning("Warning", "The pack '{}' already exists.".format(self.variable_string_name.get()))
             delete = messagebox.askyesnocancel("Delete Pack", "Would you like to delete the pack?")
             if delete:
@@ -185,6 +185,8 @@ class ProjectWindow(tk.Toplevel):
 
 def main():
     app = tk.Tk()
+    app.operating_system = "Windows"
+
     ProjectWindow(app)
     app.mainloop()
 

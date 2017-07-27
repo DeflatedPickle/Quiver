@@ -6,6 +6,7 @@ import tkinter as tk
 import _tkinter
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 import idlelib.ToolTip
 import json
 import os
@@ -13,6 +14,7 @@ import shutil
 import subprocess
 import platform
 from datetime import datetime
+import zipfile
 
 import pkinter as pk
 from PIL import Image, ImageTk
@@ -24,6 +26,7 @@ import highlightingtext
 import about_window
 import text_editor
 import image_viewer
+import nbt_viewer
 import start_window
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
@@ -34,7 +37,7 @@ import start_window
 
 __title__ = "Main"
 __author__ = "DeflatedPickle"
-__version__ = "1.19.1"
+__version__ = "1.20.1"
 
 
 class Window(tk.Tk):
@@ -47,6 +50,9 @@ class Window(tk.Tk):
         self.minsize(width=500, height=300)
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.directory = ""
+        self.resourcepack_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks"
 
         self.operating_system = platform.system()
 
@@ -157,14 +163,18 @@ class Window(tk.Tk):
             file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
             extension = self.widget_tree.item(self.widget_tree.focus())["values"][1]
 
+            # FIXME: Re-write this part.
+
             if extension == ".txt" or extension == ".json" or extension == ".mcmeta":
                 try:
                     if self.properties["text-editor"] == "default":
                         editor = text_editor.TextEditor(self)
                         editor.load_file(file=file)
+
                     elif self.properties["text-editor"] == "system":
                         if self.operating_system == "Windows":
                             os.startfile(file)
+
                         else:
                             opener = "open" if self.operating_system == "Darwin" else "xdg-open"
                             subprocess.call([opener, file])
@@ -177,15 +187,35 @@ class Window(tk.Tk):
                     if self.properties["image-viewer"] == "default":
                         viewer = image_viewer.ImageViewer(self)
                         viewer.load_image(image=file)
+
                     elif self.properties["image-viewer"] == "system":
                         if self.operating_system == "Windows":
                             os.startfile(file)
+
                         else:
                             opener = "open" if self.operating_system == "Darwin" else "xdg-open"
                             subprocess.call([opener, file])
                 except AttributeError:
                     viewer = image_viewer.ImageViewer(self)
                     viewer.load_image(image=file)
+
+            elif extension == ".nbt":
+                try:
+                    if self.properties["nbt-viewer"] == "default":
+                        nbt = nbt_viewer.NBTViewer(self)
+                        nbt.load_nbt(file=file)
+
+                    elif self.properties["nbt-viewer"] == "system":
+                        if self.operating_system == "Windows":
+                            os.startfile(file)
+
+                        else:
+                            opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                            subprocess.call([opener, file])
+
+                except AttributeError:
+                    nbt = nbt_viewer.NBTViewer(self)
+                    nbt.load_nbt(file=file)
 
     def replace_file(self):
         old_file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
@@ -542,6 +572,14 @@ class Menu(tk.Menu):
         self.option_add('*tearOff', False)
         self.parent = parent
 
+        self.menu_application = None
+        self.menu_file = None
+        self.menu_edit = None
+        self.menu_view = None
+        self.menu_window = None
+        self.menu_help = None
+        self.menu_system = None
+
         self.init_menu_application()
         self.init_menu_file()
         # self.init_menu_edit()
@@ -566,6 +604,9 @@ class Menu(tk.Menu):
 
         self.menu_file.add_command(label="Open Project File", image=self.parent.image_folder_open, compound="left",
                                    command=lambda: os.startfile(self.parent.directory))
+
+        self.menu_file.add_command(label="Zip Resource Pack", image=self.parent.image_folder_open, compound="left",
+                                   command=self.parent.cmd.zip_file)
 
         self.add_cascade(label="File", menu=self.menu_file)
 
@@ -793,6 +834,18 @@ class Commands:
                 res = self.search(child)
                 if res:
                     return True
+
+    def zip_file(self):
+        with zipfile.ZipFile(self.parent.directory + ".zip", "w") as z:
+            for root, dirs, files in os.walk(self.parent.directory.replace("\\", "/"), topdown=True):
+                new_root = root.replace("\\", "/").split("/")
+                # print(root, dirs, files)
+                for name in files:
+                    z.write(os.path.join(root, name), "/".join(new_root[new_root.index(self.parent.directory.split("/")[-1]) + 1:]) + "/" + name)
+
+            z.close()
+
+        messagebox.showinfo(title="Information", message="Zipping complete.")
 
     def exit_program(self):
         raise SystemExit

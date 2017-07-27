@@ -64,11 +64,13 @@ class NBTViewer(tk.Toplevel):
         self.file = file
         nbt_file = nbt.NBTFile(file, "rb")
 
-        self.widget_treeview.insert(parent="",
-                                    index="end",
-                                    iid=nbt_file.name,
-                                    text=nbt_file.name,
-                                    tags="Bold")
+        first = self.widget_treeview.insert(parent="",
+                                            index="end",
+                                            iid=nbt_file.name,
+                                            text=nbt_file.name,
+                                            tags="Bold")
+
+        self.widget_treeview.item(first, open=True)
 
         parent = nbt_file.name
 
@@ -91,14 +93,10 @@ class NBTViewer(tk.Toplevel):
 
                 parent = nbt_file.name
 
-        for child in self.widget_treeview.get_children():
-            if self.widget_treeview.item(child)["tags"][0] == "Bold":
-                self.widget_treeview.item(child, open=True)
-
         self.title("Feather - {}".format(file))
 
     def load_nested(self, parent, nbt_file, tag, compound_tag=None):
-        print("Name: " + (tag.name if tag.name else ""), "Value: " + tag.valuestr(), "Type: " + tag.__class__.__name__, sep=" | ")
+        # print("Name: " + (tag.name if tag.name else ""), "Value: " + tag.valuestr(), "Type: " + tag.__class__.__name__, sep=" | ")
 
         self.widget_treeview.insert(parent=parent,
                                     index="end",

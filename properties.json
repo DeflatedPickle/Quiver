@@ -1,5 +1,11 @@
 {
-	"theme": "vista", // The TTK style to use for the program.
-	"text-editor": "default", // The text-editor to use, "default" uses the program default, "system" uses the system default.
-	"image-viewer": "default" // The image-editor to use, "default" uses the program default, "system" uses the system default.
+  "theme": "vista", // The TTK theme to use for the program.
+  "text-editor": "default", // The text-editor to use.
+  "image-viewer": "default", // The image-editor to use.
+  "nbt-viewer": "default" // The NBT-viewer to use.
+
+  /* Options:
+  - "default" uses the program default.
+  - "system" uses the system default.
+  */
 }
