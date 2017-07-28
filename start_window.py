@@ -9,12 +9,13 @@ from tkinter import messagebox
 import zipfile
 import os
 import shutil
+import tempfile
 
 import project_window
 
 __title__ = "Start Window"
 __author__ = "DeflatedPickle"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 class StartWindow(tk.Toplevel):
@@ -37,9 +38,11 @@ class StartWindow(tk.Toplevel):
         self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0,
                                                                                                  columnspan=2,
                                                                                                  sticky="nesw")
-        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=3,
+        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=2,
                                                                                                   column=0,
                                                                                                   sticky="nesw")
+        self.widget_button_open_zip = ttk.Button(self, text="Open Zip", command=self.open_zip).grid(row=3, column=0,
+                                                                                                sticky="ew")
         self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1,
                                                                                                            column=1,
                                                                                                            sticky="ew")
@@ -78,6 +81,34 @@ class StartWindow(tk.Toplevel):
             self.destroy()
         else:
             messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
+
+    def open_zip(self):
+        pack = filedialog.askopenfile("r", initialdir=self.resourcepack_location)
+        found_pack = False
+
+        if pack:
+            with zipfile.ZipFile(pack.name, "r") as z:
+                for file in z.namelist():
+                    if file == "pack.mcmeta":
+                        # messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
+                        found_pack = True
+                        self.destroy()
+
+                if found_pack:
+                    self.parent.d = tempfile.TemporaryDirectory()
+                    for file in z.namelist():
+                        z.extract(file, self.parent.d.name)
+
+                    self.parent.name = pack.name.split("/")[-1].split(".")[0]
+                    self.parent.directory = self.parent.d.name
+                    self.parent.directory_real = pack.name
+                    self.parent.cmd.tree_refresh()
+                    self.destroy()
+
+                elif not found_pack:
+                    messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
+
+                pack.close()
 
     def install_pack(self):
         # pack = filedialog.askopenfile("r")

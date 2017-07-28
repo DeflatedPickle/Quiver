@@ -37,7 +37,7 @@ import start_window
 
 __title__ = "Main"
 __author__ = "DeflatedPickle"
-__version__ = "1.20.1"
+__version__ = "1.21.1"
 
 
 class Window(tk.Tk):
@@ -51,7 +51,9 @@ class Window(tk.Tk):
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
 
+        self.name = None
         self.directory = ""
+        self.directory_real = None
         self.resourcepack_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks"
 
         self.operating_system = platform.system()
@@ -135,7 +137,23 @@ class Window(tk.Tk):
         self.widget_tree.bind("<<TreeviewOpen>>", self.widget_tree.open_folder)
         self.widget_tree.bind("<<TreeviewClose>>", self.widget_tree.close_folder)
 
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
         # self.cmd.tree_refresh()
+
+    def close(self):
+        if self.directory_real:
+            # print(self.directory, self.directory_real)
+            with zipfile.ZipFile(self.directory_real, "w") as z:
+                for root, dirs, files in os.walk(self.directory.replace("\\", "/"), topdown=True):
+                    new_root = root.replace("\\", "/").split("/")
+                    # print(root, dirs, files)
+                    for name in files:
+                        z.write(os.path.join(root, name), "/".join(new_root[new_root.index(self.directory.replace("\\", "/").split("/")[-1]) + 1:]) + "/" + name)
+
+            self.d.cleanup()
+
+        self.destroy()
 
     def show_side_panel(self, *args):
         if self.widget_tree.item(self.widget_tree.focus())["tags"][0] != "Directory":
@@ -219,11 +237,14 @@ class Window(tk.Tk):
 
     def replace_file(self):
         old_file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
-        new_file = filedialog.askopenfile().name
+        dialog = filedialog.askopenfile()
 
-        # os.replace(new_file, old_file)
-        shutil.copy2(new_file, old_file)
-        self.cmd.tree_refresh()
+        if dialog:
+            new_file = dialog.name
+
+            # os.replace(new_file, old_file)
+            shutil.copy2(new_file, old_file)
+            self.cmd.tree_refresh()
 
     def load_properties(self):
         try:
@@ -733,7 +754,7 @@ class Commands:
         self.parent.widget_tree.insert(parent="",
                                        index="end",
                                        iid=self.parent.directory,
-                                       text=self.parent.directory.split("/")[-1:],
+                                       text=self.parent.directory.split("/")[-1:] if not self.parent.name else self.parent.name,
                                        image=self.parent.image_folder_open,
                                        tags="Directory")
         # self.widget_tree.selection_set()
