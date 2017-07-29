@@ -112,7 +112,8 @@ class ProgressWindow(Dialog):
 
         self.pack_slaves()[1].destroy()
 
-        self.geometry("300x127")
+        self.geometry("450x127")
+        self.resizable(False, False)
 
 
 def main():

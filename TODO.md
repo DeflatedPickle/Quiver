@@ -14,7 +14,6 @@
 - Add a check for if icons do not exist and then download them from GitHub if they don't.
 - Add a tutorial on how to compile the source code.
 - Move the text-editor and image-viewer to their own .exe files.
-- Add progress bars for file transfers.
 - Change written text to be translated to the computer's set language language.
 - Redo the main About Window.
 - Add about windows to each major window.

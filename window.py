@@ -16,6 +16,7 @@ import platform
 from datetime import datetime
 import zipfile
 import threading
+import sys
 
 import pkinter as pk
 from PIL import Image, ImageTk
@@ -30,6 +31,7 @@ import image_viewer
 import nbt_viewer
 import start_window
 import dialog
+import functions
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
@@ -621,7 +623,7 @@ class Menu(tk.Menu):
 
         self.menu_application.add_command(label="About Quiver", command=lambda: about_window.AboutWindow(self.parent))
         self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left",
-                                          command=self.parent.cmd.exit_program)
+                                          command=sys.exit)
 
         self.add_cascade(label="Application", menu=self.menu_application)
 
@@ -699,7 +701,7 @@ class Toolbar(ttk.Frame):
         idlelib.ToolTip.ToolTip(self.widget_button_search, "Search the TreeView for a file")
 
         self.widget_button_exit = ttk.Button(self, text="Exit", image=self.parent.image_exit,
-                                             command=self.parent.cmd.exit_program,
+                                             command=sys.exit,
                                              style="Toolbutton")
         self.widget_button_exit.grid(row=0, column=10, sticky="e")
         idlelib.ToolTip.ToolTip(self.widget_button_exit, "Exit the program")
@@ -862,7 +864,7 @@ class Commands:
                     return True
 
     def zip_file(self):
-        amount = work_out_files(self.parent.directory)
+        amount = functions.folder_files(self.parent.directory)
         progress = dialog.ProgressWindow(self.parent, title="Zipping Pack", maximum=amount)
 
         count = 0
@@ -873,8 +875,8 @@ class Commands:
                 # print(root, dirs, files)
                 for name in files:
                     z.write(os.path.join(root, name), "/".join(new_root[new_root.index(self.parent.directory.split("/")[-1]) + 1:]) + "/" + name)
+
                     count += 1
-                    # print(name)
                     progress.variable_name.set("Current File: " + name)
                     progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
                     progress.variable_progress.set(progress.variable_progress.get() + 1)
@@ -883,22 +885,6 @@ class Commands:
 
         progress.destroy()
         messagebox.showinfo(title="Information", message="Zipping complete.")
-
-    def exit_program(self):
-        raise SystemExit
-
-
-def work_out_files(directory):
-    count = 0
-
-    for root, dirs, files in os.walk(directory):
-        for name in dirs:
-            count += 1
-
-        for name in files:
-            count += 1
-
-    return count
 
 
 def main():

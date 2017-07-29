@@ -10,12 +10,16 @@ import zipfile
 import os
 import shutil
 import tempfile
+import sys
+import threading
 
 import project_window
+import dialog
+import functions
 
-__title__ = "Start Window"
+__title__ = "StartWindow"
 __author__ = "DeflatedPickle"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 
 class StartWindow(tk.Toplevel):
@@ -27,7 +31,7 @@ class StartWindow(tk.Toplevel):
         self.resizable(width=False, height=False)
         self.transient(parent)
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.exit_program)
+        self.protocol("WM_DELETE_WINDOW", sys.exit)
         self.rowconfigure(0, weight=1)
         self.columnconfigure((0, 1), weight=1)
 
@@ -41,8 +45,8 @@ class StartWindow(tk.Toplevel):
         self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=2,
                                                                                                   column=0,
                                                                                                   sticky="nesw")
-        self.widget_button_open_zip = ttk.Button(self, text="Open Zip", command=self.open_zip).grid(row=3, column=0,
-                                                                                                sticky="ew")
+        self.widget_button_open_zip = ttk.Button(self, text="Open Zip", command=lambda: threading.Thread(target=self.open_zip).start()).grid(row=3, column=0,
+                                                                                                    sticky="ew")
         self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1,
                                                                                                            column=1,
                                                                                                            sticky="ew")
@@ -50,29 +54,15 @@ class StartWindow(tk.Toplevel):
                                               command=self.install_server_pack).grid(row=2, column=1, sticky="ew")
         self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack,
                                               state="disabled").grid(row=3, column=1, sticky="ew")
-        self.widget_button_exit = ttk.Button(self, text="Exit", command=self.exit_program).grid(row=4, column=0,
-                                                                                                columnspan=2,
-                                                                                                sticky="ew")
+        self.widget_button_exit = ttk.Button(self, text="Exit", command=sys.exit).grid(row=4, column=0,
+                                                                                       columnspan=2,
+                                                                                       sticky="ew")
 
     def create_new(self):
         project_window.ProjectWindow(self.parent)
         self.destroy()
 
     def open_pack(self):
-        # pack = filedialog.askopenfile("r")
-        # pack.close()
-        # found_pack = False
-        # with zipfile.ZipFile(pack.name, "r") as z:
-        #     for file in z.namelist():
-        #         if file == "pack.mcmeta":
-        #             messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
-        #             found_pack = True
-        #             self.parent.directory = pack.name
-        #             self.parent.cmd.tree_refresh()
-        #             self.destroy()
-        #     if not found_pack:
-        #         messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
-
         pack = filedialog.askdirectory(initialdir=self.resourcepack_location)
         if os.path.isfile(pack + "/pack.mcmeta"):
             # messagebox.showinfo("Information", "Found 'pack.mcmeta'.")
@@ -87,6 +77,11 @@ class StartWindow(tk.Toplevel):
         found_pack = False
 
         if pack:
+            amount = functions.zip_files(pack.name)
+            progress = dialog.ProgressWindow(self.parent, title="Opening Zip", maximum=amount)
+
+            count = 0
+
             with zipfile.ZipFile(pack.name, "r") as z:
                 for file in z.namelist():
                     if file == "pack.mcmeta":
@@ -99,6 +94,11 @@ class StartWindow(tk.Toplevel):
                     for file in z.namelist():
                         z.extract(file, self.parent.d.name)
 
+                        count += 1
+                        progress.variable_name.set("Current File: " + file)
+                        progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                        progress.variable_progress.set(progress.variable_progress.get() + 1)
+
                     self.parent.name = pack.name.split("/")[-1].split(".")[0]
                     self.parent.directory = self.parent.d.name
                     self.parent.directory_real = pack.name
@@ -109,6 +109,7 @@ class StartWindow(tk.Toplevel):
                     messagebox.showerror("Error", "Could not find 'pack.mcmeta'.")
 
                 pack.close()
+            progress.destroy()
 
     def install_pack(self):
         # pack = filedialog.askopenfile("r")
@@ -137,9 +138,6 @@ class StartWindow(tk.Toplevel):
 
     def patch_pack(self):
         pass
-
-    def exit_program(self):
-        raise SystemExit
 
 
 def main():
