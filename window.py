@@ -25,7 +25,6 @@ import jsonesque
 import load_images
 # import project_window
 import highlightingtext
-import about_window
 import text_editor
 import image_viewer
 import nbt_viewer
@@ -891,7 +890,7 @@ class Commands:
         messagebox.showinfo(title="Information", message="Zipping complete.")
 
     def about(self):
-        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.4-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.5-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
 
 
 def main():

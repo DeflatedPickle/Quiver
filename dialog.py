@@ -10,7 +10,7 @@ import pkinter as pk
 
 __title__ = "Dialog"
 __author__ = "DeflatedPickle"
-__version__ = "1.0.0"
+__version__ = "1.5.0"
 
 
 class Dialog(tk.Toplevel):
@@ -92,11 +92,26 @@ class CreditWindow(Dialog):
     def body(self, master):
         text = tk.Text(master, relief="flat", wrap="word", width=0, height=0)
         text.pack(side="left", fill="both", expand=True)
-        text.tag_configure("header")
+        text.tag_configure("header", justify="center", font=(font.nametofont("TkDefaultFont").cget("family"), 12, "bold"))
         text.tag_configure("hyperlink")
 
         scrollbar = ttk.Scrollbar(master, orient="vertical", command=text.yview)
         scrollbar.pack(side="right", fill="y")
+
+        text.insert("end", "Libraries:\n", "header")
+        text.insert("end", """- Fredrik Lundh for Tkinter.
+- Alex Clark for Pillow.
+- okdana for jsonesque.
+- twoolie for NBT.\n\n""")
+        text.insert("end", "Programs:\n", "header")
+        text.insert("end", """- MightyPork for ResourcePack Workbench.
+- dotPDN, LLC for Paint.NET.
+- JetBrains for PyCharm.
+- Mojang for Minecraft.\n\n""")
+        text.insert("end", "Other:\n", "header")
+        text.insert("end", """- Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.
+- GitHub for hosting the code.
+- Bryan Oakley on StackOverflow for occasional indirect help with code.""")
 
         text.configure(state="disabled", yscrollcommand=scrollbar.set)
 
