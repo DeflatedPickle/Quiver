@@ -9,7 +9,6 @@
 - Add pixel highlighting for the image-editor.
 - Add an option to be able to expand NBT files in the main Treeview.
 - Add an icon for un-supported file extensions.
-- Change the items in the mod detector to use information from the mod's mcmod.info file instead of the file name.
 - Add an information window.
 - Add a check for if icons do not exist and then download them from GitHub if they don't.
 - Add a tutorial on how to compile the source code.

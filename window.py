@@ -890,7 +890,7 @@ class Commands:
         messagebox.showinfo(title="Information", message="Zipping complete.")
 
     def about(self):
-        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.5-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.6-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
 
 
 def main():
