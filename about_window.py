@@ -54,11 +54,10 @@ Credits:
         - Alex Clark for Pillow.
         - okdana for jsonesque.
         - twoolie for NBT.
-    Programmes:
+    Programs:
         - MightyPork for ResourcePack Workbench.
-        - Oracle Corporation for VirtualBox (used to export the program on multiple OSs).
-        - dotPDN, LLC for Paint.NET (used to program make icons/textures).
-        - JetBrains for PyCharm (the IDE used).
+        - dotPDN, LLC for Paint.NET.
+        - JetBrains for PyCharm.
         - Mojang for Minecraft.
     Other:
         - Hartmut Goebel, Martin Zibricky, David Cortesi and David Vierra for PyInstaller.

@@ -60,6 +60,8 @@ class Window(tk.Tk):
         self.directory_real = None
         self.resourcepack_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks"
 
+        self.properties = None
+
         self.operating_system = platform.system()
 
         self.program_font_type = "Courier"
@@ -244,10 +246,10 @@ class Window(tk.Tk):
 
     def replace_file(self):
         old_file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
-        dialog = filedialog.askopenfile()
+        file = filedialog.askopenfile()
 
-        if dialog:
-            new_file = dialog.name
+        if file:
+            new_file = file.name
 
             # os.replace(new_file, old_file)
             shutil.copy2(new_file, old_file)
@@ -259,17 +261,19 @@ class Window(tk.Tk):
                 self.properties = json.loads(jsonesque.process(file.read()))
                 file.close()
         except FileNotFoundError:
-            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            # print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            messagebox.showwarning(title="Warning", message="Could not find 'properties.json'.")
 
     def write_properties(self, key, value):
         try:
             with open("properties.json", "w+") as file:
                 self.properties[key] = value
-                print(self.properties)
+                # print(self.properties)
                 file.write(json.dumps(self.properties, sort_keys=False, indent=2))
                 file.close()
         except FileNotFoundError:
-            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            # print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            messagebox.showwarning(title="Warning", message="Could not find 'properties.json'.")
 
 
 class Tree(ttk.Treeview):
@@ -621,7 +625,7 @@ class Menu(tk.Menu):
     def init_menu_application(self):
         self.menu_application = tk.Menu(self, name="apple")
 
-        self.menu_application.add_command(label="About Quiver", command=lambda: about_window.AboutWindow(self.parent))
+        self.menu_application.add_command(label="About Quiver", command=self.parent.cmd.about)
         self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left",
                                           command=sys.exit)
 
@@ -885,6 +889,9 @@ class Commands:
 
         progress.destroy()
         messagebox.showinfo(title="Information", message="Zipping complete.")
+
+    def about(self):
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.4-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
 
 
 def main():

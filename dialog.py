@@ -3,6 +3,7 @@
 """"""
 
 import tkinter as tk
+from tkinter import font
 from tkinter import ttk
 
 import pkinter as pk
@@ -13,7 +14,7 @@ __version__ = "1.0.0"
 
 
 class Dialog(tk.Toplevel):
-    def __init__(self, parent, title=None, *args, **kwargs):
+    def __init__(self, parent, title=None, transient=True, resizable=(False, False), geometry="300x300", *args, **kwargs):
         tk.Toplevel.__init__(self, parent)
         self.parent = parent
 
@@ -28,6 +29,17 @@ class Dialog(tk.Toplevel):
         ttk.Separator(self).pack(fill="x")
 
         self.buttonbox()
+
+        self.update()
+
+        if transient:
+            self.transient(self.parent)
+
+        if geometry:
+            self.geometry(geometry)
+
+        if resizable:
+            self.resizable(resizable[0], resizable[1])
 
         pk.center_on_parent(self)
         self.grab_set()
@@ -73,18 +85,116 @@ class Dialog(tk.Toplevel):
         pass
 
 
+class CreditWindow(Dialog):
+    def __init__(self, parent, title="Credits", *args, **kwargs):
+        Dialog.__init__(self, parent, title=title, transient=True, geometry="300x200", *args, **kwargs)
+
+    def body(self, master):
+        text = tk.Text(master, relief="flat", wrap="word", width=0, height=0)
+        text.pack(side="left", fill="both", expand=True)
+        text.tag_configure("header")
+        text.tag_configure("hyperlink")
+
+        scrollbar = ttk.Scrollbar(master, orient="vertical", command=text.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        text.configure(state="disabled", yscrollcommand=scrollbar.set)
+
+    def buttonbox(self):
+        Dialog.buttonbox(self)
+
+        self.pack_slaves()[2].pack_slaves()[0].destroy()
+
+        self.pack_slaves()[2].pack(fill="x")
+
+        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
+
+        self.pack_slaves()[1].destroy()
+
+
+class LicenceWindow(Dialog):
+    def __init__(self, parent, title="Licence", *args, **kwargs):
+        Dialog.__init__(self, parent, title=title, transient=True, geometry="550x300", *args, **kwargs)
+
+    def body(self, master):
+        text = tk.Text(master, relief="flat", wrap="word", width=0, height=0)
+        text.pack(side="left", fill="both", expand=True)
+
+        scrollbar = ttk.Scrollbar(master, orient="vertical", command=text.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        with open("./LICENSE") as file:
+            text.insert(1.0, file.read())
+
+        text.configure(state="disabled", yscrollcommand=scrollbar.set)
+
+    def buttonbox(self):
+        Dialog.buttonbox(self)
+
+        self.pack_slaves()[2].pack_slaves()[0].destroy()
+
+        self.pack_slaves()[2].pack(fill="x")
+
+        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
+
+        self.pack_slaves()[1].destroy()
+
+
 class AboutWindow(Dialog):
-    pass
+    def __init__(self, parent, title="Program", author="DeflatedPickle", version="0.0.0", logo=None, description="A basic description.", copyright_text="Copyright © 2017\nDeflatedPickle", *args, **kwargs):
+        self.program_title = title
+        self.author = author
+        self.version = version
+        self.logo = logo
+        self.description = description
+        self.copyright_text = copyright_text
+        self.credit = None
+
+        Dialog.__init__(self, parent, title=("About", title), transient=True, geometry="250x250", *args, **kwargs)
+
+    def body(self, master):
+        ttk.Style().configure("White.TLabel", background="white")
+
+        ttk.Label(master, image=self.logo, justify="center", style="White.TLabel").pack(pady=10)
+
+        title = font.Font(family=font.nametofont("TkDefaultFont").cget("family"), size=15, weight="bold")
+        ttk.Label(master, text=(self.program_title, self.version), font=title, justify="center", style="White.TLabel").pack()
+
+        ttk.Label(master, text=self.description, wraplength=230, justify="center", style="White.TLabel").pack()
+        ttk.Label(master, text=self.copyright_text, justify="center", style="White.TLabel").pack()
+
+        link = pk.Hyperlink(master, text="Visit the project on GitHub", link="https://github.com/DeflatedPickle/Quiver")
+        link.configure(background="white", justify="center")
+        link.pack(pady=3)
+        link._font.configure(size=10)
+
+    def buttonbox(self):
+        Dialog.buttonbox(self)
+
+        self.pack_slaves()[2].pack_slaves()[0].destroy()
+
+        self.pack_slaves()[2].pack(fill="x")
+
+        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
+
+        ttk.Button(self.pack_slaves()[2], text="Credits", command=lambda: CreditWindow(self)).pack(side="left", padx=5, pady=5)
+        ttk.Button(self.pack_slaves()[2], text="Licence", command=lambda: LicenceWindow(self)).pack(side="left", padx=5, pady=5)
+
+        self.pack_slaves()[1].destroy()
 
 
 class ProgressWindow(Dialog):
-    def __init__(self, parent, title=None, maximum: int=0, *args, **kwargs):
+    def __init__(self, parent, title="Progress", maximum: int=0, *args, **kwargs):
         self.maximum = maximum
 
         self.variable_name = None
         self.variable_progress = None
         self.variable_percent = None
-        Dialog.__init__(self, parent, title=title, *args, **kwargs)
+
+        Dialog.__init__(self, parent, title=title, transient=False, geometry="450x127", *args, **kwargs)
 
     def body(self, master):
         ttk.Style().configure("White.TLabel", background="white")
@@ -103,6 +213,7 @@ class ProgressWindow(Dialog):
 
     def buttonbox(self):
         Dialog.buttonbox(self)
+
         self.pack_slaves()[2].pack_slaves()[0].destroy()
 
         self.pack_slaves()[2].pack(fill="x")
@@ -112,16 +223,17 @@ class ProgressWindow(Dialog):
 
         self.pack_slaves()[1].destroy()
 
-        self.geometry("450x127")
-        self.resizable(False, False)
-
 
 def main():
     app = tk.Tk()
-    progress = ProgressWindow(app, maximum=100)
-    progress.variable_name.set("Current File: life.txt")
-    progress.variable_percent.set("42% Complete")
-    progress.variable_progress.set(42)
+
+    about = AboutWindow(app)
+
+    # progress = ProgressWindow(app, maximum=100)
+    # progress.variable_name.set("Current File: life.txt")
+    # progress.variable_percent.set("42% Complete")
+    # progress.variable_progress.set(42)
+
     app.mainloop()
 
 
