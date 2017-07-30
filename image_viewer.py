@@ -25,9 +25,13 @@ class ImageViewer(tk.Toplevel):
         self.geometry("500x400")
         self.minsize(width=300, height=200)
         self.maxsize(width=1000, height=800)
-        self.transient(parent)
+        # self.transient(parent)
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.image_open = None
+        self.image_photo = None
+        self.drawn_image = None
 
         self.original_width = 0
         self.original_height = 0
@@ -139,10 +143,8 @@ class ImageViewer(tk.Toplevel):
     def zoom_in(self):
         self.widget_canvas_image.delete("image")
 
-        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() +
-                                                                      self.original_width,
-                                                                      self.image_photo.height() +
-                                                                      self.original_height)))
+        self.image_photo = ImageTk.PhotoImage(self.image_open.resize(
+            (self.image_photo.width() + self.original_width, self.image_photo.height() + self.original_height)))
         self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
         self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
         self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
@@ -160,10 +162,8 @@ class ImageViewer(tk.Toplevel):
     def zoom_out(self):
         self.widget_canvas_image.delete("image")
 
-        self.image_photo = ImageTk.PhotoImage(self.image_open.resize((self.image_photo.width() -
-                                                                      self.original_width,
-                                                                      self.image_photo.height() -
-                                                                      self.original_height)))
+        self.image_photo = ImageTk.PhotoImage(self.image_open.resize(
+            (self.image_photo.width() - self.original_width, self.image_photo.height() - self.original_height)))
         self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
         self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
         self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
@@ -188,14 +188,18 @@ class ImageViewer(tk.Toplevel):
             self.toolbar.widget_button_zoom_out.configure(state="disabled")
         else:
             self.toolbar.widget_button_zoom_out.configure(state="enabled")
-            
-    def on_enter(self, *args):
+
+    def on_enter(self, event):
         self.widget_frame_image.bind_all("<MouseWheel>", self.on_scroll_vertical)
         self.widget_frame_image.bind_all("<Shift-MouseWheel>", self.on_scroll_horizontal)
-    
-    def on_leave(self, *args):
+
+        del event
+
+    def on_leave(self, event):
         self.widget_frame_image.unbind_all("<MouseWheel>")
         self.widget_frame_image.unbind_all("<Shift-MouseWheel>")
+
+        del event
 
     def on_scroll_vertical(self, event):
         self.widget_canvas_image.yview_scroll(int(-1 * (event.delta / 120)), "units")
@@ -212,9 +216,11 @@ class Menu(tk.Menu):
 
 
 class Toolbar(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
-        ttk.Frame.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, **kwargs):
+        ttk.Frame.__init__(self, parent, **kwargs)
         self.parent = parent
+
+        # TODO: Change this to a pk.Toolbar.
 
         image = load_images.LoadImages()
         self.image_chessboard = image.image_chessboard
@@ -252,17 +258,17 @@ class Toolbar(ttk.Frame):
         ttk.Separator(self, orient="vertical").grid(row=0, column=5, sticky="ns")
 
         self.variable_tile = tk.BooleanVar()
-        self.widget_button_tile = ttk.Checkbutton(self, text="Tile", variable=self.variable_tile,
-                                                  style="Toolbutton", state="disabled")
+        self.widget_button_tile = ttk.Checkbutton(self, text="Tile", variable=self.variable_tile, style="Toolbutton",
+                                                  state="disabled")
         self.widget_button_tile.grid(row=0, column=6)
 
 
 class Statusbar(pk.Statusbar):
-    def __init__(self, parent, *args, **kwargs):
-        pk.Statusbar.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, *args):
+        pk.Statusbar.__init__(self, parent, *args)
 
         self.status_variable = tk.StringVar()
-        self.add_variable(textvariable=self.status_variable)
+        self.add_variable(variable=self.status_variable)
 
         self.bind_widget(parent.toolbar.widget_check_chessboard, self.status_variable, "Show or hide the chessboard",
                          "")

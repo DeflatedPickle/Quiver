@@ -74,8 +74,7 @@ class ModDetector(tk.Toplevel):
 
         self.widget_button_cancel = ttk.Button(self.widget_frame_buttons_bottom, text="Cancel",
                                                command=self.exit_mod).pack(side="right")
-        self.widget_button_confirm = ttk.Button(self.widget_frame_buttons_bottom, text="OK",
-                                                command=self.confirm_mods,
+        self.widget_button_confirm = ttk.Button(self.widget_frame_buttons_bottom, text="OK", command=self.confirm_mods,
                                                 default="active")
         self.widget_button_confirm.pack(side="right")
 
@@ -88,7 +87,11 @@ class ModDetector(tk.Toplevel):
             if file.endswith(".jar") or file.endswith(".litemod"):
                 self.widget_tree_left.widget_tree.insert(parent="",
                                                          index="end",
-                                                         text=os.path.splitext(file)[0] if not self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))["name"] else self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))["name"],
+                                                         text=os.path.splitext(file)[0] if not
+                                                         self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))[
+                                                             "name"] else
+                                                         self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))[
+                                                             "name"],
                                                          values=(os.path.splitext(file)[1]),
                                                          tags=(os.path.join(self.minecraft_mods + "/", file), "mod"))
 
@@ -156,14 +159,10 @@ class Tree(ttk.Frame):
         self.widget_tree.heading("#1", text="Mod Extension")
         self.widget_tree.column("#1", width=100, stretch=False)
 
-        self.scrollbar_horizontal = ttk.Scrollbar(self,
-                                                  orient="horizontal",
-                                                  command=self.widget_tree.xview)
+        self.scrollbar_horizontal = ttk.Scrollbar(self, orient="horizontal", command=self.widget_tree.xview)
         self.scrollbar_horizontal.grid(row=1, column=0, sticky="we")
 
-        self.scrollbar_vertical = ttk.Scrollbar(self,
-                                                orient="vertical",
-                                                command=self.widget_tree.yview)
+        self.scrollbar_vertical = ttk.Scrollbar(self, orient="vertical", command=self.widget_tree.yview)
         self.scrollbar_vertical.grid(row=0, column=1, sticky="ns")
 
         self.widget_tree.configure(xscrollcommand=self.scrollbar_horizontal.set,

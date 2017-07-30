@@ -14,7 +14,8 @@ __version__ = "1.5.0"
 
 
 class Dialog(tk.Toplevel):
-    def __init__(self, parent, title=None, transient=True, resizable=(False, False), geometry="300x300", *args, **kwargs):
+    def __init__(self, parent, title=None, transient=True, resizable=(False, False), geometry="300x300", *args,
+                 **kwargs):
         tk.Toplevel.__init__(self, parent)
         self.parent = parent
 
@@ -73,13 +74,17 @@ class Dialog(tk.Toplevel):
         finally:
             self.cancel()
 
+        del event
+
     def cancel(self, event=None):
         if self.parent is not None:
             self.parent.focus_set()
         self.destroy()
 
+        del event
+
     def validate(self):
-        return 1
+        return True
 
     def apply(self):
         pass
@@ -92,7 +97,8 @@ class CreditWindow(Dialog):
     def body(self, master):
         text = tk.Text(master, relief="flat", wrap="word", width=0, height=0)
         text.pack(side="left", fill="both", expand=True)
-        text.tag_configure("header", justify="center", font=(font.nametofont("TkDefaultFont").cget("family"), 12, "bold"))
+        text.tag_configure("header", justify="center",
+                           font=(font.nametofont("TkDefaultFont").cget("family"), 12, "bold"))
         text.tag_configure("hyperlink")
 
         scrollbar = ttk.Scrollbar(master, orient="vertical", command=text.yview)
@@ -158,7 +164,9 @@ class LicenceWindow(Dialog):
 
 
 class AboutWindow(Dialog):
-    def __init__(self, parent, title="Program", author="DeflatedPickle", version="0.0.0", logo=None, description="A basic description.", copyright_text="Copyright © 2017\nDeflatedPickle", *args, **kwargs):
+    def __init__(self, parent, title="Program", author="DeflatedPickle", version="0.0.0", logo=None,
+                 description="A basic description.", copyright_text="Copyright © 2017\nDeflatedPickle", *args,
+                 **kwargs):
         self.program_title = title
         self.author = author
         self.version = version
@@ -175,7 +183,8 @@ class AboutWindow(Dialog):
         ttk.Label(master, image=self.logo, justify="center", style="White.TLabel").pack(pady=10)
 
         title = font.Font(family=font.nametofont("TkDefaultFont").cget("family"), size=15, weight="bold")
-        ttk.Label(master, text=(self.program_title, self.version), font=title, justify="center", style="White.TLabel").pack()
+        ttk.Label(master, text=(self.program_title, self.version), font=title, justify="center",
+                  style="White.TLabel").pack()
 
         ttk.Label(master, text=self.description, wraplength=230, justify="center", style="White.TLabel").pack()
         ttk.Label(master, text=self.copyright_text, justify="center", style="White.TLabel").pack()
@@ -195,14 +204,16 @@ class AboutWindow(Dialog):
         self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
         self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
 
-        ttk.Button(self.pack_slaves()[2], text="Credits", command=lambda: CreditWindow(self)).pack(side="left", padx=5, pady=5)
-        ttk.Button(self.pack_slaves()[2], text="Licence", command=lambda: LicenceWindow(self)).pack(side="left", padx=5, pady=5)
+        ttk.Button(self.pack_slaves()[2], text="Credits", command=lambda: CreditWindow(self)).pack(side="left", padx=5,
+                                                                                                   pady=5)
+        ttk.Button(self.pack_slaves()[2], text="Licence", command=lambda: LicenceWindow(self)).pack(side="left", padx=5,
+                                                                                                    pady=5)
 
         self.pack_slaves()[1].destroy()
 
 
 class ProgressWindow(Dialog):
-    def __init__(self, parent, title="Progress", maximum: int=0, *args, **kwargs):
+    def __init__(self, parent, title="Progress", maximum: int = 0, *args, **kwargs):
         self.maximum = maximum
 
         self.variable_name = None
@@ -242,7 +253,7 @@ class ProgressWindow(Dialog):
 def main():
     app = tk.Tk()
 
-    about = AboutWindow(app)
+    AboutWindow(app)
 
     # progress = ProgressWindow(app, maximum=100)
     # progress.variable_name.set("Current File: life.txt")

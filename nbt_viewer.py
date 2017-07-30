@@ -21,7 +21,7 @@ class NBTViewer(tk.Toplevel):
         self.geometry("800x400")
         self.minsize(width=300, height=200)
         self.maxsize(width=1000, height=800)
-        self.transient(parent)
+        # self.transient(parent)
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
 
@@ -47,13 +47,11 @@ class NBTViewer(tk.Toplevel):
         self.widget_treeview.grid(row=0, column=0, sticky="nesw")
         self.widget_treeview.focus_set()
 
-        self.scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_tree,
-                                                  orient="horizontal",
+        self.scrollbar_horizontal = ttk.Scrollbar(self.widget_frame_tree, orient="horizontal",
                                                   command=self.widget_treeview.xview)
         self.scrollbar_horizontal.grid(row=1, column=0, sticky="we")
 
-        self.scrollbar_vertical = ttk.Scrollbar(self.widget_frame_tree,
-                                                orient="vertical",
+        self.scrollbar_vertical = ttk.Scrollbar(self.widget_frame_tree, orient="vertical",
                                                 command=self.widget_treeview.yview)
         self.scrollbar_vertical.grid(row=0, column=1, sticky="ns")
 
@@ -115,8 +113,8 @@ class NBTViewer(tk.Toplevel):
 
 
 class Tree(ttk.Treeview):
-    def __init__(self, parent, window, *args, **kwargs):
-        ttk.Treeview.__init__(self, parent, selectmode="browse", columns=["", "", ""], *args, **kwargs)
+    def __init__(self, parent, window, **kwargs):
+        ttk.Treeview.__init__(self, parent, selectmode="browse", columns=["", "", ""], **kwargs)
         self.parent = window
 
         self.heading("#0", text="Element")
@@ -140,14 +138,14 @@ class Menu(tk.Menu):
 
 
 class Toolbar(pk.Toolbar):
-    def __init__(self, parent, *args, **kwargs):
-        pk.Toolbar.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, *args):
+        pk.Toolbar.__init__(self, parent, *args)
         self.parent = parent
 
 
 class Statusbar(pk.Statusbar):
-    def __init__(self, parent, *args, **kwargs):
-        pk.Statusbar.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, *args):
+        pk.Statusbar.__init__(self, parent, *args)
 
         self.status_variable = tk.StringVar()
         self.add_variable(variable=self.status_variable)
@@ -157,8 +155,8 @@ class Statusbar(pk.Statusbar):
 
 def main():
     app = tk.Tk()
-    nbt = NBTViewer(app)
-    nbt.load_nbt("./test_files/bigtest.nbt")
+    nbt_view = NBTViewer(app)
+    nbt_view.load_nbt("./test_files/bigtest.nbt")
     app.mainloop()
 
 

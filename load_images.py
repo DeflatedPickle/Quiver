@@ -52,7 +52,7 @@ class LoadImages:
 
         self.image_exit = self.new_image("icons/exit.png")
 
-    def new_image(self, image_file: str=""):
+    def new_image(self, image_file: str = ""):
         try:
             image_copy = Image.open(image_file)
             return ImageTk.PhotoImage(image_copy)

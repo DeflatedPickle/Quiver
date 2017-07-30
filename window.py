@@ -157,7 +157,8 @@ class Window(tk.Tk):
                     new_root = root.replace("\\", "/").split("/")
                     # print(root, dirs, files)
                     for name in files:
-                        z.write(os.path.join(root, name), "/".join(new_root[new_root.index(self.directory.replace("\\", "/").split("/")[-1]) + 1:]) + "/" + name)
+                        z.write(os.path.join(root, name), "/".join(new_root[new_root.index(
+                            self.directory.replace("\\", "/").split("/")[-1]) + 1:]) + "/" + name)
 
             self.d.cleanup()
 
@@ -358,7 +359,8 @@ class SidePanel(ttk.Frame):
         self.widget_button_edit = ttk.Button(self.widget_frame_code_buttons, text="Edit", state="disabled")
         self.widget_button_edit.grid(row=0, column=1)
 
-        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", command=self.window.replace_file)
+        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace",
+                                                command=self.window.replace_file)
         self.widget_button_replace.grid(row=0, column=2)
 
         ##################################################
@@ -764,7 +766,8 @@ class Commands:
         self.parent.widget_tree.insert(parent="",
                                        index="end",
                                        iid=self.parent.directory,
-                                       text=self.parent.directory.split("/")[-1:] if not self.parent.name else self.parent.name,
+                                       text=self.parent.directory.split("/")[
+                                            -1:] if not self.parent.name else self.parent.name,
                                        image=self.parent.image_folder_open,
                                        tags="Directory")
         # self.widget_tree.selection_set()
@@ -877,11 +880,12 @@ class Commands:
                 new_root = root.replace("\\", "/").split("/")
                 # print(root, dirs, files)
                 for name in files:
-                    z.write(os.path.join(root, name), "/".join(new_root[new_root.index(self.parent.directory.split("/")[-1]) + 1:]) + "/" + name)
+                    z.write(os.path.join(root, name),
+                            "/".join(new_root[new_root.index(self.parent.directory.split("/")[-1]) + 1:]) + "/" + name)
 
                     count += 1
                     progress.variable_name.set("Current File: " + name)
-                    progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                    progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
                     progress.variable_progress.set(progress.variable_progress.get() + 1)
 
             z.close()
@@ -890,7 +894,9 @@ class Commands:
         messagebox.showinfo(title="Information", message="Zipping complete.")
 
     def about(self):
-        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.26.6-alpha", logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))), description="A resource pack creator and manager for Minecraft.")
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.27.6-alpha",
+                                   logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))),
+                                   description="A resource pack creator and manager for Minecraft.")
 
 
 def main():

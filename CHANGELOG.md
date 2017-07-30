@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.26.6-alpha:
+### Version 0.27.6-alpha:
 - Added a function to install and convert server packs.
 - Added a function to replace files.
 - Added icons to every Button on the Toolbar of the text-editor.
@@ -18,6 +18,7 @@
 - Added progress windows for big file transfer.
 - Replaced the about window with a new one.
 - Changed the mod detector to show mod names instead of file names.
+- Added a function to install zip packs.
 
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.

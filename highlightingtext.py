@@ -4,6 +4,7 @@
 
 import tkinter as tk
 
+
 # Credit: Bryan Oakley
 # http://stackoverflow.com/questions/3781670/how-to-highlight-text-in-a-tkinter-text-widget
 

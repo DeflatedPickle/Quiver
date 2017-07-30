@@ -90,7 +90,8 @@ class ProjectWindow(tk.Toplevel):
         self.widget_button_cancel = ttk.Button(self.widget_frame_buttons, text="Cancel",
                                                command=sys.exit).pack(side="right")
         self.widget_button_create = ttk.Button(self.widget_frame_buttons, text="Create",
-                                               command=lambda: threading.Thread(target=self.extract_minecraft_jar).start())
+                                               command=lambda: threading.Thread(
+                                                   target=self.extract_minecraft_jar).start())
         self.widget_button_create.pack(side="right")
 
         self.widget_button_detect_mods = ttk.Button(self.widget_frame_buttons, text="Detect Mods",
@@ -109,16 +110,17 @@ class ProjectWindow(tk.Toplevel):
             self.widget_combobox_version.set(self.widget_combobox_version["values"][0])
         except IndexError:
             pass
-        # self.find_minecraft_versions()
+            # self.find_minecraft_versions()
 
     def find_minecraft_versions(self):
         list_versions = []
         try:
             for file in os.listdir(self.minecraft_versions):
                 if os.path.isdir(self.minecraft_versions + "/" + file):
-                    if not "forge" in file.lower() and not "liteloader" in file.lower():
+                    if "forge" not in file.lower() and "liteloader" not in file.lower():
                         list_versions.append(file)
-        except:
+
+        except FileNotFoundError:
             self.widget_label_error.grid(row=5, column=0, columnspan=2)
             self.widget_entry_title.configure(state="disabled")
             self.widget_entry_name.configure(state="disabled")
@@ -162,21 +164,21 @@ class ProjectWindow(tk.Toplevel):
 
                     count += 1
                     progress.variable_name.set("Current File: " + file)
-                    progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                    progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
                     progress.variable_progress.set(progress.variable_progress.get() + 1)
 
         with open(self.pack_location + "/" + "pack.mcmeta", "w+") as file:
             file.write(json.dumps(
-            {
-                "pack": {
-                    "pack_format": 2,
-                    "description": self.widget_text_description.get(1.0, "end").strip("\n") + " - Made with Quiver."
-                }
-            }, sort_keys=False, indent=2))
+                {
+                    "pack": {
+                        "pack_format": 2,
+                        "description": self.widget_text_description.get(1.0, "end").strip("\n") + " - Made with Quiver."
+                    }
+                }, sort_keys=False, indent=2))
 
             count += 1
             progress.variable_name.set("Current File: " + file.name)
-            progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+            progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
             progress.variable_progress.set(progress.variable_progress.get() + 1)
 
         for item in self.included_mods:
@@ -189,7 +191,7 @@ class ProjectWindow(tk.Toplevel):
 
                         count += 1
                         progress.variable_name.set("Current File: " + file)
-                        progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                        progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
                         progress.variable_progress.set(progress.variable_progress.get() + 1)
 
         progress.destroy()
@@ -213,7 +215,7 @@ class ProjectWindow(tk.Toplevel):
 
                 count += 1
                 progress.variable_name.set("Current Folder: " + name)
-                progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
                 progress.variable_progress.set(progress.variable_progress.get() + 1)
 
             for name in dirs:
@@ -222,7 +224,7 @@ class ProjectWindow(tk.Toplevel):
 
                 count += 1
                 progress.variable_name.set("Current File: " + name)
-                progress.variable_percent.set("{}% Complete".format(round(100 * float(count)/float(amount))))
+                progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
                 progress.variable_progress.set(progress.variable_progress.get() + 1)
 
         os.rmdir(self.pack_location)
