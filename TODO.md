@@ -16,6 +16,8 @@
 - Change written text to be translated to the computer's set language language/translated to a set language.
 - Redo the main About Window.
 - Add about windows to each major window.
+- Add a better editor for `.lang` files.
+- Add support for [Artisan's Tabs](https://minecraft.curseforge.com/projects/artisans-tabs).
 
 ## Bugs:
 - Syntax highlighting for strings carries on until the final quotation is found.

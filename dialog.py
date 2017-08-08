@@ -10,24 +10,25 @@ import pkinter as pk
 
 __title__ = "Dialog"
 __author__ = "DeflatedPickle"
-__version__ = "1.5.0"
+__version__ = "1.7.0"
 
 
 class Dialog(tk.Toplevel):
-    def __init__(self, parent, title=None, transient=True, resizable=(False, False), geometry="300x300", *args,
+    def __init__(self, parent, title="Dialog", transient=True, resizable=(False, False), geometry="300x300", separator=False, background="white", *args,
                  **kwargs):
         tk.Toplevel.__init__(self, parent)
         self.parent = parent
 
         self.title(title)
 
-        ttk.Style().configure("White.TFrame", background="white")
+        ttk.Style().configure("White.TFrame", background=background)
 
         frame = ttk.Frame(self, style="White.TFrame")
         self.initial_focus = self.body(frame)
         frame.pack(fill="both", expand=True)
 
-        ttk.Separator(self).pack(fill="x")
+        if separator:
+            ttk.Separator(self).pack(fill="x")
 
         self.buttonbox()
 
@@ -51,10 +52,11 @@ class Dialog(tk.Toplevel):
     def buttonbox(self):
         box = ttk.Frame(self)
 
-        w = ttk.Button(box, text="OK", width=10, command=self.ok, default="active")
-        w.pack(side="left", padx=5, pady=5)
-        w = ttk.Button(box, text="Cancel", width=10, command=self.cancel)
-        w.pack(side="left", padx=5, pady=5)
+        ok = ttk.Button(box, text="OK", width=10, command=self.ok, default="active")
+        ok.pack(side="left", padx=5, pady=5)
+
+        cancel = ttk.Button(box, text="Cancel", width=10, command=self.cancel)
+        cancel.pack(side="left", padx=5, pady=5)
 
         self.bind("<Return>", self.ok)
         self.bind("<Escape>", self.cancel)
@@ -88,6 +90,21 @@ class Dialog(tk.Toplevel):
 
     def apply(self):
         pass
+
+
+class TreeDialog(Dialog):
+    def __init__(self, parent, title="Tree Dialog", separator=False, columns=[], headings={}, *args, **kwargs):
+        self.columns = columns
+        self.headings = headings
+        Dialog.__init__(self, parent, title=title, transient=True, geometry="550x300", separator=separator, *args, **kwargs)
+
+    def body(self, master):
+        self.tree = ttk.Treeview(master, columns=self.columns)
+        self.tree.pack(side="left", fill="both", expand=True)
+
+        for item in self.headings:
+            self.tree.heading(item, text=self.headings[item].get("text", ""))
+            self.tree.column(item, width=self.headings[item].get("width", 100), stretch=self.headings[item].get("stretch", True))
 
 
 class CreditWindow(Dialog):
@@ -124,14 +141,12 @@ class CreditWindow(Dialog):
     def buttonbox(self):
         Dialog.buttonbox(self)
 
-        self.pack_slaves()[2].pack_slaves()[0].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].destroy()
 
-        self.pack_slaves()[2].pack(fill="x")
+        self.pack_slaves()[1].pack(fill="x")
 
-        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
-        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
-
-        self.pack_slaves()[1].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[1].pack_slaves()[0].configure(text="Close", default="active")
 
 
 class LicenceWindow(Dialog):
@@ -153,14 +168,12 @@ class LicenceWindow(Dialog):
     def buttonbox(self):
         Dialog.buttonbox(self)
 
-        self.pack_slaves()[2].pack_slaves()[0].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].destroy()
 
-        self.pack_slaves()[2].pack(fill="x")
+        self.pack_slaves()[1].pack(fill="x")
 
-        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
-        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
-
-        self.pack_slaves()[1].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[1].pack_slaves()[0].configure(text="Close", default="active")
 
 
 class AboutWindow(Dialog):
@@ -197,19 +210,17 @@ class AboutWindow(Dialog):
     def buttonbox(self):
         Dialog.buttonbox(self)
 
-        self.pack_slaves()[2].pack_slaves()[0].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].destroy()
 
-        self.pack_slaves()[2].pack(fill="x")
+        self.pack_slaves()[1].pack(fill="x")
 
-        self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
-        self.pack_slaves()[2].pack_slaves()[0].configure(text="Close", default="active")
+        self.pack_slaves()[1].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[1].pack_slaves()[0].configure(text="Close", default="active")
 
-        ttk.Button(self.pack_slaves()[2], text="Credits", command=lambda: CreditWindow(self)).pack(side="left", padx=5,
+        ttk.Button(self.pack_slaves()[1], text="Credits", command=lambda: CreditWindow(self)).pack(side="left", padx=5,
                                                                                                    pady=5)
-        ttk.Button(self.pack_slaves()[2], text="Licence", command=lambda: LicenceWindow(self)).pack(side="left", padx=5,
+        ttk.Button(self.pack_slaves()[1], text="Licence", command=lambda: LicenceWindow(self)).pack(side="left", padx=5,
                                                                                                     pady=5)
-
-        self.pack_slaves()[1].destroy()
 
 
 class ProgressWindow(Dialog):
@@ -240,25 +251,71 @@ class ProgressWindow(Dialog):
     def buttonbox(self):
         Dialog.buttonbox(self)
 
-        self.pack_slaves()[2].pack_slaves()[0].destroy()
+        self.pack_slaves()[1].pack_slaves()[0].destroy()
+
+        self.pack_slaves()[1].pack(fill="x")
+
+        self.pack_slaves()[1].pack_slaves()[0].pack(side="right")
+        self.pack_slaves()[1].pack_slaves()[0].configure(default="active")
+
+
+class ManagePacks(TreeDialog):
+    def __init__(self, parent, title="Manage Packs", *args, **kwargs):
+        TreeDialog.__init__(self, parent, title=title, background=ttk.Style().lookup("TFrame", "background"), separator=True, *args, **kwargs)
+
+    def body(self, master):
+        TreeDialog.body(self, master)
+
+        frame = ttk.Frame(master)
+        frame.pack(side="right")
+
+        frame_one = ttk.Frame(frame)
+        frame_one.pack(pady=5)
+
+        add = ttk.Button(frame_one, text="Add Pack")
+        add.pack()
+
+        remove = ttk.Button(frame_one, text="Remove Pack")
+        remove.pack()
+
+        frame_two = ttk.Frame(frame)
+        frame_two.pack(pady=5)
+
+        enable = ttk.Button(frame_two, text="Enable Pack")
+        enable.pack()
+
+        disable = ttk.Button(frame_two, text="Disable Pack")
+        disable.pack()
+
+    def buttonbox(self):
+        Dialog.buttonbox(self)
 
         self.pack_slaves()[2].pack(fill="x")
 
         self.pack_slaves()[2].pack_slaves()[0].pack(side="right")
         self.pack_slaves()[2].pack_slaves()[0].configure(default="active")
 
-        self.pack_slaves()[1].destroy()
+        self.pack_slaves()[2].pack_slaves()[1].pack(side="right")
+
+        apply = ttk.Button(self.pack_slaves()[2], text="Apply", command=self.apply)
+        apply.pack(side="right", padx=5, pady=5)
 
 
 def main():
     app = tk.Tk()
+    pk.center_on_screen(app)
 
-    AboutWindow(app)
+    # Dialog(app)
+    # TreeDialog(app, columns=[""], headings={"#0": {"text": "1"}, "#1": {"text": "1", "width": 50, "stretch": False}})
+
+    # AboutWindow(app)
 
     # progress = ProgressWindow(app, maximum=100)
     # progress.variable_name.set("Current File: life.txt")
     # progress.variable_percent.set("42% Complete")
     # progress.variable_progress.set(42)
+
+    ManagePacks(app)
 
     app.mainloop()
 

@@ -42,23 +42,26 @@ class StartWindow(tk.Toplevel):
         self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0,
                                                                                                  columnspan=2,
                                                                                                  sticky="nesw")
-        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=1, rowspan=2,
+        self.widget_button_manage_packs = ttk.Button(self, text="Manage Packs", command=None).grid(row=1, column=0,
+                                                                                                   columnspan=2,
+                                                                                                   sticky="ew")
+        self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=2, rowspan=2,
                                                                                                   column=0,
                                                                                                   sticky="nesw")
-        self.widget_button_open_zip = ttk.Button(self, text="Open Zip",
-                                                 command=lambda: threading.Thread(target=self.open_zip).start()).grid(
-            row=3, rowspan=2, column=0, sticky="nesw")
-        self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=1,
+        self.widget_button_install = ttk.Button(self, text="Install Pack", command=self.install_pack).grid(row=2,
                                                                                                            column=1,
                                                                                                            sticky="ew")
-        self.widget_button_install = ttk.Button(self, text="Install Zip", command=self.install_zip).grid(row=2,
+        self.widget_button_install = ttk.Button(self, text="Install Zip", command=self.install_zip).grid(row=3,
                                                                                                          column=1,
                                                                                                          sticky="ew")
+        self.widget_button_open_zip = ttk.Button(self, text="Open Zip",
+                                                 command=lambda: threading.Thread(target=self.open_zip).start()).grid(
+            row=4, rowspan=2, column=0, sticky="nesw")
         self.widget_button_patch = ttk.Button(self, text="Install Server Pack", command=self.install_server_pack).grid(
-            row=3, column=1, sticky="ew")
-        self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack, state="disabled").grid(
             row=4, column=1, sticky="ew")
-        self.widget_button_exit = ttk.Button(self, text="Exit", command=sys.exit).grid(row=5, column=0, columnspan=2,
+        self.widget_button_patch = ttk.Button(self, text="Patch Pack", command=self.patch_pack, state="disabled").grid(
+            row=5, column=1, sticky="ew")
+        self.widget_button_exit = ttk.Button(self, text="Exit", command=sys.exit).grid(row=6, column=0, columnspan=2,
                                                                                        sticky="ew")
 
     def create_new(self):
