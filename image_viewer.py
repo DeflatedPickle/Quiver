@@ -8,13 +8,13 @@ import idlelib.ToolTip
 import os
 
 import pkinter as pk
-from PIL import Image, ImageEnhance, ImageTk
+from PIL import Image, ImageTk
 
 import load_images
 
 __title__ = "Painting"
 __author__ = "DeflatedPickle"
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 
 
 class ImageViewer(tk.Toplevel):
@@ -105,6 +105,7 @@ class ImageViewer(tk.Toplevel):
                                                                  tags="image")
         self.title("{} - {}".format(self.title(), "".join(os.path.splitext(image))))
 
+        self.check_tile_buttons()
         self.draw_background()
 
     def draw_background(self):
@@ -127,7 +128,8 @@ class ImageViewer(tk.Toplevel):
                                                               tags="chessboard")
                     colour = colour1 if colour == colour2 else colour2
 
-        self.widget_canvas_image.lift(self.drawn_image)
+        # self.widget_canvas_image.lift(self.drawn_image)
+        self.widget_canvas_image.lift("image")
 
         if self.toolbar.variable_grid.get():
             colour3 = "light grey"
@@ -147,10 +149,9 @@ class ImageViewer(tk.Toplevel):
 
         self.image_photo = ImageTk.PhotoImage(self.image_open.resize(
             (self.image_photo.width() + self.original_width, self.image_photo.height() + self.original_height)))
-        self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
-        self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
-        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
-                                                                 tags="image")
+        self.widget_canvas_image.configure(scrollregion=(self.check_scrollregion()))
+        self.widget_canvas_image.configure(width=self.check_size()[0], height=self.check_size()[1])
+        # self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
 
         self.zoom_current += 1
         # print(self.zoom_current)
@@ -158,9 +159,7 @@ class ImageViewer(tk.Toplevel):
         self.zoom_width = self.image_photo.width()
         self.zoom_height = self.image_photo.height()
 
-        if self.toolbar.variable_tile.get():
-            self.tile()
-
+        self.draw_tiles()
         self.draw_background()
         self.check_zoom()
 
@@ -169,10 +168,9 @@ class ImageViewer(tk.Toplevel):
 
         self.image_photo = ImageTk.PhotoImage(self.image_open.resize(
             (self.image_photo.width() - self.original_width, self.image_photo.height() - self.original_height)))
-        self.widget_canvas_image.configure(scrollregion=(0, 0, self.image_photo.width(), self.image_photo.height()))
-        self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
-        self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo,
-                                                                 tags="image")
+        self.widget_canvas_image.configure(scrollregion=(self.check_scrollregion()))
+        self.widget_canvas_image.configure(width=self.check_size()[0], height=self.check_size()[1])
+        # self.drawn_image = self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
 
         self.zoom_current -= 1
         # print(self.zoom_current)
@@ -180,11 +178,23 @@ class ImageViewer(tk.Toplevel):
         self.zoom_width = self.image_photo.width()
         self.zoom_height = self.image_photo.height()
 
-        if self.toolbar.variable_tile.get():
-            self.tile()
-
+        self.draw_tiles()
         self.draw_background()
         self.check_zoom()
+
+    def check_scrollregion(self):
+        if self.toolbar.variable_tile.get():
+            return 0, 0, self.image_photo.width() * 3, self.image_photo.height() * 3
+
+        else:
+            return 0, 0, self.image_photo.width(), self.image_photo.height()
+
+    def check_size(self):
+        if self.toolbar.variable_tile.get():
+            return self.image_photo.width() * 3, self.image_photo.height() * 3
+
+        else:
+            return self.image_photo.width(), self.image_photo.height()
 
     def check_zoom(self):
         if self.zoom_current > 15:
@@ -197,25 +207,39 @@ class ImageViewer(tk.Toplevel):
         else:
             self.toolbar.widget_button_zoom_out.configure(state="enabled")
 
-    def tile(self):
+    def check_tile_buttons(self):
         if self.toolbar.variable_tile.get():
-            self.widget_canvas_image.move("image", self.image_photo.width(), self.image_photo.height())
+            self.toolbar.widget_button_tile_sides.configure(state="normal")
+            self.toolbar.widget_button_tile_corners.configure(state="normal")
+
+        elif not self.toolbar.variable_tile.get():
+            self.toolbar.widget_button_tile_sides.configure(state="disabled")
+            self.toolbar.widget_button_tile_corners.configure(state="disabled")
+
+            self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image")
+            self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
+
+    def draw_tiles(self):
+        for item in ["image", "image_top", "image_bottom", "image_left", "image_right", "image_top_left", "image_top_right", "image_bottom_left", "image_bottom_right"]:
+            self.widget_canvas_image.delete(item)
+
+        self.widget_canvas_image.create_image(self.image_photo.width(), self.image_photo.height(), anchor="nw", image=self.image_photo, tags="image")
+
+        if self.toolbar.variable_tile_sides.get():
+            # self.widget_canvas_image.move("image", self.image_photo.width(), self.image_photo.height())
 
             self.widget_canvas_image.create_image(self.image_photo.width(), 0, anchor="nw", image=self.image_photo, tags="image_top")
             self.widget_canvas_image.create_image(self.image_photo.width(), self.image_photo.height() * 2, anchor="nw", image=self.image_photo, tags="image_bottom")
             self.widget_canvas_image.create_image(0, self.image_photo.height(), anchor="nw", image=self.image_photo, tags="image_left")
             self.widget_canvas_image.create_image(self.image_photo.width() * 2, self.image_photo.height(), anchor="nw", image=self.image_photo, tags="image_right")
 
+        if self.toolbar.variable_tile_corners.get():
             self.widget_canvas_image.create_image(0, 0, anchor="nw", image=self.image_photo, tags="image_top_left")
             self.widget_canvas_image.create_image(self.image_photo.width() * 2, 0, anchor="nw", image=self.image_photo, tags="image_top_right")
             self.widget_canvas_image.create_image(0, self.image_photo.height() * 2, anchor="nw", image=self.image_photo, tags="image_bottom_left")
             self.widget_canvas_image.create_image(self.image_photo.width() * 2, self.image_photo.height() * 2, anchor="nw", image=self.image_photo, tags="image_bottom_right")
 
-            self.widget_canvas_image.configure(width=self.image_photo.width() * 3, height=self.image_photo.height() * 3)
-
-        else:
-            self.widget_canvas_image.coords("image", 0, 0)
-            self.widget_canvas_image.configure(width=self.image_photo.width(), height=self.image_photo.height())
+        self.widget_canvas_image.configure(width=self.image_photo.width() * 3, height=self.image_photo.height() * 3)
 
     def on_enter(self, event):
         self.widget_frame_image.bind_all("<MouseWheel>", self.on_scroll_vertical)
@@ -262,21 +286,18 @@ class Toolbar(ttk.Frame):
                                                        variable=self.variable_chessboard,
                                                        command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_chessboard.grid(row=0, column=0)
-        idlelib.ToolTip.ToolTip(self.widget_check_chessboard, "Show or hide the chessboard")
 
         self.variable_grid = tk.BooleanVar()
         self.variable_grid.set(False)
         self.widget_check_grid = ttk.Checkbutton(self, text="Grid", image=self.image_grid, variable=self.variable_grid,
                                                  command=self.parent.draw_background, style="Toolbutton")
         self.widget_check_grid.grid(row=0, column=1)
-        idlelib.ToolTip.ToolTip(self.widget_check_grid, "Show or hide the grid")
 
         ttk.Separator(self, orient="vertical").grid(row=0, column=2, sticky="ns")
 
         self.widget_button_zoom_in = ttk.Button(self, text="Zoom In", image=self.image_zoom_in,
                                                 command=self.parent.zoom_in, style="Toolbutton")
         self.widget_button_zoom_in.grid(row=0, column=3)
-        idlelib.ToolTip.ToolTip(self.widget_button_zoom_in, "Zoom the image in")
 
         self.widget_button_zoom_out = ttk.Button(self, text="Zoom Out", image=self.image_zoom_out,
                                                  command=self.parent.zoom_out, style="Toolbutton")
@@ -287,8 +308,16 @@ class Toolbar(ttk.Frame):
 
         self.variable_tile = tk.BooleanVar()
         self.widget_button_tile = ttk.Checkbutton(self, text="Tile", variable=self.variable_tile,
-                                                  command=self.parent.tile, style="Toolbutton")
+                                                  command=self.parent.check_tile_buttons, style="Toolbutton")
         self.widget_button_tile.grid(row=0, column=6)
+
+        self.variable_tile_sides = tk.BooleanVar()
+        self.widget_button_tile_sides = ttk.Checkbutton(self, text="Tile Side", variable=self.variable_tile_sides, command=self.parent.draw_tiles, style="Toolbutton")
+        self.widget_button_tile_sides.grid(row=0, column=7)
+
+        self.variable_tile_corners = tk.BooleanVar()
+        self.widget_button_tile_corners = ttk.Checkbutton(self, text="Tile Corners", variable=self.variable_tile_corners, command=self.parent.draw_tiles, style="Toolbutton")
+        self.widget_button_tile_corners.grid(row=0, column=8)
 
 
 class Statusbar(pk.Statusbar):
@@ -310,7 +339,9 @@ class Statusbar(pk.Statusbar):
 
 def main():
     app = tk.Tk()
-    ImageViewer(app).load_image("./test_files/cobblestone.png")
+    image_viewer = ImageViewer(app)
+    image_viewer.load_image("./test_files/cobblestone.png")
+    # image_viewer.load_image("./icons/nbt.png")
     app.mainloop()
 
 
