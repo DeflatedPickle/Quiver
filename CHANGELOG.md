@@ -1,6 +1,6 @@
 ## Changelog
 
-### Version 0.28.7-alpha:
+### Version 0.28.8-alpha:
 - Added a function to install and convert server packs.
 - Added a function to replace files.
 - Added icons to every Button on the Toolbar of the text-editor.
@@ -21,6 +21,7 @@
 - Added a function to install zip packs.
 - Added tiling to the image-viewer.
 - Changed tiling to two separate options.
+- Changed `.png.mcmeta` files to be subitems of their `.png` file.
 
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.

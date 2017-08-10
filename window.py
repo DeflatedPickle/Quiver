@@ -40,7 +40,7 @@ import functions
 
 __title__ = "Main"
 __author__ = "DeflatedPickle"
-__version__ = "1.22.0"
+__version__ = "1.22.1"
 
 
 class Window(tk.Tk):
@@ -763,6 +763,7 @@ class Commands:
 
     def tree_refresh(self):
         self.parent.widget_tree.delete(*self.parent.widget_tree.get_children())
+
         self.parent.widget_tree.insert(parent="",
                                        index="end",
                                        iid=self.parent.directory,
@@ -789,10 +790,13 @@ class Commands:
 
             variable = 0
             for name in files:
-                insert = self.parent.widget_tree.insert(parent=root,
+                filename = os.path.splitext(name)[0]
+                extension = os.path.splitext(name)[1]
+                insert = self.parent.widget_tree.insert(parent=root if ".png" not in filename else root + "/" + files[files.index(name) - 1],
                                                         index="end",
-                                                        text=os.path.splitext(name)[0],
-                                                        values=("", os.path.splitext(name)[1], ""),
+                                                        iid=root + "/" + name,
+                                                        text=filename.replace(".png", ""),
+                                                        values=("", extension if ".png" not in filename else ".png" + extension, ""),
                                                         tags=os.path.join(root, name).replace("\\", "/"))
                 variable += 1
 
@@ -801,7 +805,7 @@ class Commands:
                 if item == ".png":
                     self.parent.widget_tree.item(insert, image=self.parent.image_painting)
 
-                elif item == ".mcmeta":
+                elif item == ".mcmeta" or item == ".png.mcmeta":
                     self.parent.widget_tree.item(insert, image=self.parent.image_cube)
 
                 elif item == ".txt":
@@ -894,7 +898,7 @@ class Commands:
         messagebox.showinfo(title="Information", message="Zipping complete.")
 
     def about(self):
-        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.27.6-alpha",
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.28.8-alpha",
                                    logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))),
                                    description="A resource pack creator and manager for Minecraft.")
 

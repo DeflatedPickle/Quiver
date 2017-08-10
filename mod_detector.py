@@ -25,7 +25,7 @@ class ModDetector(tk.Toplevel):
         self.transient(parent)
         self.grab_set()
 
-        # TODO: Re-do this as a dialog using dialog.Dialog
+        # TODO: Re-do this as a dialog using dialog.TreeDialog
 
         try:
             self.minecraft_location = parent.minecraft_location

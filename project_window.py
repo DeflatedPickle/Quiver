@@ -35,6 +35,8 @@ class ProjectWindow(tk.Toplevel):
         self.grab_set()
         self.protocol("WM_DELETE_WINDOW", sys.exit)
 
+        # TODO: Re-do this as a dialog using dialog.Dialog
+
         if self.parent.operating_system == "Windows":
             self.minecraft_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft"
         elif self.parent.operating_system == "Darwin":
