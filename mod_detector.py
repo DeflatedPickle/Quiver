@@ -12,7 +12,7 @@ import json
 
 __title__ = "Mod Detector"
 __author__ = "DeflatedPickle"
-__version__ = "1.7.5"
+__version__ = "1.7.6"
 
 
 class ModDetector(tk.Toplevel):
@@ -98,7 +98,7 @@ class ModDetector(tk.Toplevel):
     def load_mcmodinfo(self, file):
         with zipfile.ZipFile(file) as z:
             with z.open("mcmod.info") as info:
-                return json.loads(info.read().decode("utf-8"))[0]
+                return json.loads(info.read().decode("utf-8"), strict=False)[0]
 
     def move_mod_right(self):
         try:
