@@ -13,6 +13,8 @@ import tempfile
 import sys
 import threading
 
+import pkinter as pk
+
 import project_window
 import dialog
 import functions
@@ -42,9 +44,11 @@ class StartWindow(tk.Toplevel):
         self.widget_button_new = ttk.Button(self, text="New Pack", command=self.create_new).grid(row=0, column=0,
                                                                                                  columnspan=2,
                                                                                                  sticky="nesw")
-        self.widget_button_manage_packs = ttk.Button(self, text="Manage Packs", command=None).grid(row=1, column=0,
-                                                                                                   columnspan=2,
-                                                                                                   sticky="ew")
+        self.widget_button_manage_packs = ttk.Button(self, text="Manage Packs", state="disabled",
+                                                     command=lambda: dialog.ManagePacks(self.parent)).grid(
+            row=1, column=0,
+            columnspan=2,
+            sticky="ew")
         self.widget_button_open = ttk.Button(self, text="Open Pack", command=self.open_pack).grid(row=2, rowspan=2,
                                                                                                   column=0,
                                                                                                   sticky="nesw")
@@ -65,8 +69,8 @@ class StartWindow(tk.Toplevel):
                                                                                        sticky="ew")
 
     def create_new(self):
-        project_window.ProjectWindow(self.parent)
         self.destroy()
+        pk.center_on_parent(project_window.ProjectWindow(self.parent))
 
     def open_pack(self):
         pack = filedialog.askdirectory(initialdir=self.resourcepack_location)

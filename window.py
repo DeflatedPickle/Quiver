@@ -906,7 +906,6 @@ class Commands:
 def main():
     app = Window()
     app.update()
-    pk.center_on_screen(app)
     # project_window.ProjectWindow(app)
     start = start_window.StartWindow(app)
     start.update()

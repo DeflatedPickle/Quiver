@@ -97,7 +97,7 @@ class ProjectWindow(tk.Toplevel):
         self.widget_button_create.pack(side="right")
 
         self.widget_button_detect_mods = ttk.Button(self.widget_frame_buttons, text="Detect Mods",
-                                                    command=lambda: mod_detector.ModDetector(self))
+                                                    command=lambda: pk.center_on_parent(mod_detector.ModDetector(self)))
         self.widget_button_detect_mods.pack(side="left")
 
         try:
