@@ -9,127 +9,53 @@ from PIL import Image, ImageTk
 
 class LoadImages:
     def __init__(self):
-        try:
-            icon = Image.open("quiver.ico")
-            self.icon = ImageTk.PhotoImage(icon)
-        except FileNotFoundError:
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "quiver.ico"))
+        self.icon = self.new_image("quiver.ico")
 
-        try:
-            image_folder_close = Image.open("icons/folder_close.png")
-            self.image_folder_close = ImageTk.PhotoImage(image_folder_close)
-        except FileNotFoundError:
-            self.image_folder_close = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "folder_close.png"))
+        self.image_folder_close = self.new_image("icons/folder_close.png")
+        self.image_folder_open = self.new_image("icons/folder_open.png")
 
-        try:
-            image_folder_open = Image.open("icons/folder_open.png")
-            self.image_folder_open = ImageTk.PhotoImage(image_folder_open)
-        except FileNotFoundError:
-            self.image_folder_open = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "folder_open.png"))
+        self.image_painting = self.new_image("icons/painting_decorated.png")
 
-        try:
-            image_painting = Image.open("icons/painting_decorated.png")
-            self.image_painting = ImageTk.PhotoImage(image_painting)
-        except FileNotFoundError:
-            self.image_painting = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "painting_decorated.png"))
+        self.image_paper_text = self.new_image("icons/paper_text.png")
+        self.image_paper_json = self.new_image("icons/paper_json.png")
+        self.image_paper_binary = self.new_image("icons/paper_binary.png")
+        self.image_paper_language = self.new_image("icons/paper_language.png")
 
-        try:
-            image_paper_text = Image.open("icons/paper_text.png")
-            self.image_paper_text = ImageTk.PhotoImage(image_paper_text)
-        except FileNotFoundError:
-            self.image_paper_text = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "paper_text.png"))
+        self.image_cube = self.new_image("icons/cube.png")
+        self.image_fragment = self.new_image("icons/fragment_shaded.png")
+        self.image_vertex = self.new_image("icons/vertex_shaded.png")
+        self.image_nbt = self.new_image("icons/nbt.png")
 
-        try:
-            image_paper_json = Image.open("icons/paper_json.png")
-            self.image_paper_json = ImageTk.PhotoImage(image_paper_json)
-        except FileNotFoundError:
-            self.image_paper_json = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "paper_json.png"))
+        self.image_refresh = self.new_image("icons/reload_arrow.png")
 
-        try:
-            image_paper_binary = Image.open("icons/paper_binary.png")
-            self.image_paper_binary = ImageTk.PhotoImage(image_paper_binary)
-        except FileNotFoundError:
-            self.image_paper_binary = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "paper_binary.png"))
+        self.image_chessboard = self.new_image("icons/chessboard.png")
+        self.image_grid = self.new_image("icons/grid.png")
 
-        try:
-            image_paper_language = Image.open("icons/paper_language.png")
-            self.image_paper_language = ImageTk.PhotoImage(image_paper_language)
-        except FileNotFoundError:
-            self.image_paper_language = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "paper_language.png"))
+        self.image_zoom_in = self.new_image("icons/zoom_in_shaded.png")
+        self.image_zoom_out = self.new_image("icons/zoom_out_shaded.png")
 
-        try:
-            image_cube = Image.open("icons/cube.png")
-            self.image_cube = ImageTk.PhotoImage(image_cube)
-        except FileNotFoundError:
-            self.image_cube = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "cube.png"))
+        self.image_find = self.new_image("icons/find.png")
+        self.image_find_next = self.new_image("icons/find_next.png")
+        self.image_find_previous = self.new_image("icons/find_previous.png")
 
-        try:
-            image_fragment = Image.open("icons/fragment_shaded.png")
-            self.image_fragment = ImageTk.PhotoImage(image_fragment)
-        except FileNotFoundError:
-            self.image_fragment = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "fragment_shaded.png"))
+        self.image_replace = self.new_image("icons/replace.png")
 
-        try:
-            image_vertex = Image.open("icons/vertex_shaded.png")
-            self.image_vertex = ImageTk.PhotoImage(image_vertex)
-        except FileNotFoundError:
-            self.image_vertex = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "vertex_shaded.png"))
+        self.image_paste = self.new_image("icons/paste.png")
+        self.image_copy = self.new_image("icons/copy.png")
+        self.image_cut = self.new_image("icons/cut_2.png")
+        self.image_delete = self.new_image("icons/delete.png")
 
-        try:
-            image_nbt = Image.open("icons/nbt.png")
-            self.image_nbt = ImageTk.PhotoImage(image_nbt)
-        except FileNotFoundError:
-            self.image_nbt = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "nbt.png"))
+        self.image_undo = self.new_image("icons/undo.png")
+        self.image_redo = self.new_image("icons/redo.png")
 
-        try:
-            image_exit = Image.open("icons/exit.png")
-            self.image_exit = ImageTk.PhotoImage(image_exit)
-        except FileNotFoundError:
-            self.image_exit = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "exit.png"))
+        self.image_save = self.new_image("icons/save.png")
 
-        try:
-            image_refresh = Image.open("icons/reload_arrow.png")
-            self.image_refresh = ImageTk.PhotoImage(image_refresh)
-        except FileNotFoundError:
-            self.image_refresh = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "reload_arrow.png"))
+        self.image_exit = self.new_image("icons/exit.png")
 
+    def new_image(self, image_file: str = ""):
         try:
-            image_chessboard = Image.open("icons/chessboard.png")
-            self.image_chessboard = ImageTk.PhotoImage(image_chessboard)
+            image_copy = Image.open(image_file)
+            return ImageTk.PhotoImage(image_copy)
         except FileNotFoundError:
-            self.image_chessboard = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "chessboard.png"))
-
-        try:
-            image_grid = Image.open("icons/grid.png")
-            self.image_grid = ImageTk.PhotoImage(image_grid)
-        except FileNotFoundError:
-            self.image_grid = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "grid.png"))
-
-        try:
-            image_zoom_in = Image.open("icons/zoom_in_shaded.png")
-            self.image_zoom_in = ImageTk.PhotoImage(image_zoom_in)
-        except FileNotFoundError:
-            self.image_zoom_in = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "zoom_in_shaded.png"))
-
-        try:
-            image_zoom_out = Image.open("icons/zoom_out_shaded.png")
-            self.image_zoom_out = ImageTk.PhotoImage(image_zoom_out)
-        except FileNotFoundError:
-            self.image_zoom_out = ""
-            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), "zoom_out_shaded.png"))
+            print("{} | FileNotFoundError: {}".format(datetime.now().strftime("%H:%M:%S"), image_file))
+            return ""

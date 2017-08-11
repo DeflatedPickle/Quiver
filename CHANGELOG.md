@@ -1,5 +1,28 @@
 ## Changelog
 
+### Version 0.28.8-alpha:
+- Added a function to install and convert server packs.
+- Added a function to replace files.
+- Added icons to every Button on the Toolbar of the text-editor.
+- Added cut, copy, paste and delete Buttons to the Toolbar of the text-editor.
+- Added a Findbar to the text-editor.
+- Added a Replacebar to the text-editor.
+- Changed the main window to center on the screen.
+- Changed the start window to center on the main window.
+- Added a reload function to the text-editor.
+- Added a save function to the text-editor.
+- Changed the line/column counter to only be one label.
+- Added an NBT-viewer.
+- Added a function to zip up the opened pack.
+- Added the ability to open zip packs.
+- Added progress windows for big file transfer.
+- Replaced the about window with a new one.
+- Changed the mod detector to show mod names instead of file names.
+- Added a function to install zip packs.
+- Added tiling to the image-viewer.
+- Changed tiling to two separate options.
+- Changed `.png.mcmeta` files to be subitems of their `.png` file.
+
 ### Version 0.17.6-alpha:
 - Piped `.json` files through `jsonesque` first, so comments can exist in the `.json` files.
 - Added an in-programme text-editor.

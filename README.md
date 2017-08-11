@@ -21,6 +21,10 @@ Quiver is a resource pack creator and manager for Minecraft.
 - Detect installed mods and add their files to the pack.
 - Install resource packs to your Minecraft.
 - Open resource packs for editing.
+- Zip up a resource pack.
+- Open a `.zip` resource pack.
+- View and edit text files with a built-in text editor.
+- View images with a built-in image viewer.
 
 ### What are the requirements?
 All you need is to have Minecraft installed and have run it once (to generate the versions folder).
@@ -30,24 +34,5 @@ Download the .zip file and extract the sub-file, "Quiver". Do not delete anythin
 
 ---
 
-### Planned Features:
-- File selector before extraction (in case you don't want your pack to have everything)
-- More items for the menus.
-- More uses for properties.json.
-- A resource pack patcher.
-- A theme designer/editor for the SAO-UI mod.
-- An option to swap a file out for another.
-- Add an installer/converter for server resource packs.
-- Add an item to the menu to allow zipping of the resource pack.
-- Add options to change the install location and the versions location.
-- Allow adding of mods after the pack is created.
-
-### Bugs:
-- Syntax highlighting for strings carries on until the final quotation is found.
-- The grid in the image viewer does not scale with the image.
-- The file counter in the main tree does not show the proper amount of files in a directory (or counts hidden files).
-
----
-
 ### Last Notes:
-I would greatly appreciate if you'd star the repository.
+I would greatly appreciate if you'd star the repository, and maybe even donate to me on Patreon.

@@ -5,30 +5,42 @@
 import tkinter as tk
 import _tkinter
 from tkinter import ttk
+from tkinter import filedialog
+from tkinter import messagebox
 import idlelib.ToolTip
 import json
 import os
+import shutil
 import subprocess
 import platform
 from datetime import datetime
+import zipfile
+import threading
+import sys
 
 import pkinter as pk
 from PIL import Image, ImageTk
 import jsonesque
 
 import load_images
-import project_window
+# import project_window
 import highlightingtext
-import about_window
 import text_editor
 import image_viewer
+import nbt_viewer
 import start_window
+import dialog
+import functions
 
 # http://minecraft.gamepedia.com/Programs_and_editors/Resource_pack_creators
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265199-tool-resourcepack-workbench-resource-pack-creator
 # http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-tools/1265980-windows-version-1-0-8-minecraft-texture-studio
 
 # http://minecraft.gamepedia.com/Formatting_codes
+
+__title__ = "Main"
+__author__ = "DeflatedPickle"
+__version__ = "1.22.1"
 
 
 class Window(tk.Tk):
@@ -41,6 +53,13 @@ class Window(tk.Tk):
         self.minsize(width=500, height=300)
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.name = None
+        self.directory = ""
+        self.directory_real = None
+        self.resourcepack_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft/resourcepacks"
+
+        self.properties = None
 
         self.operating_system = platform.system()
 
@@ -58,9 +77,7 @@ class Window(tk.Tk):
         self.image_fragment = image.image_fragment
         self.image_vertex = image.image_vertex
         self.image_nbt = image.image_nbt
-
         self.image_exit = image.image_exit
-
         self.image_refresh = image.image_refresh
 
         self.cmd = Commands(self)
@@ -125,7 +142,27 @@ class Window(tk.Tk):
         self.widget_tree.bind("<<TreeviewOpen>>", self.widget_tree.open_folder)
         self.widget_tree.bind("<<TreeviewClose>>", self.widget_tree.close_folder)
 
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
+        self.update()
+        self.update_idletasks()
+
         # self.cmd.tree_refresh()
+
+    def close(self):
+        if self.directory_real:
+            # print(self.directory, self.directory_real)
+            with zipfile.ZipFile(self.directory_real, "w") as z:
+                for root, dirs, files in os.walk(self.directory.replace("\\", "/"), topdown=True):
+                    new_root = root.replace("\\", "/").split("/")
+                    # print(root, dirs, files)
+                    for name in files:
+                        z.write(os.path.join(root, name), "/".join(new_root[new_root.index(
+                            self.directory.replace("\\", "/").split("/")[-1]) + 1:]) + "/" + name)
+
+            self.d.cleanup()
+
+        self.destroy()
 
     def show_side_panel(self, *args):
         if self.widget_tree.item(self.widget_tree.focus())["tags"][0] != "Directory":
@@ -153,14 +190,18 @@ class Window(tk.Tk):
             file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
             extension = self.widget_tree.item(self.widget_tree.focus())["values"][1]
 
+            # FIXME: Re-write this part.
+
             if extension == ".txt" or extension == ".json" or extension == ".mcmeta":
                 try:
                     if self.properties["text-editor"] == "default":
                         editor = text_editor.TextEditor(self)
                         editor.load_file(file=file)
+
                     elif self.properties["text-editor"] == "system":
                         if self.operating_system == "Windows":
                             os.startfile(file)
+
                         else:
                             opener = "open" if self.operating_system == "Darwin" else "xdg-open"
                             subprocess.call([opener, file])
@@ -173,9 +214,11 @@ class Window(tk.Tk):
                     if self.properties["image-viewer"] == "default":
                         viewer = image_viewer.ImageViewer(self)
                         viewer.load_image(image=file)
+
                     elif self.properties["image-viewer"] == "system":
                         if self.operating_system == "Windows":
                             os.startfile(file)
+
                         else:
                             opener = "open" if self.operating_system == "Darwin" else "xdg-open"
                             subprocess.call([opener, file])
@@ -183,23 +226,54 @@ class Window(tk.Tk):
                     viewer = image_viewer.ImageViewer(self)
                     viewer.load_image(image=file)
 
+            elif extension == ".nbt":
+                try:
+                    if self.properties["nbt-viewer"] == "default":
+                        nbt = nbt_viewer.NBTViewer(self)
+                        nbt.load_nbt(file=file)
+
+                    elif self.properties["nbt-viewer"] == "system":
+                        if self.operating_system == "Windows":
+                            os.startfile(file)
+
+                        else:
+                            opener = "open" if self.operating_system == "Darwin" else "xdg-open"
+                            subprocess.call([opener, file])
+
+                except AttributeError:
+                    nbt = nbt_viewer.NBTViewer(self)
+                    nbt.load_nbt(file=file)
+
+    def replace_file(self):
+        old_file = self.widget_tree.item(self.widget_tree.focus())["tags"][0]
+        file = filedialog.askopenfile()
+
+        if file:
+            new_file = file.name
+
+            # os.replace(new_file, old_file)
+            shutil.copy2(new_file, old_file)
+            self.cmd.tree_refresh()
+
     def load_properties(self):
         try:
             with open("properties.json", "r") as file:
                 self.properties = json.loads(jsonesque.process(file.read()))
                 file.close()
         except FileNotFoundError:
-            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            # print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            messagebox.showwarning(title="Warning", message="Could not find 'properties.json'.")
 
     def write_properties(self, key, value):
         try:
             with open("properties.json", "w+") as file:
                 self.properties[key] = value
-                print(self.properties)
+                # print(self.properties)
                 file.write(json.dumps(self.properties, sort_keys=False, indent=2))
                 file.close()
         except FileNotFoundError:
-            print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            # print("{} | FileNotFoundError: 'properties.json' not found.".format(datetime.now().strftime("%H:%M:%S")))
+            messagebox.showwarning(title="Warning", message="Could not find 'properties.json'.")
 
 
 class Tree(ttk.Treeview):
@@ -285,7 +359,8 @@ class SidePanel(ttk.Frame):
         self.widget_button_edit = ttk.Button(self.widget_frame_code_buttons, text="Edit", state="disabled")
         self.widget_button_edit.grid(row=0, column=1)
 
-        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace", state="disabled")
+        self.widget_button_replace = ttk.Button(self.widget_frame_code_buttons, text="Replace",
+                                                command=self.window.replace_file)
         self.widget_button_replace.grid(row=0, column=2)
 
         ##################################################
@@ -447,7 +522,7 @@ class SidePanel(ttk.Frame):
             self.widget_text.insert(1.0, file.read())
             file.close()
 
-        self.widget_text_line_numbers.redraw()
+        self.widget_text_line_numbers._redraw()
         self.widget_text.highlight_until('"', '"', "string")
         self.widget_text.highlight_pattern("{", "curly bracket")
         self.widget_text.highlight_pattern("}", "curly bracket")
@@ -530,6 +605,14 @@ class Menu(tk.Menu):
         self.option_add('*tearOff', False)
         self.parent = parent
 
+        self.menu_application = None
+        self.menu_file = None
+        self.menu_edit = None
+        self.menu_view = None
+        self.menu_window = None
+        self.menu_help = None
+        self.menu_system = None
+
         self.init_menu_application()
         self.init_menu_file()
         # self.init_menu_edit()
@@ -543,9 +626,9 @@ class Menu(tk.Menu):
     def init_menu_application(self):
         self.menu_application = tk.Menu(self, name="apple")
 
-        self.menu_application.add_command(label="About Quiver", command=lambda: about_window.AboutWindow(self.parent))
+        self.menu_application.add_command(label="About Quiver", command=self.parent.cmd.about)
         self.menu_application.add_command(label="Exit", image=self.parent.image_exit, compound="left",
-                                          command=self.parent.cmd.exit_program)
+                                          command=sys.exit)
 
         self.add_cascade(label="Application", menu=self.menu_application)
 
@@ -554,6 +637,9 @@ class Menu(tk.Menu):
 
         self.menu_file.add_command(label="Open Project File", image=self.parent.image_folder_open, compound="left",
                                    command=lambda: os.startfile(self.parent.directory))
+
+        self.menu_file.add_command(label="Zip Resource Pack", image=self.parent.image_folder_open, compound="left",
+                                   command=lambda: threading.Thread(target=self.parent.cmd.zip_file).start())
 
         self.add_cascade(label="File", menu=self.menu_file)
 
@@ -620,7 +706,7 @@ class Toolbar(ttk.Frame):
         idlelib.ToolTip.ToolTip(self.widget_button_search, "Search the TreeView for a file")
 
         self.widget_button_exit = ttk.Button(self, text="Exit", image=self.parent.image_exit,
-                                             command=self.parent.cmd.exit_program,
+                                             command=sys.exit,
                                              style="Toolbutton")
         self.widget_button_exit.grid(row=0, column=10, sticky="e")
         idlelib.ToolTip.ToolTip(self.widget_button_exit, "Exit the program")
@@ -631,7 +717,7 @@ class Statusbar(pk.Statusbar):
         pk.Statusbar.__init__(self, parent, *args, **kwargs)
 
         self.status_variable = tk.StringVar()
-        self.add_variable(textvariable=self.status_variable)
+        self.add_variable(variable=self.status_variable)
 
         self.bind_menu(parent.menu, self.status_variable, ["", "", "", "", ""])
         self.bind_menu(parent.menu.menu_application, self.status_variable, ["Exit the program"])
@@ -677,10 +763,12 @@ class Commands:
 
     def tree_refresh(self):
         self.parent.widget_tree.delete(*self.parent.widget_tree.get_children())
+
         self.parent.widget_tree.insert(parent="",
                                        index="end",
                                        iid=self.parent.directory,
-                                       text=self.parent.directory.split("/")[-1:],
+                                       text=self.parent.directory.split("/")[
+                                            -1:] if not self.parent.name else self.parent.name,
                                        image=self.parent.image_folder_open,
                                        tags="Directory")
         # self.widget_tree.selection_set()
@@ -702,10 +790,13 @@ class Commands:
 
             variable = 0
             for name in files:
-                insert = self.parent.widget_tree.insert(parent=root,
+                filename = os.path.splitext(name)[0]
+                extension = os.path.splitext(name)[1]
+                insert = self.parent.widget_tree.insert(parent=root if ".png" not in filename else root + "/" + files[files.index(name) - 1],
                                                         index="end",
-                                                        text=os.path.splitext(name)[0],
-                                                        values=("", os.path.splitext(name)[1], ""),
+                                                        iid=root + "/" + name,
+                                                        text=filename.replace(".png", ""),
+                                                        values=("", extension if ".png" not in filename else ".png" + extension, ""),
                                                         tags=os.path.join(root, name).replace("\\", "/"))
                 variable += 1
 
@@ -714,7 +805,7 @@ class Commands:
                 if item == ".png":
                     self.parent.widget_tree.item(insert, image=self.parent.image_painting)
 
-                elif item == ".mcmeta":
+                elif item == ".mcmeta" or item == ".png.mcmeta":
                     self.parent.widget_tree.item(insert, image=self.parent.image_cube)
 
                 elif item == ".txt":
@@ -782,14 +873,43 @@ class Commands:
                 if res:
                     return True
 
-    def exit_program(self):
-        raise SystemExit
+    def zip_file(self):
+        amount = functions.folder_files(self.parent.directory)
+        progress = dialog.ProgressWindow(self.parent, title="Zipping Pack", maximum=amount)
+
+        count = 0
+
+        with zipfile.ZipFile(self.parent.directory + ".zip", "w") as z:
+            for root, dirs, files in os.walk(self.parent.directory.replace("\\", "/"), topdown=True):
+                new_root = root.replace("\\", "/").split("/")
+                # print(root, dirs, files)
+                for name in files:
+                    z.write(os.path.join(root, name),
+                            "/".join(new_root[new_root.index(self.parent.directory.split("/")[-1]) + 1:]) + "/" + name)
+
+                    count += 1
+                    progress.variable_name.set("Current File: " + name)
+                    progress.variable_percent.set("{}% Complete".format(round(100 * float(count) / float(amount))))
+                    progress.variable_progress.set(progress.variable_progress.get() + 1)
+
+            z.close()
+
+        progress.destroy()
+        messagebox.showinfo(title="Information", message="Zipping complete.")
+
+    def about(self):
+        about = dialog.AboutWindow(self.parent, title="Quiver", version="0.28.8-alpha",
+                                   logo=ImageTk.PhotoImage(image=Image.open("quiver.ico").resize((64, 64))),
+                                   description="A resource pack creator and manager for Minecraft.")
 
 
 def main():
     app = Window()
+    app.update()
     # project_window.ProjectWindow(app)
-    start_window.StartWindow(app)
+    start = start_window.StartWindow(app)
+    start.update()
+    pk.center_on_parent(start)
     # cmd = Commands(app)
     # app.load_files()
     # cmd.tree_refresh()

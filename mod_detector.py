@@ -7,6 +7,12 @@ import _tkinter
 from tkinter import ttk
 import idlelib.ToolTip
 import os
+import zipfile
+import json
+
+__title__ = "Mod Detector"
+__author__ = "DeflatedPickle"
+__version__ = "1.7.6"
 
 
 class ModDetector(tk.Toplevel):
@@ -19,8 +25,15 @@ class ModDetector(tk.Toplevel):
         self.transient(parent)
         self.grab_set()
 
-        self.minecraft_location = parent.minecraft_location
-        self.minecraft_mods = parent.minecraft_mods
+        # TODO: Re-do this as a dialog using dialog.TreeDialog
+
+        try:
+            self.minecraft_location = parent.minecraft_location
+            self.minecraft_mods = parent.minecraft_mods
+
+        except AttributeError:
+            self.minecraft_location = os.getenv("APPDATA").replace("\\", "/") + "/.minecraft"
+            self.minecraft_mods = self.minecraft_location + "/mods"
 
         self.widget_frame_main = ttk.Frame(self)
         self.widget_frame_main.pack(side="top", fill="both")
@@ -61,20 +74,31 @@ class ModDetector(tk.Toplevel):
 
         self.widget_button_cancel = ttk.Button(self.widget_frame_buttons_bottom, text="Cancel",
                                                command=self.exit_mod).pack(side="right")
-        self.widget_button_confirm = ttk.Button(self.widget_frame_buttons_bottom, text="Confirm",
-                                                command=self.confirm_mods)
+        self.widget_button_confirm = ttk.Button(self.widget_frame_buttons_bottom, text="OK", command=self.confirm_mods,
+                                                default="active")
         self.widget_button_confirm.pack(side="right")
 
         self.mod_search()
 
     def mod_search(self):
+        # FIXME: Can't find mods in subfolders.
+        # Use os.walk() instead.
         for file in os.listdir(self.minecraft_mods):
             if file.endswith(".jar") or file.endswith(".litemod"):
                 self.widget_tree_left.widget_tree.insert(parent="",
                                                          index="end",
-                                                         text=os.path.splitext(file)[0],
+                                                         text=os.path.splitext(file)[0] if not
+                                                         self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))[
+                                                             "name"] else
+                                                         self.load_mcmodinfo(os.path.join(self.minecraft_mods, file))[
+                                                             "name"],
                                                          values=(os.path.splitext(file)[1]),
-                                                         tags=os.path.join(self.minecraft_mods + "/", file))
+                                                         tags=(os.path.join(self.minecraft_mods + "/", file), "mod"))
+
+    def load_mcmodinfo(self, file):
+        with zipfile.ZipFile(file) as z:
+            with z.open("mcmod.info") as info:
+                return json.loads(info.read().decode("utf-8"), strict=False)[0]
 
     def move_mod_right(self):
         try:
@@ -121,8 +145,8 @@ class ModDetector(tk.Toplevel):
 
 
 class Tree(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
-        ttk.Frame.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, **kwargs):
+        ttk.Frame.__init__(self, parent, **kwargs)
         self.parent = parent
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -135,14 +159,10 @@ class Tree(ttk.Frame):
         self.widget_tree.heading("#1", text="Mod Extension")
         self.widget_tree.column("#1", width=100, stretch=False)
 
-        self.scrollbar_horizontal = ttk.Scrollbar(self,
-                                                  orient="horizontal",
-                                                  command=self.widget_tree.xview)
+        self.scrollbar_horizontal = ttk.Scrollbar(self, orient="horizontal", command=self.widget_tree.xview)
         self.scrollbar_horizontal.grid(row=1, column=0, sticky="we")
 
-        self.scrollbar_vertical = ttk.Scrollbar(self,
-                                                orient="vertical",
-                                                command=self.widget_tree.yview)
+        self.scrollbar_vertical = ttk.Scrollbar(self, orient="vertical", command=self.widget_tree.yview)
         self.scrollbar_vertical.grid(row=0, column=1, sticky="ns")
 
         self.widget_tree.configure(xscrollcommand=self.scrollbar_horizontal.set,
