@@ -17,8 +17,8 @@ object FilePanel : JPanel(true) {
     private val dotLabel = JXLabel(".")
     val typeField = JXTextField("Type").apply { isEnabled = false }
 
-    private val imageSizeLabel = JXLabel("Image Size:")
-    private val imageSize = JXLabel()
+    private val fileSizeLabel = JXLabel("File Size:")
+    private val fileSize = JXLabel()
 
     private val openButton = JXButton("Open").apply { isEnabled = false }
     private val editButton = JXButton("Edit").apply { isEnabled = false }
@@ -36,8 +36,8 @@ object FilePanel : JPanel(true) {
         this.add(this.dotLabel)
         this.add(this.typeField, FillHorizontalFinishLine)
 
-        this.add(this.imageSizeLabel, StickEast)
-        this.add(this.imageSize, FillHorizontalFinishLine)
+        this.add(this.fileSizeLabel, StickEast)
+        this.add(this.fileSize, FillHorizontalFinishLine)
 
         this.add(this.openButton)
         this.add(this.editButton, FinishLine)

@@ -1,6 +1,6 @@
 package com.deflatedpickle.quiver
 
-import com.deflatedpickle.quiver.frontend.Window
+import com.deflatedpickle.quiver.frontend.window.Window
 import org.apache.logging.log4j.LogManager
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.awt.Dimension

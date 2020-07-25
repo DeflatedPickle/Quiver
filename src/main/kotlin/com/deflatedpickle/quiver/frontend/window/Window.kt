@@ -1,12 +1,20 @@
-package com.deflatedpickle.quiver.frontend
+package com.deflatedpickle.quiver.frontend.window
 
 import bibliothek.gui.dock.common.CControl
 import bibliothek.gui.dock.common.CGrid
 import bibliothek.gui.dock.common.DefaultSingleCDockable
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.quiver.frontend.FilePanel
+import com.deflatedpickle.quiver.frontend.FileTable
+import com.deflatedpickle.quiver.frontend.FolderTree
+import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.event.FocusAdapter
+import java.awt.event.FocusEvent
 import javax.swing.Icon
 import javax.swing.JFrame
 import javax.swing.JScrollPane
+import javax.swing.JToolBar
 
 object Window : JFrame("Quiver") {
     val control = CControl(this)
@@ -15,21 +23,30 @@ object Window : JFrame("Quiver") {
     init {
         this.defaultCloseOperation = EXIT_ON_CLOSE
 
-        this.add(this.control.contentArea)
+        this.add(Toolbar, BorderLayout.PAGE_START)
+        this.add(control.contentArea, BorderLayout.CENTER)
 
         this.pack()
 
-        this.addDockable(
+        this.addFocusListener(object : FocusAdapter() {
+            override fun focusGained(e: FocusEvent) {
+                if (DocumentUtil.current != null) {
+                    FolderTree.refreshAll()
+                }
+            }
+        })
+
+        addDockable(
             "Folders", null, FolderTree,
             0.0, 0.0, 0.4, 1.0
         )
 
-        this.addDockable(
+        addDockable(
             "Files", null, FileTable,
             1.0, 0.0, 1.0, 1.0
         )
 
-        this.addDockable(
+        addDockable(
             "Properties", null, FilePanel,
             2.0, 0.0, 0.6, 1.0
         )
@@ -43,6 +60,6 @@ object Window : JFrame("Quiver") {
         val dockable = DefaultSingleCDockable(name, icon, name, JScrollPane(component))
         control.addDockable(dockable)
         dockable.isVisible = true
-        this.grid.add(x, y, width, height, dockable)
+        grid.add(x, y, width, height, dockable)
     }
 }

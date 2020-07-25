@@ -14,6 +14,7 @@ repositories {
     jcenter()
     mavenCentral()
 
+    maven { url 'https://jitpack.io' }
     maven { url 'https://github.com/eugener/oxbow/raw/master/maven/repository' }
 }
 
@@ -22,6 +23,7 @@ dependencies {
 
     // Utility
     implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'com.github.DeflatedPickle:marvin:f37b442d08'
 
     // Extended Swing widgets
     implementation 'org.swinglabs:swingx:1.6.1'
