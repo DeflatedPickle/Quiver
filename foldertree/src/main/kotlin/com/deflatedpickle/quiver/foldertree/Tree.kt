@@ -1,13 +1,14 @@
-package com.deflatedpickle.quiver.frontend
+package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.quiver.filetable.Table
 import org.jdesktop.swingx.JXTree
 import java.io.File
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel
 
-object FolderTree : JXTree(DefaultMutableTreeNode()) {
+object Tree : JXTree(DefaultMutableTreeNode()) {
     init {
         this.showsRootHandles = true
         this.isRootVisible = false
@@ -17,7 +18,7 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
         this.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
 
         this.addTreeSelectionListener {
-            FileTable.refresh((it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File)
+            Table.refresh((it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File)
         }
     }
 
@@ -32,6 +33,7 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
         this.expandAll()
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun refresh(file: File, node: DefaultMutableTreeNode) {
         file.listFiles()?.filter { it.isDirectory }?.forEach {
             val newNode = DefaultMutableTreeNode(it)

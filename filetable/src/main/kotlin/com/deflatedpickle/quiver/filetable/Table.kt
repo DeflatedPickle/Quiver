@@ -1,11 +1,12 @@
-package com.deflatedpickle.quiver.frontend
+package com.deflatedpickle.quiver.filetable
 
+import com.deflatedpickle.quiver.filepanel.Component
 import org.jdesktop.swingx.JXTable
 import java.io.File
 import javax.swing.JTable
 import javax.swing.table.DefaultTableModel
 
-object FileTable : JXTable() {
+object Table : JXTable() {
     val headers = arrayOf("Name", "Extension")
     val fileModel = DefaultTableModel(headers, 0)
 
@@ -18,25 +19,25 @@ object FileTable : JXTable() {
         this.selectionModel.addListSelectionListener {
             if (!it.valueIsAdjusting) {
                 if (this.selectedRow >= 0) {
-                    val value = this.fileModel.getValueAt(
+                    val value = fileModel.getValueAt(
                         this.selectedRow, 0
                     )
 
                     if (value is File && value.exists() && value.isFile && !value.isHidden) {
-                        FilePanel.state(true)
+                        Component.state(true)
                     }
                 } else {
-                    FilePanel.state(false)
+                    Component.state(false)
                 }
             }
         }
     }
 
     fun refresh(file: File) {
-        this.fileModel.rowCount = 0
+        fileModel.rowCount = 0
 
         file.listFiles()?.filter { !it.isDirectory }?.forEach {
-            this.fileModel.addRow(arrayOf(it, it.extension))
+            fileModel.addRow(arrayOf(it, it.extension))
         }
 
         if (this.rowCount > 0) {

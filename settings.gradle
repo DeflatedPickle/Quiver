@@ -1,2 +1,10 @@
 rootProject.name = 'Quiver'
 
+include 'master'
+
+include 'core'
+include 'launcher'
+
+include 'filepanel'
+include 'filetable'
+include 'foldertree'
