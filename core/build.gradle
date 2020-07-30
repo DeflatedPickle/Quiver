@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.github.DeflatedPickle:marvin:f37b442d08'
 
     // Plugin framework
-    implementation 'com.github.DeflatedPickle:haruhi:1.0.1'
+    implementation 'com.github.DeflatedPickle:haruhi:1.1.0'
 
     // Events
     implementation 'com.github.Fylipp:easy-events:v1.1.0'
