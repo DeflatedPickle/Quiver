@@ -3,10 +3,16 @@ package com.deflatedpickle.quiver.launcher
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.haruhi.event.EventCreatePluginComponent
+import com.deflatedpickle.haruhi.event.EventCreatedPluginComponents
+import com.deflatedpickle.haruhi.event.EventDeserializedConfig
+import com.deflatedpickle.haruhi.event.EventLoadedPlugins
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.event.EventProgramShutdown
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.backend.event.EventCreateFile
 import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -37,7 +43,7 @@ fun main(args: Array<String>) {
     Runtime.getRuntime().addShutdownHook(object : Thread() {
         override fun run() {
             logger.warn("The JVM instance running Rawky was shutdown")
-            // EventRawkyShutdown.trigger(true)
+            EventProgramShutdown.trigger(true)
             // Changes were probably made, let's serialize the configs again
             ConfigUtil.serializeAllConfigs()
             logger.info("Serialized all the configs")
@@ -143,7 +149,7 @@ fun main(args: Array<String>) {
                             .contains(slug))
     }
     logger.info("Loaded plugins; ${PluginUtil.loadedPlugins.map { PluginUtil.pluginToSlug(it) }}")
-    // EventLoadedPlugins.trigger(PluginUtil.loadedPlugins)
+    EventLoadedPlugins.trigger(PluginUtil.loadedPlugins)
 
     val componentList = mutableListOf<PluginPanel>()
     for (plugin in PluginUtil.discoveredPlugins) {
@@ -151,11 +157,11 @@ fun main(args: Array<String>) {
             with(plugin.component.objectInstance!!) {
                 PluginUtil.createComponent(plugin, this)
                 componentList.add(this)
-                // EventCreatePluginComponent.trigger(this)
+                EventCreatePluginComponent.trigger(this)
             }
         }
     }
-    // EventCreatedPluginComponents.trigger(componentList)
+    EventCreatedPluginComponents.trigger(componentList)
 
     // Add newly enabled plugins to the core settings
     for (plug in PluginUtil.discoveredPlugins) {
@@ -177,7 +183,7 @@ fun main(args: Array<String>) {
     if (files != null) {
         for (file in files) {
             if (ConfigUtil.deserializeConfig(file)) {
-                // EventDeserializedConfig.trigger(file)
+                EventDeserializedConfig.trigger(file)
                 logger.info("Deserialized the config for $file from ${file.absolutePath}")
             }
         }
@@ -196,6 +202,11 @@ fun main(args: Array<String>) {
             logger.info("Serialized the config for ${PluginUtil.pluginToSlug(plugin)} to ${file.absolutePath}")
         }
     }
+
+    // This is a catch-all event, used by plugins to run code that depends on setup
+    // though the specific events could be used instead
+    // For example, if a plugin needs access to a config, they could listen to this
+    EventProgramFinishSetup.trigger(true)
 
     SwingUtilities.invokeLater {
         Window.size = Dimension(800, 600)
