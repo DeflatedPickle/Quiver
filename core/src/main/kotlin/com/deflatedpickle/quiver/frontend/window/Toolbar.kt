@@ -1,7 +1,7 @@
 package com.deflatedpickle.quiver.frontend.window
 
+import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.marvin.builder.FileBuilder
-import com.deflatedpickle.quiver.backend.event.EventCreateFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import org.jdesktop.swingx.JXButton

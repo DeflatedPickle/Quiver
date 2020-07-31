@@ -2,8 +2,8 @@ package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
+import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventPanelFocusGained
-import com.deflatedpickle.quiver.backend.event.EventCreateFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 
 @Suppress("unused")

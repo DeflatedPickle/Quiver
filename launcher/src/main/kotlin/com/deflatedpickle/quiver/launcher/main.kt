@@ -37,6 +37,7 @@ fun main(args: Array<String>) {
     // if it doesn't exist it's not indev
     PluginUtil.isInDev = args.contains("indev")
     PluginUtil.control = Window.control
+    PluginUtil.grid = Window.grid
 
     // Adds a single shutdown thread with an event
     // to reduce the instance count
