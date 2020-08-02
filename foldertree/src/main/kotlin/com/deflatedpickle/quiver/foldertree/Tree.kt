@@ -4,7 +4,9 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filetable.Table
 import org.jdesktop.swingx.JXTree
+import org.jdesktop.swingx.renderer.DefaultTreeRenderer
 import java.io.File
+import javax.swing.JLabel
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel

@@ -1,11 +1,14 @@
 package com.deflatedpickle.quiver.filetable
 
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
 import org.jdesktop.swingx.JXTable
 import java.io.File
 import javax.swing.JTable
+import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableModel
+import javax.swing.tree.DefaultMutableTreeNode
 
 object Table : JXTable() {
     private val headers = arrayOf("Name", "Extension")
@@ -14,6 +17,7 @@ object Table : JXTable() {
     init {
         this.model = fileModel
         this.isEditable = false
+        this.selectionMode = ListSelectionModel.SINGLE_SELECTION
 
         this.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
 
@@ -36,6 +40,13 @@ object Table : JXTable() {
                 }
             }
         }
+    }
+
+    fun refreshAll() {
+        this.removeAll()
+
+        val document = DocumentUtil.current
+        refresh(document!!)
     }
 
     fun refresh(file: File) {

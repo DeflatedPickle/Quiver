@@ -1,9 +1,12 @@
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
+import com.deflatedpickle.quiver.frontend.window.Window
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.io.File
+import javax.swing.JFileChooser
 
 object ActionUtil {
     fun newPack() {
@@ -48,6 +51,21 @@ object ActionUtil {
             }
 
             EventCreateFile.trigger(DocumentUtil.current!!)
+        }
+    }
+
+    fun openPack() {
+        val directoryChooser = JFileChooser().apply {
+            currentDirectory = File(".")
+            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+            isAcceptAllFileFilterUsed = false
+        }
+        val openResult = directoryChooser.showOpenDialog(Window)
+
+        if (openResult == JFileChooser.APPROVE_OPTION) {
+            DocumentUtil.current = directoryChooser.selectedFile
+
+            EventOpenFile.trigger(DocumentUtil.current!!)
         }
     }
 }

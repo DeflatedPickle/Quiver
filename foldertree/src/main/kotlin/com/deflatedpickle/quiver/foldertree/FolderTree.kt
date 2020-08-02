@@ -4,6 +4,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventPanelFocusGained
+import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 
 @Suppress("unused")
@@ -24,10 +25,8 @@ object FolderTree {
             Tree.refreshAll()
         }
 
-        EventPanelFocusGained.addListener {
-            if (DocumentUtil.current != null) {
-                Tree.refreshAll()
-            }
+        EventOpenFile.addListener {
+            Tree.refreshAll()
         }
     }
 }

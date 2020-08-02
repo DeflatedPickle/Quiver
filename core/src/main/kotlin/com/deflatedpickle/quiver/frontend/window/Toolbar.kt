@@ -5,13 +5,18 @@ import org.jdesktop.swingx.JXButton
 import javax.swing.JToolBar
 
 object Toolbar : JToolBar() {
-    val newButton = JXButton("New").apply {
-        addActionListener {
-            ActionUtil.newPack()
+    private val buttons = mutableListOf(
+        button("New") { ActionUtil.newPack() },
+        button("Open") { ActionUtil.openPack() }
+    )
+
+    init {
+        for (i in this.buttons) {
+            this.add(i)
         }
     }
 
-    init {
-        this.add(newButton)
+    private fun button(text: String, action: () -> Unit) = JXButton(text).apply {
+        addActionListener { action() }
     }
 }

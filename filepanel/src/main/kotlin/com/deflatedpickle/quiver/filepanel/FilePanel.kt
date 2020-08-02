@@ -15,11 +15,4 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFile
     type = PluginType.COMPONENT,
     component = Component::class
 )
-object FilePanel {
-    init {
-        EventSelectFile.addListener {
-            println(it.extension)
-            when(it.extension) {}
-        }
-    }
-}
+object FilePanel
