@@ -8,6 +8,7 @@ dependencies {
 
     implementation 'com.github.DeflatedPickle.haruhi:haruhi:1.3.0'
     implementation 'org.swinglabs:swingx:1.6.1'
+    implementation 'com.github.Fylipp:easy-events:v1.1.0'
 
     compile project(':core')
 }

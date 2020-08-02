@@ -1,5 +1,6 @@
 package com.deflatedpickle.quiver.foldertree
 
+import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filetable.Table
 import org.jdesktop.swingx.JXTree
@@ -18,7 +19,9 @@ object Tree : JXTree(DefaultMutableTreeNode()) {
         this.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
 
         this.addTreeSelectionListener {
-            Table.refresh((it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File)
+            val folder = (it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File
+            Table.refresh(folder)
+            EventSelectFolder.trigger(folder)
         }
     }
 

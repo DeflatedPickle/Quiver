@@ -1,5 +1,6 @@
 package com.deflatedpickle.quiver.filetable
 
+import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.Component
 import org.jdesktop.swingx.JXTable
 import java.io.File
@@ -7,8 +8,8 @@ import javax.swing.JTable
 import javax.swing.table.DefaultTableModel
 
 object Table : JXTable() {
-    val headers = arrayOf("Name", "Extension")
-    val fileModel = DefaultTableModel(headers, 0)
+    private val headers = arrayOf("Name", "Extension")
+    private val fileModel = DefaultTableModel(headers, 0)
 
     init {
         this.model = fileModel
@@ -23,8 +24,12 @@ object Table : JXTable() {
                         this.selectedRow, 0
                     )
 
-                    if (value is File && value.exists() && value.isFile && !value.isHidden) {
+                    if (value is File &&
+                        value.exists() &&
+                        value.isFile &&
+                        !value.isHidden) {
                         Component.state(true)
+                        EventSelectFile.trigger(value)
                     }
                 } else {
                     Component.state(false)
