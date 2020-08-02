@@ -18,9 +18,19 @@ object ActionUtil {
                 dialog.locationEntry.text
             }\\${dialog.nameEntry.text}"
 
+            DocumentUtil.current = File(path).apply {
+                mkdirs()
+                createNewFile()
+            }
+
             when (dialog.packTypeGroup.selectedValue!!) {
                 PackType.EMPTY_PACK -> {
                     PackUtil.createEmptyPack(path, dialog.namespaceEntry.text)
+
+                    PackUtil.writeMcMeta(
+                        dialog.packVersionEntry.selectedItem as PackVersion,
+                        dialog.descriptionEntry.text
+                    )
                 }
                 PackType.DEFAULT_PACK -> {
                     val file = dialog.defaultVersionComboBox.selectedItem as File
@@ -29,18 +39,13 @@ object ActionUtil {
                         path,
                         dialog.namespaceEntry.text
                     )
+
+                    PackUtil.writeMcMeta(
+                        dialog.defaultVersionComboBox.selectedItem as PackVersion,
+                        dialog.descriptionEntry.text
+                    )
                 }
             }
-
-            DocumentUtil.current = File(path).apply {
-                mkdirs()
-                createNewFile()
-            }
-
-            PackUtil.writeMcMeta(
-                dialog.defaultVersionComboBox.selectedItem as PackVersion,
-                dialog.descriptionEntry.text
-            )
 
             EventCreateFile.trigger(DocumentUtil.current!!)
         }
