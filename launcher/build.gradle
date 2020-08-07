@@ -14,12 +14,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
 
-    implementation 'com.github.DeflatedPickle.haruhi:haruhi:1.3.0'
-    implementation 'org.oxbow:swing-bits:1.0.0-SNAPSHOT'
-    implementation 'com.github.Fylipp:easy-events:v1.1.0'
-    implementation 'org.dockingframes:docking-frames-common:1.1.1'
-    implementation 'org.swinglabs:swingx:1.6.1'
-
     compile project(':core')
 }
 

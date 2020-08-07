@@ -8,3 +8,5 @@ include 'launcher'
 include 'filepanel'
 include 'filetable'
 include 'foldertree'
+
+include 'textviewer'

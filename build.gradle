@@ -31,10 +31,13 @@ run {
     args = ['indev']
 
     dependencies {
-        compile project(':launcher')
-        compile project(':foldertree')
-        compile project(':filetable')
-        compile project(':filepanel')
+        implementation project(':launcher')
+
+        implementation project(':foldertree')
+        implementation project(':filetable')
+        implementation project(':filepanel')
+
+        implementation project(':textviewer')
     }
 
     application {

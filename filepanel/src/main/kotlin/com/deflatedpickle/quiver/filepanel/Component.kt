@@ -1,14 +1,19 @@
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
 import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXColorSelectionButton
 import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXTaskPane
 import org.jdesktop.swingx.JXTextField
 import java.awt.GridBagLayout
+import javax.swing.BorderFactory
 import javax.swing.JComponent
 
 object Component : PluginPanel() {
@@ -24,11 +29,16 @@ object Component : PluginPanel() {
     private val editButton = JXButton("Edit").apply { isEnabled = false }
 
     private val widgetArray = arrayOf<JComponent>(
-        nameField,
-        typeField,
+        // nameField,
+        // typeField,
         openButton,
         editButton
     )
+
+    val widgetPanel = JXPanel().apply {
+        border = BorderFactory.createTitledBorder("View")
+        layout = GridBagLayout()
+    }
 
     init {
         this.layout = GridBagLayout()
@@ -43,6 +53,8 @@ object Component : PluginPanel() {
 
         this.add(openButton)
         this.add(editButton, FinishLine)
+
+        this.add(widgetPanel, FillBothFinishLine)
     }
 
     fun state(enabled: Boolean = true) {
