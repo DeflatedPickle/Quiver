@@ -10,6 +10,7 @@ dependencies {
 
     // Utility
     api 'org.apache.commons:commons-lang3:3.9'
+    api 'commons-io:commons-io:2.7'
     api 'com.github.DeflatedPickle:marvin:f37b442d08'
     api 'com.github.javadev:underscore:1.55'
     api 'net.harawata:appdirs:1.1.0'

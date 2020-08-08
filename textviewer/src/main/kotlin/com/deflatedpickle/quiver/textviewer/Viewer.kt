@@ -1,4 +1,4 @@
-package com.deflatedpickle.quiver.txtviewer
+package com.deflatedpickle.quiver.textviewer
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 

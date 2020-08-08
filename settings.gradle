@@ -10,3 +10,4 @@ include 'filetable'
 include 'foldertree'
 
 include 'textviewer'
+include 'tableviewer'

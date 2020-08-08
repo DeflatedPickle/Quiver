@@ -4,6 +4,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
+import org.apache.commons.io.FileUtils
 
 @Suppress("unused")
 @Plugin(
@@ -22,6 +23,8 @@ object FilePanel {
         EventSelectFile.addListener {
             Component.nameField.text = it.nameWithoutExtension
             Component.typeField.text = it.extension
+
+            Component.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
 
             Component.widgetPanel.removeAll()
             EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))

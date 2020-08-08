@@ -1,4 +1,4 @@
-package com.deflatedpickle.quiver.txtviewer
+package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -6,7 +6,6 @@ import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 import org.fife.ui.rtextarea.RTextScrollPane
-import javax.swing.JScrollPane
 
 @Suppress("unused")
 @Plugin(
@@ -35,7 +34,7 @@ object TextViewer {
 
     init {
         EventChangeViewWidget.addListener {
-            if (it.first.extension in this.extensionSet) {
+            if (it.first.extension in extensionSet) {
                 Viewer.text = it.first.readText()
 
                 Viewer.syntaxEditingStyle = when (it.first.extension) {
@@ -61,7 +60,7 @@ object TextViewer {
                     else -> SyntaxConstants.SYNTAX_STYLE_NONE
                 }
 
-                it.second.add(this.scroller, FillBothFinishLine)
+                it.second.add(scroller, FillBothFinishLine)
                 it.second.repaint()
                 it.second.revalidate()
             } else if (Viewer.text != "") {

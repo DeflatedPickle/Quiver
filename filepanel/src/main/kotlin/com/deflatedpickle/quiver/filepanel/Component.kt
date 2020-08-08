@@ -23,7 +23,7 @@ object Component : PluginPanel() {
     val typeField = JXTextField("Type").apply { isEnabled = false }
 
     private val fileSizeLabel = JXLabel("File Size:")
-    private val fileSize = JXLabel()
+    val fileSize = JXLabel()
 
     private val openButton = JXButton("Open").apply { isEnabled = false }
     private val editButton = JXButton("Edit").apply { isEnabled = false }

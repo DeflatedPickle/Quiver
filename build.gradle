@@ -38,6 +38,7 @@ run {
         implementation project(':filepanel')
 
         implementation project(':textviewer')
+        implementation project(':tableviewer')
     }
 
     application {
