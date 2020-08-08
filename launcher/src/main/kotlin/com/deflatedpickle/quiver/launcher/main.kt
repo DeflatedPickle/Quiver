@@ -36,6 +36,9 @@ fun main(args: Array<String>) {
     // The gradle tasks pass in "indev" argument
     // if it doesn't exist it's not indev
     PluginUtil.isInDev = args.contains("indev")
+
+    PluginUtil.window = Window
+    PluginUtil.toastWindow = Window.toastWindow
     PluginUtil.control = Window.control
     PluginUtil.grid = Window.grid
 
