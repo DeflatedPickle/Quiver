@@ -1,7 +1,0 @@
-cat
-
-kitten
-
-dog
-wait
-no              dogs suck
