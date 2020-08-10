@@ -9,6 +9,7 @@ import com.deflatedpickle.haruhi.event.EventMenuBuild
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.util.ActionUtil
+import com.deflatedpickle.quiver.config.QuiverSettings
 import javax.swing.JMenu
 
 @Suppress("unused", "SpellCheckingInspection")
@@ -20,7 +21,8 @@ import javax.swing.JMenu
         <br>
         A program for creating Minecraft resource-packs
     """,
-    type = PluginType.CORE_API
+    type = PluginType.CORE_API,
+    settings = QuiverSettings::class
 )
 object Quiver {
     init {

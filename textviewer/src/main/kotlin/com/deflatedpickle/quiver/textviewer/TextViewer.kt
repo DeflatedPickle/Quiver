@@ -22,11 +22,11 @@ object TextViewer {
     private val extensionSet = setOf(
         "txt",
         "json",
-        "properties",
         "js", "ts",
         "gitignore",
         "md",
         "bat", "py", "rb",
+        "make", "makefile", "makef", "gmk", "mak",
         "gradle"
     )
 
@@ -53,6 +53,9 @@ object TextViewer {
                     "bat" -> SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH
                     "py" -> SyntaxConstants.SYNTAX_STYLE_PYTHON
                     "rb" -> SyntaxConstants.SYNTAX_STYLE_RUBY
+                    "lua" -> SyntaxConstants.SYNTAX_STYLE_LUA
+                    // Maybe people'll use a makefile?
+                    "make", "makefile", "makef", "gmk", "mak" -> SyntaxConstants.SYNTAX_STYLE_MAKEFILE
                     // Gradle stuff for whatever reason
                     "gradle" -> SyntaxConstants.SYNTAX_STYLE_GROOVY
                     // I declare anything else as plain text

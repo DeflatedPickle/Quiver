@@ -3,10 +3,13 @@ plugins {
     id 'java-library'
 
     id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
 
     // Utility
     api 'org.apache.commons:commons-lang3:3.9'
