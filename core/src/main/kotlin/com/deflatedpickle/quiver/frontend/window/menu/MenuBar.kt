@@ -18,7 +18,7 @@ object MenuBar : JMenuBar() {
     }
 
     init {
-        RegistryUtil.register(MenuCategory.MENU.name, menuRegistry)
+        RegistryUtil.register(MenuCategory.MENU.name, menuRegistry as Registry<String, Any>)
         EventMenuBarBuild.trigger(this)
     }
 

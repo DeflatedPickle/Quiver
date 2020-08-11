@@ -2,6 +2,8 @@ package com.deflatedpickle.tableviewer
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import javax.swing.JScrollPane
@@ -22,16 +24,14 @@ object TableViewer {
         "properties"
     )
 
-    private val scroller = JScrollPane(Viewer)
-
     init {
-        EventChangeViewWidget.addListener {
-            if (it.first.extension in this.extensionSet) {
-                Viewer.refresh(it.first)
+        EventProgramFinishSetup.addListener {
+            val registry = RegistryUtil.get("viewer")
 
-                it.second.add(this.scroller, FillBothFinishLine)
-                it.second.repaint()
-                it.second.revalidate()
+            if (registry != null) {
+                for (i in this.extensionSet) {
+                    registry.register(i, Viewer)
+                }
             }
         }
     }

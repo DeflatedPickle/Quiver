@@ -21,7 +21,7 @@ dependencies {
 
 
     // Plugin framework
-    api 'com.github.DeflatedPickle.haruhi:haruhi:e61b692077'
+    api 'com.github.DeflatedPickle.haruhi:haruhi:871d3a8f3f'
 
     // Events
     api 'com.github.Fylipp:easy-events:v1.1.0'

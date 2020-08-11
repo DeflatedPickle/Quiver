@@ -1,18 +1,16 @@
 package com.deflatedpickle.quiver.launcher
 
+import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
+import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.component.PluginPanel
-import com.deflatedpickle.haruhi.event.EventCreateFile
-import com.deflatedpickle.haruhi.event.EventCreatePluginComponent
-import com.deflatedpickle.haruhi.event.EventCreatedPluginComponents
-import com.deflatedpickle.haruhi.event.EventDeserializedConfig
-import com.deflatedpickle.haruhi.event.EventLoadedPlugins
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.event.EventProgramShutdown
+import com.deflatedpickle.haruhi.event.*
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -41,6 +39,8 @@ fun main(args: Array<String>) {
     PluginUtil.toastWindow = Window.toastWindow
     PluginUtil.control = Window.control
     PluginUtil.grid = Window.grid
+
+    RegistryUtil.register("viewer", Registry<String, Viewer<Any>>() as Registry<String, Any>)
 
     // Adds a single shutdown thread with an event
     // to reduce the instance count
@@ -113,7 +113,11 @@ fun main(args: Array<String>) {
     logger.debug("Validated all plugins with ${PluginUtil.unloadedPlugins.size} error/s")
 
     // Organise plugins by their dependencies
-    PluginUtil.discoveredPlugins.sortWith(DependencyComparator)
+    PluginUtil.discoveredPlugins.sortWith(
+        DependencyComparator
+            .thenComparing(Plugin::type)
+            .thenComparing(Plugin::value)
+    )
     logger.info("Sorted out the load order: ${PluginUtil.discoveredPlugins.map { PluginUtil.pluginToSlug(it) }}")
     // EventSortedPluginLoadOrder.trigger(PluginUtil.discoveredPlugins)
 

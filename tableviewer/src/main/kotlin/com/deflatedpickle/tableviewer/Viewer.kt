@@ -1,32 +1,25 @@
 package com.deflatedpickle.tableviewer
 
-import org.jdesktop.swingx.JXTable
+import com.deflatedpickle.quiver.backend.api.Viewer
 import java.io.File
-import javax.swing.JTable
-import javax.swing.ListSelectionModel
-import javax.swing.table.DefaultTableModel
+import javax.swing.JComponent
+import javax.swing.JScrollPane
 
-object Viewer : JXTable() {
-    private val headers = arrayOf("Key", "Value")
-    private val fileModel = DefaultTableModel(headers, 0)
+object Viewer : Viewer<File> {
+    private val component = Component()
 
-    init {
-        this.model = fileModel
-        this.isEditable = false
-        this.selectionMode = ListSelectionModel.SINGLE_SELECTION
+    override fun refresh(with: File) {
+        component.fileModel.rowCount = 0
 
-        this.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
-    }
-
-    fun refresh(file: File) {
-        fileModel.rowCount = 0
-
-        for (line in file.readLines()) {
-            fileModel.addRow(line.split("=").toTypedArray())
+        for (line in with.readLines()) {
+            component.fileModel.addRow(line.split("=").toTypedArray())
         }
 
-        if (this.rowCount > 0) {
-            this.setRowSelectionInterval(0, 0)
+        if (this.component.rowCount > 0) {
+            this.component.setRowSelectionInterval(0, 0)
         }
     }
+
+    override fun getComponent(): JComponent = this.component
+    override fun getScroller(): JScrollPane = JScrollPane(this.getComponent())
 }
