@@ -35,10 +35,14 @@ class NewDialog : TaskDialog(Window, "New") {
         (document as PlainDocument).documentFilter = Filters.PATH
     }
 
+    private val packToVersion = Array(6) {
+        PackUtil.packVersionToGameVersion(it + 1)
+    }
+
     val packVersionComboBox = JComboBox<Int>((1..6).toList().toTypedArray()).apply {
         setRenderer { list, value, index, isSelected, cellHasFocus ->
             DefaultListCellRenderer().getListCellRendererComponent(
-                list, PackUtil.packVersionToGameVersion(value),
+                list, packToVersion[value - 1],
                 index, isSelected, cellHasFocus
             )
         }
