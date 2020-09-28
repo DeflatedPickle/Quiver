@@ -4,10 +4,6 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
-import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants
-import org.fife.ui.rtextarea.RTextScrollPane
 
 @Suppress("unused")
 @Plugin(

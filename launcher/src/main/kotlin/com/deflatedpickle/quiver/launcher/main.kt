@@ -40,6 +40,7 @@ fun main(args: Array<String>) {
     PluginUtil.control = Window.control
     PluginUtil.grid = Window.grid
 
+    @Suppress("UNCHECKED_CAST")
     RegistryUtil.register("viewer", Registry<String, Viewer<Any>>() as Registry<String, Any>)
 
     // Adds a single shutdown thread with an event

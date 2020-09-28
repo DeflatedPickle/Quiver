@@ -1,10 +1,6 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
-import com.deflatedpickle.quiver.backend.util.DotMinecraft
-import com.deflatedpickle.quiver.backend.util.Filters
-import com.deflatedpickle.quiver.backend.util.PackType
-import com.deflatedpickle.quiver.backend.util.PackVersion
-import com.deflatedpickle.quiver.backend.util.VersionUtil
+import com.deflatedpickle.quiver.backend.util.*
 import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
@@ -39,19 +35,16 @@ class NewDialog : TaskDialog(Window, "New") {
         (document as PlainDocument).documentFilter = Filters.PATH
     }
 
-    val packVersionEntry = JComboBox(PackVersion.values()).apply {
+    val packVersionComboBox = JComboBox<Int>((1..6).toList().toTypedArray()).apply {
         setRenderer { list, value, index, isSelected, cellHasFocus ->
             DefaultListCellRenderer().getListCellRendererComponent(
-                list, value.name
-                    .replace("V", "")
-                    .replace("_", ".")
-                    .replace("T", " - "),
+                list, PackUtil.packVersionToGameVersion(value),
                 index, isSelected, cellHasFocus
             )
         }
-    }.apply {
+
         toolTipText = "The version this pack will be based off of, different versions have different quirks; i.e. lang names"
-        selectedItem = PackVersion.values().last()
+        selectedItem = this.itemCount
     }
     val descriptionEntry = JXTextArea("Description").apply {
         toolTipText = "The description of the pack, used in pack.mcmeta"
@@ -59,7 +52,7 @@ class NewDialog : TaskDialog(Window, "New") {
     }
 
     val defaultVersionComboBox = JComboBox(DotMinecraft.versions.listFiles()!!.filter {
-        it.name.matches(VersionUtil.RELEASE) || it.name.matches(VersionUtil.ALPHA) || it.name.matches(VersionUtil.BETA)
+        it.name.matches(VersionUtil.RELEASE) /*|| it.name.matches(VersionUtil.ALPHA) || it.name.matches(VersionUtil.BETA)*/
     }.toTypedArray()).apply {
         for (i in itemCount - 1 downTo 0) {
             if (getItemAt(i).name.matches(VersionUtil.RELEASE)) {
@@ -74,6 +67,14 @@ class NewDialog : TaskDialog(Window, "New") {
             Empty Pack - Creates an empty pack
             Default Pack - Extracts and copies the default pack for the given version
         """.trimIndent()
+        isOpaque = false
+
+        // The buttons have a gray background by default
+        for (packType in PackType.values()) {
+            this.getChildButton(packType).apply {
+                isOpaque = false
+            }
+        }
 
         for (i in PackType.values()) {
             getChildButton(i).text = i.name
@@ -122,7 +123,7 @@ class NewDialog : TaskDialog(Window, "New") {
             this.add(JXTitledSeparator("Metadata"), FillHorizontalFinishLine)
 
             this.add(JXLabel("Pack Version:"), StickEast)
-            this.add(packVersionEntry, FillHorizontalFinishLine)
+            this.add(packVersionComboBox, FillHorizontalFinishLine)
 
             this.add(JXLabel("Description:"), StickEast)
             this.add(descriptionEntry, FillHorizontalFinishLine)

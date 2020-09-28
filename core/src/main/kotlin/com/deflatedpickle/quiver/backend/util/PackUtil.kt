@@ -79,17 +79,46 @@ object PackUtil {
         }
     }
 
-    fun writeMcMeta(version: PackVersion, description: String) {
+    fun writeMcMeta(version: Int, description: String) {
         DocumentUtil.current!!.resolve("pack.mcmeta").writeText(
             // I don't know if that's proper formatting, so format it again
-            U.formatJson("""
+            U.formatJson(
+                """
                         {
                             "pack": {
-                                "pack_format": ${version.ordinal + 1},
+                                "pack_format": $version,
                                 "description": "$description"
                             }
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+            )
         )
     }
+
+    // You guys ready for some YandereDev-level code?
+
+    fun packVersionToGameVersion(packVersion: Int): VersionProgression =
+        when (packVersion) {
+            1 -> Version(1, 6, 1)..Version(1, 8, 9)
+            2 -> Version(1, 9)..Version(1, 10, 2)
+            3 -> Version(1, 11)..Version(1, 12, 2)
+            4 -> Version(1, 13)..Version(1, 14, 4)
+            5 -> Version(1, 15)..Version(1, 16, 1)
+            6 -> Version(1, 16, 2)..Version(1, 16, 3)
+            else -> VersionProgression(Version(0, 0), Version(0, 0))
+        }
+
+
+    fun gameVersionToPackVersion(gameVersion: Version): Int =
+        when (gameVersion) {
+            in Version(1, 6, 1)..Version(1, 8, 9) -> 1
+            in Version(1, 9)..Version(1, 10, 2) -> 2
+            in Version(1, 11)..Version(1, 12, 2) -> 3
+            in Version(1, 13)..Version(1, 14, 4) -> 4
+            in Version(1, 15)..Version(1, 16, 1) -> 5
+            in Version(1, 16, 2)..Version(1, 16, 3) -> 6
+            else -> 0
+        }
+
+    // Awful, isn't it?
 }

@@ -31,7 +31,7 @@ object ActionUtil {
                     PackUtil.createEmptyPack(path, dialog.namespaceEntry.text)
 
                     PackUtil.writeMcMeta(
-                        dialog.packVersionEntry.selectedItem as PackVersion,
+                        dialog.packVersionComboBox.selectedItem as Int,
                         dialog.descriptionEntry.text
                     )
                 }
@@ -44,7 +44,7 @@ object ActionUtil {
                     )
 
                     PackUtil.writeMcMeta(
-                        dialog.defaultVersionComboBox.selectedItem as PackVersion,
+                        PackUtil.gameVersionToPackVersion(Version.fromString((dialog.defaultVersionComboBox.selectedItem as File).name)),
                         dialog.descriptionEntry.text
                     )
                 }

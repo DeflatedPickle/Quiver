@@ -5,11 +5,12 @@ package com.deflatedpickle.quiver
 import com.deflatedpickle.haruhi.api.constants.MenuCategory
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventMenuBuild
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.util.ActionUtil
+import com.deflatedpickle.quiver.backend.util.Version
 import com.deflatedpickle.quiver.config.QuiverSettings
+import com.deflatedpickle.quiver.frontend.extension.add
 import javax.swing.JMenu
 
 @Suppress("unused", "SpellCheckingInspection")
@@ -29,8 +30,8 @@ object Quiver {
         EventProgramFinishSetup.addListener {
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
             (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add("New").apply { addActionListener { ActionUtil.newPack() } }
-                add("Open").apply { addActionListener { ActionUtil.openPack() } }
+                add("New") { ActionUtil.newPack() }
+                add("Open") { ActionUtil.openPack() }
                 addSeparator()
             }
         }

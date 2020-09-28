@@ -2,15 +2,12 @@ package com.deflatedpickle.quiver.frontend.widget.tagfield
 
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
-import com.deflatedpickle.rawky.ui.constraints.FinishLine
-import com.deflatedpickle.rawky.ui.constraints.StickEast
 import uk.co.timwise.wraplayout.WrapLayout
 import java.awt.GridBagLayout
 import java.util.*
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 
 class TagField : JPanel() {
     val tags = mutableListOf<String>()
