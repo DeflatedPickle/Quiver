@@ -34,6 +34,7 @@ object FilePanel {
 
             val registry = RegistryUtil.get("viewer")
 
+            // TODO: Add a toolbar to switch between registered viewers
             val viewer = registry?.get(it.extension)
 
             if (viewer is Viewer<*>) {

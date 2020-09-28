@@ -1,4 +1,4 @@
-package com.deflatedpickle.tableviewer
+package com.deflatedpickle.treeviewer
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -7,18 +7,20 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 
 @Suppress("unused")
 @Plugin(
-    value = "table_viewer",
+    value = "tree_viewer",
     author = "DeflatedPickle",
     version = "1.0.0",
     description = """
         <br>
-        A viewer for lang and properties files
+        A viewer for JSON-like files
     """,
     type = PluginType.OTHER
 )
-object TableViewer {
+object TreeViewer {
     private val extensionSet = setOf(
-        "properties"
+        "mcmeta",
+        "lang",
+        "json"
     )
 
     init {
@@ -26,7 +28,7 @@ object TableViewer {
             val registry = RegistryUtil.get("viewer")
 
             if (registry != null) {
-                for (i in this.extensionSet) {
+                for (i in extensionSet) {
                     registry.register(i, Viewer)
                 }
             }
