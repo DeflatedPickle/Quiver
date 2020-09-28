@@ -39,6 +39,7 @@ run {
 
         implementation project(':textviewer')
         implementation project(':tableviewer')
+        implementation project(':imageviewer')
 
         implementation 'com.github.Vatuu:discord-rpc:1.6.2'
         implementation 'io.github.classgraph:classgraph:4.8.85'

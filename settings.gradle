@@ -11,3 +11,4 @@ include 'foldertree'
 
 include 'textviewer'
 include 'tableviewer'
+include 'imageviewer'
