@@ -7,8 +7,8 @@ import org.jdesktop.swingx.JXTable
 import java.io.File
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
+import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
-import javax.swing.tree.DefaultMutableTreeNode
 
 object Table : JXTable() {
     private val headers = arrayOf("Name", "Extension")
@@ -39,6 +39,18 @@ object Table : JXTable() {
                     Component.state(false)
                 }
             }
+        }
+
+        this.columnModel.getColumn(0).cellRenderer = object : DefaultTableCellRenderer() {
+            override fun getTableCellRendererComponent(
+                table: JTable, value: Any,
+                isSelected: Boolean, hasFocus: Boolean,
+                row: Int, column: Int
+            ): java.awt.Component = super.getTableCellRendererComponent(
+                table, (value as File).nameWithoutExtension,
+                isSelected, hasFocus,
+                row, column
+            )
         }
     }
 

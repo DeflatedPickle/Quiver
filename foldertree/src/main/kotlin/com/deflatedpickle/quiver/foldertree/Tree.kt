@@ -4,10 +4,11 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filetable.Table
 import org.jdesktop.swingx.JXTree
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer
+import java.awt.Component
 import java.io.File
-import javax.swing.JLabel
+import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeCellRenderer
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel
 
@@ -25,6 +26,22 @@ object Tree : JXTree(DefaultMutableTreeNode()) {
             Table.refresh(folder)
             EventSelectFolder.trigger(folder)
         }
+
+        this.setCellRenderer(object : DefaultTreeCellRenderer() {
+            override fun getTreeCellRendererComponent(
+                tree: JTree?,
+                value: Any?,
+                selected: Boolean,
+                expanded: Boolean,
+                leaf: Boolean,
+                row: Int,
+                hasFocus: Boolean
+            ): Component = super.getTreeCellRendererComponent(
+                tree,
+                ((value as DefaultMutableTreeNode).userObject as File?)?.name?.split("\\")?.last(),
+                selected, expanded, leaf, row, hasFocus
+            )
+        })
     }
 
     fun refreshAll() {
