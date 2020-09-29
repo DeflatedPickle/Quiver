@@ -1,6 +1,5 @@
 package com.deflatedpickle.quiver.launcher
 
-import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -9,8 +8,6 @@ import com.deflatedpickle.haruhi.event.*
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
@@ -39,10 +36,6 @@ fun main(args: Array<String>) {
     PluginUtil.toastWindow = Window.toastWindow
     PluginUtil.control = Window.control
     PluginUtil.grid = Window.grid
-
-    @Suppress("UNCHECKED_CAST")
-    // TODO: Change to a list of viewers
-    RegistryUtil.register("viewer", Registry<String, Viewer<Any>>() as Registry<String, Any>)
 
     // Adds a single shutdown thread with an event
     // to reduce the instance count

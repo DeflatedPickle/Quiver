@@ -1,5 +1,6 @@
 package com.deflatedpickle.quiver.filepanel
 
+import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.util.RegistryUtil
@@ -23,6 +24,10 @@ import org.apache.commons.io.FileUtils
 )
 object FilePanel {
     init {
+        @Suppress("UNCHECKED_CAST")
+        // TODO: Change to a list of viewers
+        RegistryUtil.register("viewer", Registry<String, Viewer<Any>>() as Registry<String, Any>)
+
         EventSelectFile.addListener {
             Component.nameField.text = it.nameWithoutExtension
             Component.typeField.text = it.extension
