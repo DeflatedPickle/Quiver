@@ -12,7 +12,7 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
     version = "1.0.0",
     description = """
         <br>
-        A viewer for png files
+        A viewer for PNG files
     """,
     type = PluginType.OTHER
 )

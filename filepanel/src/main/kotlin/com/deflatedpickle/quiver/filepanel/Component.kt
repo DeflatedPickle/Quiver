@@ -6,6 +6,7 @@ import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
+import java.awt.Desktop
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
 import javax.swing.JComponent
@@ -19,12 +20,27 @@ object Component : PluginPanel() {
     private val fileSizeLabel = JXLabel("File Size:")
     val fileSize = JXLabel()
 
-    private val editButton = JXButton("Edit").apply { isEnabled = false }
+    private val openButton = JXButton("Open").apply {
+        isEnabled = false
+
+        addActionListener {
+            Desktop.getDesktop().open(FilePanel.selectedFile)
+        }
+    }
+
+    private val editButton = JXButton("Edit").apply {
+        isEnabled = false
+
+        addActionListener {
+            Desktop.getDesktop().edit(FilePanel.selectedFile)
+        }
+    }
 
     private val widgetArray = arrayOf<JComponent>(
         // nameField,
         // typeField,
-        editButton
+        editButton,
+        openButton
     )
 
     val widgetPanel = JXPanel().apply {
@@ -43,7 +59,8 @@ object Component : PluginPanel() {
         this.add(fileSizeLabel, StickEast)
         this.add(fileSize, FillHorizontalFinishLine)
 
-        this.add(editButton, StickEastFinishLine)
+        this.add(editButton, StickWest)
+        this.add(openButton, StickWestFinishLine)
 
         this.add(widgetPanel, FillBothFinishLine)
     }

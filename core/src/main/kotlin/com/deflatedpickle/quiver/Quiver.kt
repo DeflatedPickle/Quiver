@@ -8,8 +8,6 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.util.ActionUtil
-import com.deflatedpickle.quiver.backend.util.Version
-import com.deflatedpickle.quiver.config.QuiverSettings
 import com.deflatedpickle.quiver.frontend.extension.add
 import javax.swing.JMenu
 
@@ -22,8 +20,7 @@ import javax.swing.JMenu
         <br>
         A program for creating Minecraft resource-packs
     """,
-    type = PluginType.CORE_API,
-    settings = QuiverSettings::class
+    type = PluginType.CORE_API
 )
 object Quiver {
     init {

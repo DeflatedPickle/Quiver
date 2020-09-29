@@ -46,7 +46,7 @@ run {
         implementation 'io.github.classgraph:classgraph:4.8.85'
         implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 
-        implementation 'com.github.DeflatedPickle:sniffle:8f457b7d53'
+        implementation 'com.github.DeflatedPickle:sniffle:e00cc3a565'
     }
 
     application {

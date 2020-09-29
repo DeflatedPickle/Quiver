@@ -9,6 +9,7 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import org.apache.commons.io.FileUtils
+import java.io.File
 
 @Suppress("unused")
 @Plugin(
@@ -23,6 +24,8 @@ import org.apache.commons.io.FileUtils
     component = Component::class
 )
 object FilePanel {
+    var selectedFile: File? = null
+
     init {
         @Suppress("UNCHECKED_CAST")
         // TODO: Change to a list of viewers
@@ -33,6 +36,8 @@ object FilePanel {
             Component.typeField.text = it.extension
 
             Component.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
+
+            this.selectedFile = it
 
             Component.widgetPanel.removeAll()
             EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
