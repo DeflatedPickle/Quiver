@@ -3,13 +3,19 @@ package com.deflatedpickle.quiver.filepanel
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXRadioGroup
+import java.awt.BorderLayout
+import java.awt.event.ActionEvent
 import java.io.File
+import javax.swing.JButton
+import javax.swing.JToolBar
 
 @Suppress("unused")
 @Plugin(
@@ -26,10 +32,17 @@ import java.io.File
 object FilePanel {
     var selectedFile: File? = null
 
+    val radioButtonGroup = JXRadioGroup<String>()
+    val viewerToolbar = JToolBar("Viewers").apply { add(radioButtonGroup) }
+
     init {
         @Suppress("UNCHECKED_CAST")
         // TODO: Change to a list of viewers
-        RegistryUtil.register("viewer", Registry<String, Viewer<Any>>() as Registry<String, Any>)
+        RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
+
+        EventProgramFinishSetup.addListener {
+            Component.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
+        }
 
         EventSelectFile.addListener {
             Component.nameField.text = it.nameWithoutExtension
@@ -39,19 +52,54 @@ object FilePanel {
 
             this.selectedFile = it
 
-            Component.widgetPanel.removeAll()
-            EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
+            for (component in Component.widgetPanel.components) {
+                if (component !is JToolBar) {
+                    Component.widgetPanel.remove(component)
+                }
+            }
+            radioButtonGroup.setValues(arrayOf())
 
             val registry = RegistryUtil.get("viewer")
 
-            // TODO: Add a toolbar to switch between registered viewers
-            val viewer = registry?.get(it.extension)
+            val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>
 
-            if (viewer is Viewer<*>) {
-                (viewer as Viewer<Any>).refresh(it)
+            for (viewer in viewerList) {
+                radioButtonGroup.add(viewer::class.simpleName)
 
-                Component.widgetPanel.add(viewer.getScroller(), FillBothFinishLine)
+                radioButtonGroup.getChildButton(viewer::class.simpleName).addActionListener { _ ->
+                    for (component in Component.widgetPanel.components) {
+                        if (component !is JToolBar) {
+                            Component.widgetPanel.remove(component)
+                        }
+                    }
+                    EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
+
+                    viewer.refresh(it)
+                    Component.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
+
+                    Component.widgetPanel.repaint()
+                    Component.widgetPanel.revalidate()
+                }
             }
+
+            if (radioButtonGroup.childButtonCount > 0) {
+                radioButtonGroup
+                    .getChildButton(0).apply { isSelected = true }
+                    .actionListeners
+                    .first()
+                        // The action isn't performed when we select it
+                        // So we have to send out an event for it
+                    .actionPerformed(
+                        ActionEvent(
+                            this,
+                            ActionEvent.ACTION_PERFORMED,
+                            null)
+                    )
+            }
+
+            radioButtonGroup.repaint()
+            radioButtonGroup.revalidate()
+
             Component.widgetPanel.repaint()
             Component.widgetPanel.revalidate()
         }

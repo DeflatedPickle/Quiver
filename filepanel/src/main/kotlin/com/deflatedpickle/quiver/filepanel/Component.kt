@@ -6,6 +6,7 @@ import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
+import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
@@ -45,7 +46,7 @@ object Component : PluginPanel() {
 
     val widgetPanel = JXPanel().apply {
         border = BorderFactory.createTitledBorder("View")
-        layout = GridBagLayout()
+        layout = BorderLayout()
     }
 
     init {

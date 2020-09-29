@@ -1,35 +1,25 @@
 package com.deflatedpickle.tableviewer
 
-import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.quiver.backend.api.Viewer
+import java.io.File
+import javax.swing.JComponent
+import javax.swing.JScrollPane
 
-@Suppress("unused")
-@Plugin(
-    value = "table_viewer",
-    author = "DeflatedPickle",
-    version = "1.0.0",
-    description = """
-        <br>
-        A viewer for lang and properties files
-    """,
-    type = PluginType.OTHER
-)
-object TableViewer {
-    private val extensionSet = setOf(
-        "properties"
-    )
+object TableViewer : Viewer<File> {
+    private val component = Component()
 
-    init {
-        EventProgramFinishSetup.addListener {
-            val registry = RegistryUtil.get("viewer")
+    override fun refresh(with: File) {
+        component.fileModel.rowCount = 0
 
-            if (registry != null) {
-                for (i in this.extensionSet) {
-                    registry.register(i, Viewer)
-                }
-            }
+        for (line in with.readLines()) {
+            component.fileModel.addRow(line.split("=").toTypedArray())
+        }
+
+        if (this.component.rowCount > 0) {
+            this.component.setRowSelectionInterval(0, 0)
         }
     }
+
+    override fun getComponent(): JComponent = this.component
+    override fun getScroller(): JScrollPane = JScrollPane(this.getComponent())
 }

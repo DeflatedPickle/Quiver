@@ -1,35 +1,20 @@
 package com.deflatedpickle.imageviewer
 
-import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.quiver.backend.api.Viewer
+import java.io.File
+import javax.imageio.ImageIO
+import javax.swing.JComponent
+import javax.swing.JScrollPane
 
-@Suppress("unused")
-@Plugin(
-    value = "image_viewer",
-    author = "DeflatedPickle",
-    version = "1.0.0",
-    description = """
-        <br>
-        A viewer for PNG files
-    """,
-    type = PluginType.OTHER
-)
-object ImageViewer {
-    private val extensionSet = setOf(
-        "png"
-    )
 
-    init {
-        EventProgramFinishSetup.addListener {
-            val registry = RegistryUtil.get("viewer")
+object ImageViewer : Viewer<File> {
+    private val component = Component()
 
-            if (registry != null) {
-                for (i in this.extensionSet) {
-                    registry.register(i, Viewer)
-                }
-            }
-        }
+    override fun refresh(with: File) {
+        component.image = ImageIO.read(with)
+        component.repaint()
     }
+
+    override fun getComponent(): JComponent = this.component
+    override fun getScroller(): JScrollPane = JScrollPane(this.getComponent())
 }

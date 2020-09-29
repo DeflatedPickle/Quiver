@@ -1,37 +1,57 @@
 package com.deflatedpickle.treeviewer
 
-import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.RegistryUtil
+import blue.endless.jankson.Jankson
+import blue.endless.jankson.JsonArray
+import blue.endless.jankson.JsonObject
+import blue.endless.jankson.JsonPrimitive
+import com.deflatedpickle.quiver.backend.api.Viewer
+import java.io.File
+import javax.swing.JComponent
+import javax.swing.JScrollPane
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeModel
 
-@Suppress("unused")
-@Plugin(
-    value = "tree_viewer",
-    author = "DeflatedPickle",
-    version = "1.0.0",
-    description = """
-        <br>
-        A viewer for JSON-like files
-    """,
-    type = PluginType.OTHER
-)
-object TreeViewer {
-    private val extensionSet = setOf(
-        "mcmeta",
-        "lang",
-        "json"
-    )
 
-    init {
-        EventProgramFinishSetup.addListener {
-            val registry = RegistryUtil.get("viewer")
+object TreeViewer : Viewer<File> {
+    private val component = Component()
+    private val json = Jankson.builder().build()
 
-            if (registry != null) {
-                for (i in extensionSet) {
-                    registry.register(i, Viewer)
+    override fun refresh(with: File) {
+        component.root.removeAllChildren()
+        (component.model as DefaultTreeModel).reload()
+
+        addJSONObject(this.json.load(with), component.root)
+
+        component.expandAll()
+    }
+
+    private fun addJSONObject(obj: JsonObject, parent: DefaultMutableTreeNode) {
+        for ((key, value) in obj.entries) {
+            val keyNode = DefaultMutableTreeNode(key)
+
+            when(value) {
+                is JsonPrimitive -> {
+                    val childNode = DefaultMutableTreeNode(value)
+                    keyNode.add(childNode)
                 }
+                is JsonArray -> {
+                    for (i in value) {
+                        when(i) {
+                            is JsonPrimitive -> {
+                                val childNode = DefaultMutableTreeNode(i)
+                                keyNode.add(childNode)
+                            }
+                            is JsonObject -> addJSONObject(i, keyNode)
+                        }
+                    }
+                }
+                is JsonObject -> addJSONObject(value, keyNode)
             }
+
+            parent.add(keyNode)
         }
     }
+
+    override fun getComponent(): JComponent = component
+    override fun getScroller(): JScrollPane = JScrollPane(getComponent())
 }
