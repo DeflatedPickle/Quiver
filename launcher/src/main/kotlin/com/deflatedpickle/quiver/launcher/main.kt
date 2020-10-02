@@ -12,6 +12,7 @@ import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
 import org.apache.logging.log4j.LogManager
+import org.fusesource.jansi.AnsiConsole
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.awt.Dimension
 import java.io.File
@@ -28,6 +29,9 @@ fun main(args: Array<String>) {
     System.setProperty("log4j.skipJansi", "false")
     val logger = LogManager.getLogger()
 
+    logger.info("Installed JANSI for this session")
+    AnsiConsole.systemInstall()
+
     // The gradle tasks pass in "indev" argument
     // if it doesn't exist it's not indev
     PluginUtil.isInDev = args.contains("indev")
@@ -41,8 +45,12 @@ fun main(args: Array<String>) {
     // to reduce the instance count
     Runtime.getRuntime().addShutdownHook(object : Thread() {
         override fun run() {
-            logger.warn("The JVM instance running Rawky was shutdown")
+            logger.warn("Uninstalled JANSI for this session")
+            AnsiConsole.systemUninstall()
+
+            logger.warn("The JVM instance running Quiver was shutdown")
             EventProgramShutdown.trigger(true)
+
             // Changes were probably made, let's serialize the configs again
             ConfigUtil.serializeAllConfigs()
             logger.info("Serialized all the configs")

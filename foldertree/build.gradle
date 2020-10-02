@@ -6,6 +6,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
 
-    compile project(':core')
-    compile project(':filetable')
+    implementation project(':core')
+    implementation project(':filetable')
 }

@@ -8,6 +8,6 @@ dependencies {
 
     implementation "blue.endless:jankson:1.1.0"
 
-    compile project(':core')
-    compile project(':filepanel')
+    implementation project(':core')
+    implementation project(':filepanel')
 }

@@ -11,6 +11,6 @@ dependencies {
     implementation 'com.github.bobbylight:SpellChecker:3.1.0'
     implementation 'com.github.bobbylight:RSTAUI:3.1.0'
 
-    compile project(':core')
-    compile project(':filepanel')
+    implementation project(':core')
+    implementation project(':filepanel')
 }
