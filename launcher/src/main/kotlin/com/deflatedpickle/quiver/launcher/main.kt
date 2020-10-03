@@ -9,7 +9,6 @@ import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.frontend.window.Window
-import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 import kotlinx.serialization.ImplicitReflectionSerializer
 import org.apache.logging.log4j.LogManager
 import org.fusesource.jansi.AnsiConsole
@@ -92,21 +91,6 @@ fun main(args: Array<String>) {
         }
     )
 
-    // Serialize/deserialize a config for the core
-    // This can't use the plugin config system as it
-    // can dictate what plugins are/aren't loaded
-    val launcherID = "deflatedpickle@launcher#1.0.0"
-    val launcherSettingsFile = File("config/$launcherID.json")
-    var launcherSettingsInstance = LauncherSettings::class.createInstance()
-
-    if (!ConfigUtil.hasConfigFile(launcherID)) {
-        ConfigUtil.serializeConfigToInstance(launcherSettingsFile, launcherSettingsInstance)
-    } else {
-        launcherSettingsInstance = ConfigUtil.deserializeConfigToInstance(
-            launcherSettingsFile, launcherSettingsInstance
-        ) as LauncherSettings
-    }
-
     // Start a scan of the class graph
     // this will discover all plugins
     ClassGraphUtil.refresh()
@@ -125,10 +109,8 @@ fun main(args: Array<String>) {
     // EventSortedPluginLoadOrder.trigger(PluginUtil.discoveredPlugins)
 
     // Loads all classes with a Plugin annotation
+    // But validate all the small things before loading
     PluginUtil.loadPlugins {
-        val slug = PluginUtil.pluginToSlug(it)
-        // Validate all the small things
-
         // Versions must be semantic
         PluginUtil.validateVersion(it) &&
                 // Descriptions must contain a <br> tag
@@ -138,29 +120,14 @@ fun main(args: Array<String>) {
                 // Dependencies should be "author@plugin#version"
                 PluginUtil.validateDependencySlug(it) &&
                 // The dependency should exist
-                PluginUtil.validateDependencyExistence(it) &&
-                // Ask if the user wants to enable it
-                // Just to make sure they know what they're loading
-                // They might've got the plugin set from elsewhere
-                (
-                        // Ignore facade types
-                        (it.value == "haruhi" || it.type in arrayOf(
-                            PluginType.CORE_API,
-                            PluginType.LAUNCHER
-                        )) ||
-                                // Check it's not already saved to be enabled
-                                !launcherSettingsInstance.enabledPlugins
-                                    .contains(PluginUtil.pluginToSlug(it)) &&
-                                // Open a dialog to ask the user
-                                TaskDialogs.ask(
-                                    Window,
-                                    "",
-                                    "Should $slug be activated?"
-                                ) || launcherSettingsInstance.enabledPlugins
-                            .contains(slug))
+                PluginUtil.validateDependencyExistence(it)
     }
     logger.info("Loaded plugins; ${PluginUtil.loadedPlugins.map { PluginUtil.pluginToSlug(it) }}")
     EventLoadedPlugins.trigger(PluginUtil.loadedPlugins)
+
+    if (PluginUtil.unloadedPlugins.size > 0) {
+        logger.warn("Failed to load; ${PluginUtil.unloadedPlugins.map { PluginUtil.pluginToSlug(it) }}")
+    }
 
     val componentList = mutableListOf<PluginPanel>()
     for (plugin in PluginUtil.discoveredPlugins) {
@@ -173,20 +140,6 @@ fun main(args: Array<String>) {
         }
     }
     EventCreatedPluginComponents.trigger(componentList)
-
-    // Add newly enabled plugins to the core settings
-    for (plug in PluginUtil.discoveredPlugins) {
-        val slug = PluginUtil.pluginToSlug(plug)
-
-        if (!launcherSettingsInstance.enabledPlugins.contains(slug)) {
-            launcherSettingsInstance.enabledPlugins.add(slug)
-        }
-    }
-
-    // Serialize the enabled plugins
-    ConfigUtil.serializeConfigToInstance(
-        launcherSettingsFile, launcherSettingsInstance
-    )
 
     // Deserialize old configs
     val files = ConfigUtil.createConfigFolder().listFiles()

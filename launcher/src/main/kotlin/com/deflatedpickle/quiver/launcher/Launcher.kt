@@ -2,7 +2,6 @@ package com.deflatedpickle.quiver.launcher
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.quiver.launcher.config.LauncherSettings
 
 @Plugin(
     value = "launcher",
@@ -12,8 +11,7 @@ import com.deflatedpickle.quiver.launcher.config.LauncherSettings
         <br>
         A basic launcher
     """,
-    type = PluginType.LAUNCHER,
-    settings = LauncherSettings::class
+    type = PluginType.LAUNCHER
 )
 @Suppress("unused")
 object Launcher
