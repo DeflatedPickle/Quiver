@@ -1,24 +1,17 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.quiver.backend.util.*
+import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
-import org.jdesktop.swingx.JXLabel
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXRadioGroup
-import org.jdesktop.swingx.JXTextArea
-import org.jdesktop.swingx.JXTextField
-import org.jdesktop.swingx.JXTitledSeparator
+import org.jdesktop.swingx.*
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.awt.GridBagLayout
-import javax.swing.BorderFactory
-import javax.swing.DefaultListCellRenderer
-import javax.swing.JComboBox
-import javax.swing.JPanel
-import javax.swing.JScrollPane
+import java.io.File
+import javax.swing.*
 import javax.swing.text.PlainDocument
 
 class NewDialog : TaskDialog(Window, "New") {
@@ -30,9 +23,22 @@ class NewDialog : TaskDialog(Window, "New") {
         toolTipText = "The name of the pack directory; i.e. the name of the pack"
         (document as PlainDocument).documentFilter = Filters.FILE
     }
-    val locationEntry = JXTextField("Location").apply {
-        toolTipText = "The location of the pack, defaults to .minecraft/resourcepacks"
-        (document as PlainDocument).documentFilter = Filters.PATH
+    val locationEntry = ButtonField(
+        "Location",
+        "The location of the pack, defaults to .minecraft/resourcepacks",
+        Filters.PATH,
+        "Open"
+    ) {
+        val directoryChooser = JFileChooser().apply {
+            currentDirectory = File(".")
+            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+            isAcceptAllFileFilterUsed = false
+        }
+        val openResult = directoryChooser.showOpenDialog(Window)
+
+        if (openResult == JFileChooser.APPROVE_OPTION) {
+            it.field.text = directoryChooser.selectedFile.absolutePath
+        }
     }
 
     private val packToVersion = Array(6) {

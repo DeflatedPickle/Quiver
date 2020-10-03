@@ -15,10 +15,10 @@ object ActionUtil {
 
         if (dialog.result == TaskDialog.StandardCommand.OK) {
             val path = "${
-            if (dialog.locationEntry.text == "")
+            if (dialog.locationEntry.field.text == "")
                 System.getProperty("user.dir")
             else
-                dialog.locationEntry.text
+                dialog.locationEntry.field.text
             }\\${dialog.nameEntry.text}"
 
             DocumentUtil.current = File(path).apply {
