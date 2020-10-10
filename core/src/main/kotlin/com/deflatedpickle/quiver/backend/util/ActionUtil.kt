@@ -1,10 +1,12 @@
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import org.oxbow.swingbits.dialog.task.TaskDialog
+import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.io.File
 import javax.swing.JFileChooser
 
@@ -63,9 +65,22 @@ object ActionUtil {
         val openResult = directoryChooser.showOpenDialog(PluginUtil.window)
 
         if (openResult == JFileChooser.APPROVE_OPTION) {
-            DocumentUtil.current = directoryChooser.selectedFile
+            val selected = directoryChooser.selectedFile
 
-            EventOpenFile.trigger(DocumentUtil.current!!)
+            if (selected.isDirectory &&
+                    selected.resolve("pack.mcmeta").isFile) {
+                DocumentUtil.current = directoryChooser.selectedFile
+
+                EventOpenFile.trigger(DocumentUtil.current!!)
+            } else {
+                val lang = LangUtil.getLang("deflatedpickle@quiver#1.2.0")
+
+                TaskDialogs.error(
+                    PluginUtil.window,
+                    lang.trans("error.open.notpack.title"),
+                    lang.trans("error.open.notpack.content")
+                )
+            }
         }
     }
 }
