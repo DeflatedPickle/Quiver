@@ -1,23 +1,33 @@
 package com.deflatedpickle.quiver.launcher
 
+import com.deflatedpickle.haruhi.api.lang.Lang
+import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
 import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.component.PluginPanel
 import com.deflatedpickle.haruhi.event.*
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.frontend.window.Window
+import com.deflatedpickle.quiver.config.QuiverSettings
+import com.deflatedpickle.quiver.launcher.window.Toolbar
+import com.deflatedpickle.quiver.launcher.window.Window
+import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
 import kotlinx.serialization.ImplicitReflectionSerializer
 import org.apache.logging.log4j.LogManager
 import org.fusesource.jansi.AnsiConsole
 import org.oxbow.swingbits.dialog.task.TaskDialogs
+import org.reflections.Reflections
+import org.reflections.ReflectionsException
+import org.reflections.scanners.ResourcesScanner
+import org.reflections.util.ClasspathHelper
+import org.reflections.util.ConfigurationBuilder
+import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
+import java.util.*
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
-import kotlin.reflect.full.createInstance
 
 @ImplicitReflectionSerializer
 fun main(args: Array<String>) {
@@ -82,6 +92,7 @@ fun main(args: Array<String>) {
     }
 
     // Create the config file
+    // We do this whether it's built or not as they are always needed
     EventCreateFile.trigger(
         ConfigUtil.createConfigFolder().apply {
             if (!this.exists()) {
@@ -154,7 +165,7 @@ fun main(args: Array<String>) {
     }
 
     // Create and serialize configs that don't exist
-    for (plugin in PluginUtil.discoveredPlugins) {
+    for (plugin in PluginUtil.loadedPlugins) {
         val id = PluginUtil.pluginToSlug(plugin)
 
         // Check if a plugin is supposed to have settings
@@ -167,12 +178,44 @@ fun main(args: Array<String>) {
         }
     }
 
-    // This is a catch-all event, used by plugins to run code that depends on setup
-    // though the specific events could be used instead
-    // For example, if a plugin needs access to a config, they could listen to this
-    EventProgramFinishSetup.trigger(true)
+    // Load the lang files into a fake registry
+    for (plugin in PluginUtil.loadedPlugins) {
+        // Discover the files
+        val reflections = Reflections(
+            ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage(PluginUtil.pluginMap[plugin]!!.packageName))
+                .addClassLoader(plugin::class.java.classLoader)
+                .setScanners(ResourcesScanner())
+                .filterInputsBy { it.startsWith("lang/") }
+                .useParallelExecutor()
+        )
+
+        try {
+            if (reflections.getResources { true }.size > 0) {
+                // Create and register a Lang instance
+                LangUtil.addLang(
+                    PluginUtil.pluginToSlug(plugin),
+                    Lang(
+                        prefix = plugin.value.replace("_", ""),
+                        lang = ConfigUtil.getSettings<QuiverSettings>("deflatedpickle@quiver#1.2.0").language,
+                        classLoader = plugin::class.java.classLoader
+                    )
+                )
+            }
+        } catch (e: ReflectionsException) {
+            continue
+        }
+        // For whatever reason haruhi tries to load a bundle for itself
+        // when one doesn't exist, so we'll catch this
+        catch (e: MissingResourceException) {
+            continue
+        }
+    }
 
     SwingUtilities.invokeLater {
+        Window.jMenuBar = MenuBar
+        Window.add(Toolbar, BorderLayout.PAGE_START)
+
         Window.size = Dimension(800, 600)
         Window.setLocationRelativeTo(null)
 
@@ -180,6 +223,11 @@ fun main(args: Array<String>) {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         SwingUtilities.updateComponentTreeUI(Window)
+
+        // This is a catch-all event, used by plugins to run code that depends on setup
+        // though the specific events could be used instead
+        // For example, if a plugin needs access to a config, they could listen to this
+        EventProgramFinishSetup.trigger(true)
 
         Window.isVisible = true
     }

@@ -1,8 +1,9 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
+import com.deflatedpickle.haruhi.util.LangUtil
+import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.backend.util.*
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
-import com.deflatedpickle.quiver.frontend.window.Window
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
@@ -14,27 +15,29 @@ import java.io.File
 import javax.swing.*
 import javax.swing.text.PlainDocument
 
-class NewDialog : TaskDialog(Window, "New") {
-    val namespaceEntry = JXTextField("Namespace").apply {
-        toolTipText = "The name of the folder with all the assets; i.e. your username"
+val lang = LangUtil.getLang("deflatedpickle@quiver#1.2.0")
+
+class NewDialog : TaskDialog(PluginUtil.window, lang.trans("dialog.new.title")) {
+    val namespaceEntry = JXTextField(lang.trans("dialog.new.namespace")).apply {
+        toolTipText = lang.trans("dialog.new.namespace.tooltip")
         (document as PlainDocument).documentFilter = Filters.FILE
     }
-    val nameEntry = JXTextField("Name").apply {
-        toolTipText = "The name of the pack directory; i.e. the name of the pack"
+    val nameEntry = JXTextField(lang.trans("dialog.new.name")).apply {
+        toolTipText = lang.trans("dialog.new.name.tooltip")
         (document as PlainDocument).documentFilter = Filters.FILE
     }
     val locationEntry = ButtonField(
-        "Location",
-        "The location of the pack, defaults to .minecraft/resourcepacks",
+        lang.trans("dialog.new.location"),
+        lang.trans("dialog.new.location.tooltip"),
         Filters.PATH,
-        "Open"
+        lang.trans("dialog.new.location.open")
     ) {
         val directoryChooser = JFileChooser().apply {
             currentDirectory = File(".")
             fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             isAcceptAllFileFilterUsed = false
         }
-        val openResult = directoryChooser.showOpenDialog(Window)
+        val openResult = directoryChooser.showOpenDialog(PluginUtil.window)
 
         if (openResult == JFileChooser.APPROVE_OPTION) {
             it.field.text = directoryChooser.selectedFile.absolutePath
@@ -53,11 +56,11 @@ class NewDialog : TaskDialog(Window, "New") {
             )
         }
 
-        toolTipText = "The version this pack will be based off of, different versions have different quirks; i.e. lang names"
+        toolTipText = lang.trans("dialog.new.version.tooltip")
         selectedItem = this.itemCount
     }
-    val descriptionEntry = JXTextArea("Description").apply {
-        toolTipText = "The description of the pack, used in pack.mcmeta"
+    val descriptionEntry = JXTextArea(lang.trans("dialog.new.description")).apply {
+        toolTipText = lang.trans("dialog.new.description.tooltip")
         border = BorderFactory.createEtchedBorder()
     }
 
@@ -73,15 +76,15 @@ class NewDialog : TaskDialog(Window, "New") {
     }
 
     val packTypeGroup = JXRadioGroup(PackType.values()).apply {
-        toolTipText = """
-            Empty Pack - Creates an empty pack
-            Default Pack - Extracts and copies the default pack for the given version
-        """.trimIndent()
         isOpaque = false
 
         // The buttons have a gray background by default
         for (packType in PackType.values()) {
             this.getChildButton(packType).apply {
+                toolTipText = when(packType) {
+                    PackType.EMPTY_PACK -> lang.trans("dialog.new.type.empty.tooltip")
+                    PackType.DEFAULT_PACK -> lang.trans("dialog.new.type.default.tooltip")
+                }
                 isOpaque = false
             }
         }
@@ -118,28 +121,28 @@ class NewDialog : TaskDialog(Window, "New") {
             layout = GridBagLayout()
 
             /* Pack */
-            this.add(JXTitledSeparator("Pack"), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(lang.trans("dialog.new.separator.pack")), FillHorizontalFinishLine)
 
-            this.add(JXLabel("Namespace:"), StickEast)
+            this.add(JXLabel(lang.trans("dialog.new.namespace") + ":"), StickEast)
             this.add(namespaceEntry, FillHorizontalFinishLine)
 
-            this.add(JXLabel("Resource Pack Name:"), StickEast)
+            this.add(JXLabel(lang.trans("dialog.new.name") + ":"), StickEast)
             this.add(nameEntry, FillHorizontalFinishLine)
 
-            this.add(JXLabel("Pack Location:"), StickEast)
+            this.add(JXLabel(lang.trans("dialog.new.location") + ":"), StickEast)
             this.add(locationEntry, FillHorizontalFinishLine)
 
             /* Metadata */
-            this.add(JXTitledSeparator("Metadata"), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(lang.trans("dialog.new.metadata")), FillHorizontalFinishLine)
 
-            this.add(JXLabel("Pack Version:"), StickEast)
+            this.add(JXLabel(lang.trans("dialog.new.version") + ":"), StickEast)
             this.add(packVersionComboBox, FillHorizontalFinishLine)
 
-            this.add(JXLabel("Description:"), StickEast)
+            this.add(JXLabel(lang.trans("dialog.new.description") + ":"), StickEast)
             this.add(descriptionEntry, FillHorizontalFinishLine)
 
             /* Pack Type */
-            this.add(JXTitledSeparator("Pack Type"), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(lang.trans("dialog.new.type")), FillHorizontalFinishLine)
 
             this.add(JXPanel().apply {
                 isOpaque = false

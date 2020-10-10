@@ -2,14 +2,9 @@
 
 package com.deflatedpickle.quiver
 
-import com.deflatedpickle.haruhi.api.constants.MenuCategory
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.backend.util.ActionUtil
-import com.deflatedpickle.quiver.frontend.extension.add
-import javax.swing.JMenu
+import com.deflatedpickle.quiver.config.QuiverSettings
 
 @Suppress("unused", "SpellCheckingInspection")
 @Plugin(
@@ -20,17 +15,7 @@ import javax.swing.JMenu
         <br>
         A program for creating Minecraft resource-packs
     """,
-    type = PluginType.CORE_API
+    type = PluginType.CORE_API,
+    settings = QuiverSettings::class
 )
-object Quiver {
-    init {
-        EventProgramFinishSetup.addListener {
-            val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
-            (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add("New") { ActionUtil.newPack() }
-                add("Open") { ActionUtil.openPack() }
-                addSeparator()
-            }
-        }
-    }
-}
+object Quiver

@@ -1,5 +1,6 @@
-package com.deflatedpickle.quiver.frontend.window.menu
+package com.deflatedpickle.quiver.launcher.window.menu
 
+import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.constants.MenuCategory
 import com.deflatedpickle.haruhi.event.EventMenuBarAdd
@@ -12,12 +13,15 @@ import javax.swing.JMenuBar
 object MenuBar : JMenuBar() {
     private val menuRegistry = object : Registry<String, JMenu>() {
         init {
-            register(MenuCategory.FILE.name, addMenu(JMenu("File")))
-            register(MenuCategory.TOOLS.name, addMenu(JMenu("Tools")))
+            val lang = LangUtil.getLang("deflatedpickle@launcher#1.0.0")
+
+            register(MenuCategory.FILE.name, addMenu(JMenu(lang.trans("menu.file"))))
+            register(MenuCategory.TOOLS.name, addMenu(JMenu(lang.trans("menu.tools"))))
         }
     }
 
     init {
+        @Suppress("UNCHECKED_CAST")
         RegistryUtil.register(MenuCategory.MENU.name, menuRegistry as Registry<String, Any>)
         EventMenuBarBuild.trigger(this)
     }

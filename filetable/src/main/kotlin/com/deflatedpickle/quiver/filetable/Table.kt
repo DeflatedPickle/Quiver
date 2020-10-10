@@ -1,5 +1,7 @@
 package com.deflatedpickle.quiver.filetable
 
+import com.deflatedpickle.haruhi.util.LangUtil
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
@@ -11,10 +13,21 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 object Table : JXTable() {
-    private val headers = arrayOf("Name", "Extension")
-    private val fileModel = DefaultTableModel(headers, 0)
+    private val fileModel = DefaultTableModel(arrayOf(""), 0)
 
     init {
+        EventProgramFinishSetup.addListener {
+            val lang = LangUtil.getLang("deflatedpickle@file_table#1.0.0")
+
+            this.fileModel.setDataVector(
+                arrayOf(),
+                arrayOf(
+                    lang.trans("table.header.name"),
+                    lang.trans("table.header.extension")
+                )
+            )
+        }
+
         this.model = fileModel
         this.isEditable = false
         this.selectionMode = ListSelectionModel.SINGLE_SELECTION
@@ -31,7 +44,8 @@ object Table : JXTable() {
                     if (value is File &&
                         value.exists() &&
                         value.isFile &&
-                        !value.isHidden) {
+                        !value.isHidden
+                    ) {
                         Component.state(true)
                         EventSelectFile.trigger(value)
                     }

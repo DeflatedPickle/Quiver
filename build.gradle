@@ -9,7 +9,7 @@ plugins {
     id 'com.diffplug.gradle.spotless' version '3.27.0'
 }
 
-group 'org.deflatedpickle'
+group 'com.deflatedpickle'
 version '1.0.0'
 
 allprojects {
@@ -27,6 +27,7 @@ startScripts {
 }
 
 distributions {
+    //noinspection GroovyAssignabilityCheck
     main {
         contents {
             from files('README.MD', 'LICENSE')
@@ -82,10 +83,6 @@ run {
         runtimeOnly project(':tableviewer')
         runtimeOnly project(':imageviewer')
         runtimeOnly project(':treeviewer')
-
-        implementation 'com.github.Vatuu:discord-rpc:1.6.2'
-        implementation 'io.github.classgraph:classgraph:4.8.85'
-        implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 
         runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
     }

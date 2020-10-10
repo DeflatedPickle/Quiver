@@ -18,9 +18,13 @@ dependencies {
     api 'com.github.javadev:underscore:1.55'
     api 'com.github.erayerdin:kappdirs:v0.3.1-alpha'
     api 'net.lingala.zip4j:zip4j:2.6.1'
+    api 'org.reflections:reflections:0.9.12'
+    api 'io.github.classgraph:classgraph:4.8.85'
+    api 'com.github.Vatuu:discord-rpc:1.6.2'
+    api 'me.xdrop:fuzzywuzzy:1.2.0'
 
     // Plugin framework
-    api 'com.github.DeflatedPickle.haruhi:haruhi:871d3a8f3f'
+    api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.1'
 
     // Events
     api 'com.github.Fylipp:easy-events:v1.1.0'

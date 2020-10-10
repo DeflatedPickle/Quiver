@@ -1,6 +1,8 @@
 package com.deflatedpickle.quiver.filepanel
 
+import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.rawky.ui.constraints.*
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
@@ -11,17 +13,18 @@ import java.awt.Desktop
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
 import javax.swing.JComponent
+import javax.swing.border.TitledBorder
 
 object Component : PluginPanel() {
-    private val nameLabel = JXLabel("Name:")
-    val nameField = JXTextField("Name").apply { isEnabled = false }
+    private val nameLabel = JXLabel()
+    val nameField = JXTextField().apply { isEnabled = false }
     private val dotLabel = JXLabel(".")
-    val typeField = JXTextField("Type").apply { isEnabled = false }
+    val typeField = JXTextField().apply { isEnabled = false }
 
-    private val fileSizeLabel = JXLabel("File Size:")
+    private val fileSizeLabel = JXLabel()
     val fileSize = JXLabel()
 
-    private val openButton = JXButton("Open").apply {
+    private val openButton = JXButton().apply {
         isEnabled = false
 
         addActionListener {
@@ -29,7 +32,7 @@ object Component : PluginPanel() {
         }
     }
 
-    private val editButton = JXButton("Edit").apply {
+    private val editButton = JXButton().apply {
         isEnabled = false
 
         addActionListener {
@@ -45,7 +48,7 @@ object Component : PluginPanel() {
     )
 
     val widgetPanel = JXPanel().apply {
-        border = BorderFactory.createTitledBorder("View")
+        border = BorderFactory.createTitledBorder("")
         layout = BorderLayout()
     }
 
@@ -64,6 +67,18 @@ object Component : PluginPanel() {
         this.add(openButton, StickWestFinishLine)
 
         this.add(widgetPanel, FillBothFinishLine)
+
+        EventProgramFinishSetup.addListener {
+            val lang = LangUtil.getLang("deflatedpickle@file_panel#1.0.0")
+
+            this.nameLabel.text = "${lang.trans("file.name")}:"
+            this.nameField.prompt = lang.trans("file.name")
+            this.typeField.prompt = lang.trans("file.type")
+            this.fileSizeLabel.text = "${lang.trans("file.size")}:"
+            this.openButton.text = lang.trans("file.open")
+            this.editButton.text = lang.trans("file.edit")
+            (this.widgetPanel.border as TitledBorder).title = lang.trans("file.view")
+        }
     }
 
     fun state(enabled: Boolean = true) {
