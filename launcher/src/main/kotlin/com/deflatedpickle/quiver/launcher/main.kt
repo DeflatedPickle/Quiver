@@ -180,28 +180,16 @@ fun main(args: Array<String>) {
 
     // Load the lang files into a fake registry
     for (plugin in PluginUtil.loadedPlugins) {
-        // Discover the files
-        val reflections = Reflections(
-            ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forPackage(PluginUtil.pluginMap[plugin]!!.packageName))
-                .addClassLoader(plugin::class.java.classLoader)
-                .setScanners(ResourcesScanner())
-                .filterInputsBy { it.startsWith("lang/") }
-                .useParallelExecutor()
-        )
-
         try {
-            if (reflections.getResources { true }.size > 0) {
-                // Create and register a Lang instance
-                LangUtil.addLang(
-                    PluginUtil.pluginToSlug(plugin),
-                    Lang(
-                        prefix = plugin.value.replace("_", ""),
-                        lang = ConfigUtil.getSettings<QuiverSettings>("deflatedpickle@quiver#1.2.0").language,
-                        classLoader = plugin::class.java.classLoader
-                    )
+            // Create and register a Lang instance
+            LangUtil.addLang(
+                PluginUtil.pluginToSlug(plugin),
+                Lang(
+                    prefix = plugin.value.replace("_", ""),
+                    lang = ConfigUtil.getSettings<QuiverSettings>("deflatedpickle@quiver#1.2.0").language,
+                    classLoader = ClassGraphUtil.classLoader
                 )
-            }
+            )
         } catch (e: ReflectionsException) {
             continue
         }

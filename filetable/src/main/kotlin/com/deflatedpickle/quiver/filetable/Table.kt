@@ -1,7 +1,7 @@
 package com.deflatedpickle.quiver.filetable
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
@@ -13,11 +13,17 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 object Table : JXTable() {
-    private val fileModel = DefaultTableModel(arrayOf(""), 0)
+    private val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
+        override fun getColumnClass(columnIndex: Int): Class<*> =
+            when(columnIndex) {
+                0 -> File::class.java
+                else -> String::class.java
+            }
+    }
 
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_table#1.0.0")
+            val lang = LangUtil.getLang("deflatedpickle@file_table#1.0.1")
 
             this.fileModel.setDataVector(
                 arrayOf(),
@@ -55,7 +61,7 @@ object Table : JXTable() {
             }
         }
 
-        this.columnModel.getColumn(0).cellRenderer = object : DefaultTableCellRenderer() {
+        this.setDefaultRenderer(File::class.java, object : DefaultTableCellRenderer() {
             override fun getTableCellRendererComponent(
                 table: JTable, value: Any,
                 isSelected: Boolean, hasFocus: Boolean,
@@ -65,7 +71,7 @@ object Table : JXTable() {
                 isSelected, hasFocus,
                 row, column
             )
-        }
+        })
     }
 
     fun refreshAll() {

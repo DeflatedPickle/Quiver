@@ -24,7 +24,7 @@ dependencies {
     api 'me.xdrop:fuzzywuzzy:1.2.0'
 
     // Plugin framework
-    api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.1'
+    api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.2'
 
     // Events
     api 'com.github.Fylipp:easy-events:v1.1.0'

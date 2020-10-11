@@ -9,7 +9,7 @@ import com.deflatedpickle.quiver.backend.event.EventOpenFile
 @Plugin(
     value = "file_table",
     author = "DeflatedPickle",
-    version = "1.0.0",
+    version = "1.0.1",
     description = """
         <br>
         Provides a table to show what files are in a given folder
