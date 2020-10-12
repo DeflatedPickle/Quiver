@@ -9,6 +9,8 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.util.ActionUtil
 import com.deflatedpickle.quiver.frontend.extension.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
+import com.deflatedpickle.quiver.launcher.window.menu.MenuFile
+import com.deflatedpickle.quiver.launcher.window.menu.MenuTools
 import javax.swing.JMenu
 
 @Plugin(
@@ -28,10 +30,20 @@ object Launcher {
             val lang = LangUtil.getLang("deflatedpickle@launcher#1.0.0")
 
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
-            (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
-                add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
-                addSeparator()
+            if (menuBar != null) {
+                val menuFile = menuBar.get(MenuCategory.FILE.name)
+                if (menuFile is JMenu) {
+                    menuFile.text = lang.trans("menu.file")
+
+                    menuFile.add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
+                    menuFile.add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
+                    menuFile.addSeparator()
+                }
+
+                val menuTools = menuBar.get(MenuCategory.TOOLS.name)
+                if (menuTools is JMenu) {
+                    menuTools.text = lang.trans("menu.tools")
+                }
             }
 
             Toolbar.add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
