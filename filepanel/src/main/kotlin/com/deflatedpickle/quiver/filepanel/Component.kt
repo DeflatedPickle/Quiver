@@ -3,6 +3,7 @@ package com.deflatedpickle.quiver.filepanel
 import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.component.PluginPanel
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.quiver.filepanel.lang.FilePanelLang
 import com.deflatedpickle.rawky.ui.constraints.*
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
@@ -69,15 +70,13 @@ object Component : PluginPanel() {
         this.add(widgetPanel, FillBothFinishLine)
 
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_panel#1.0.0")
-
-            this.nameLabel.text = "${lang.trans("file.name")}:"
-            this.nameField.prompt = lang.trans("file.name")
-            this.typeField.prompt = lang.trans("file.type")
-            this.fileSizeLabel.text = "${lang.trans("file.size")}:"
-            this.openButton.text = lang.trans("file.open")
-            this.editButton.text = lang.trans("file.edit")
-            (this.widgetPanel.border as TitledBorder).title = lang.trans("file.view")
+            this.nameLabel.text = "${FilePanelLang.trans("file.name")}:"
+            this.nameField.prompt = FilePanelLang.trans("file.name")
+            this.typeField.prompt = FilePanelLang.trans("file.type")
+            this.fileSizeLabel.text = "${FilePanelLang.trans("file.size")}:"
+            this.openButton.text = FilePanelLang.trans("file.open")
+            this.editButton.text = FilePanelLang.trans("file.edit")
+            (this.widgetPanel.border as TitledBorder).title = FilePanelLang.trans("file.view")
         }
     }
 
