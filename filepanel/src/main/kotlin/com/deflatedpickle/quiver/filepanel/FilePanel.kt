@@ -32,16 +32,13 @@ object FilePanel {
     var selectedFile: File? = null
 
     private val radioButtonGroup = JXRadioGroup<String>()
-    private val viewerToolbar = JToolBar().apply { add(radioButtonGroup) }
+    private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
     init {
         @Suppress("UNCHECKED_CAST")
         RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
 
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_panel#1.0.0")
-
-            this.viewerToolbar.name = lang.trans("toolbar.viewer")
             Component.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
         }
 

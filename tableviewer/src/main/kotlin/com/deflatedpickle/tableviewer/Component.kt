@@ -17,8 +17,8 @@ class Component : JXTable() {
             this.fileModel.setDataVector(
                 arrayOf(),
                 arrayOf(
-                    lang.trans("table.header.key"),
-                    lang.trans("table.header.value")
+                    "Key",
+                    "Value"
                 )
             )
         }

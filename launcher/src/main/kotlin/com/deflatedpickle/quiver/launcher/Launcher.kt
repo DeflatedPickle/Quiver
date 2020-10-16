@@ -25,17 +25,15 @@ import javax.swing.JMenu
 object Launcher {
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@launcher#1.0.0")
-
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
             (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
-                add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
+                add("New Pack") { ActionUtil.newPack() }
+                add("Open Pack") { ActionUtil.openPack() }
                 addSeparator()
             }
 
-            Toolbar.add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
-            Toolbar.add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
+            Toolbar.add("New Pack") { ActionUtil.newPack() }
+            Toolbar.add("Open Pack") { ActionUtil.openPack() }
         }
     }
 }

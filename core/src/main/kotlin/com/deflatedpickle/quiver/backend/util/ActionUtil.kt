@@ -73,12 +73,10 @@ object ActionUtil {
 
                 EventOpenFile.trigger(DocumentUtil.current!!)
             } else {
-                val lang = LangUtil.getLang("deflatedpickle@quiver#1.2.0")
-
                 TaskDialogs.error(
                     PluginUtil.window,
-                    lang.trans("error.open.notpack.title"),
-                    lang.trans("error.open.notpack.content")
+                    "Invalid Pack",
+                    "This directory is not a pack, as it does not contain a pack.mcmeta file"
                 )
             }
         }

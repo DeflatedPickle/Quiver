@@ -7,6 +7,7 @@ import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
 import org.jdesktop.swingx.JXTable
 import java.io.File
+import javax.swing.JPopupMenu
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableCellRenderer
@@ -23,13 +24,11 @@ object Table : JXTable() {
 
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_table#1.0.1")
-
             this.fileModel.setDataVector(
                 arrayOf(),
                 arrayOf(
-                    lang.trans("table.header.name"),
-                    lang.trans("table.header.extension")
+                    "Name",
+                    "Extension"
                 )
             )
         }

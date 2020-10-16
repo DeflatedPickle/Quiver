@@ -6,6 +6,8 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
+version '1.2.0'
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 

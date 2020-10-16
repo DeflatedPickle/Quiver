@@ -28,6 +28,7 @@ import java.io.File
 import java.util.*
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
+import kotlin.system.exitProcess
 
 @ImplicitReflectionSerializer
 fun main(args: Array<String>) {
@@ -38,8 +39,10 @@ fun main(args: Array<String>) {
     System.setProperty("log4j.skipJansi", "false")
     val logger = LogManager.getLogger()
 
-    logger.info("Installed JANSI for this session")
+    logger.trace("Installed JANSI for this terminal session")
     AnsiConsole.systemInstall()
+
+    logger.trace("Running with Java specification ${Runtime::class.java.`package`.specificationVersion}, implementation ${Runtime::class.java.`package`.implementationVersion}")
 
     // The gradle tasks pass in "indev" argument
     // if it doesn't exist it's not indev
@@ -54,10 +57,10 @@ fun main(args: Array<String>) {
     // to reduce the instance count
     Runtime.getRuntime().addShutdownHook(object : Thread() {
         override fun run() {
-            logger.warn("Uninstalled JANSI for this session")
+            logger.trace("Uninstalled JANSI for this terminal session")
             AnsiConsole.systemUninstall()
 
-            logger.warn("The JVM instance running Quiver was shutdown")
+            logger.trace("The JVM instance running Quiver was shutdown")
             EventProgramShutdown.trigger(true)
 
             // Changes were probably made, let's serialize the configs again
@@ -77,9 +80,10 @@ fun main(args: Array<String>) {
                 .build()
                 .parent(Window)
                 .showException(e)
+            exitProcess(0)
         }
     }
-    logger.info("Registered a default exception handler")
+    logger.trace("Registered a default exception handler")
 
     // Plugins are distributed and loaded as JARs
     // when the program is built
@@ -116,7 +120,7 @@ fun main(args: Array<String>) {
             .thenComparing(Plugin::type)
             .thenComparing(Plugin::value)
     )
-    logger.info("Sorted out the load order: ${PluginUtil.discoveredPlugins.map { PluginUtil.pluginToSlug(it) }}")
+    logger.debug("Sorted out the load order: ${PluginUtil.discoveredPlugins.map { PluginUtil.pluginToSlug(it) }}")
     // EventSortedPluginLoadOrder.trigger(PluginUtil.discoveredPlugins)
 
     // Loads all classes with a Plugin annotation
@@ -175,28 +179,6 @@ fun main(args: Array<String>) {
 
             ConfigUtil.serializeConfig(id, file)
             logger.info("Serialized the config for ${PluginUtil.pluginToSlug(plugin)} to ${file.absolutePath}")
-        }
-    }
-
-    // Load the lang files into a fake registry
-    for (plugin in PluginUtil.loadedPlugins) {
-        try {
-            // Create and register a Lang instance
-            LangUtil.addLang(
-                PluginUtil.pluginToSlug(plugin),
-                Lang(
-                    prefix = plugin.value.replace("_", ""),
-                    lang = ConfigUtil.getSettings<QuiverSettings>("deflatedpickle@quiver#1.2.0").language,
-                    classLoader = ClassGraphUtil.classLoader
-                )
-            )
-        } catch (e: ReflectionsException) {
-            continue
-        }
-        // For whatever reason haruhi tries to load a bundle for itself
-        // when one doesn't exist, so we'll catch this
-        catch (e: MissingResourceException) {
-            continue
         }
     }
 
