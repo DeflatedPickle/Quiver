@@ -5,6 +5,7 @@ import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
+import com.deflatedpickle.quiver.filetable.lang.FileTableLang
 import org.jdesktop.swingx.JXTable
 import java.io.File
 import javax.swing.JTable
@@ -23,13 +24,11 @@ object Table : JXTable() {
 
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_table#1.0.1")
-
             this.fileModel.setDataVector(
                 arrayOf(),
                 arrayOf(
-                    lang.trans("table.header.name"),
-                    lang.trans("table.header.extension")
+                    FileTableLang.trans("table.header.name"),
+                    FileTableLang.trans("table.header.extension")
                 )
             )
         }

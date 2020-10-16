@@ -1,6 +1,5 @@
 package com.deflatedpickle.quiver.launcher
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.constants.MenuCategory
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -8,6 +7,7 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.util.ActionUtil
 import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.quiver.launcher.lang.LauncherLang
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import javax.swing.JMenu
 
@@ -25,17 +25,25 @@ import javax.swing.JMenu
 object Launcher {
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@launcher#1.0.0")
-
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
-            (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
-                add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
-                addSeparator()
+            if (menuBar != null) {
+                val menuFile = menuBar.get(MenuCategory.FILE.name)
+                if (menuFile is JMenu) {
+                    menuFile.text = LauncherLang.trans("menu.file")
+
+                    menuFile.add(LauncherLang.trans("action.new_pack")) { ActionUtil.newPack() }
+                    menuFile.add(LauncherLang.trans("action.open_pack")) { ActionUtil.openPack() }
+                    menuFile.addSeparator()
+                }
+
+                val menuTools = menuBar.get(MenuCategory.TOOLS.name)
+                if (menuTools is JMenu) {
+                    menuTools.text = LauncherLang.trans("menu.tools")
+                }
             }
 
-            Toolbar.add(lang.trans("action.new_pack")) { ActionUtil.newPack() }
-            Toolbar.add(lang.trans("action.open_pack")) { ActionUtil.openPack() }
+            Toolbar.add(LauncherLang.trans("action.new_pack")) { ActionUtil.newPack() }
+            Toolbar.add(LauncherLang.trans("action.open_pack")) { ActionUtil.openPack() }
         }
     }
 }

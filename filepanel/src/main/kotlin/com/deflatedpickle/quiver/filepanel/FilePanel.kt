@@ -2,13 +2,17 @@ package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.Registry
+import com.deflatedpickle.haruhi.api.lang.Lang
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
+import com.deflatedpickle.quiver.config.QuiverSettings
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
+import com.deflatedpickle.quiver.filepanel.lang.FilePanelLang
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXRadioGroup
 import java.awt.BorderLayout
@@ -39,9 +43,7 @@ object FilePanel {
         RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
 
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@file_panel#1.0.0")
-
-            this.viewerToolbar.name = lang.trans("toolbar.viewer")
+            this.viewerToolbar.name = FilePanelLang.trans("toolbar.viewer")
             Component.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
         }
 

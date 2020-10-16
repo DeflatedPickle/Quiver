@@ -13,10 +13,8 @@ import javax.swing.JMenuBar
 object MenuBar : JMenuBar() {
     private val menuRegistry = object : Registry<String, JMenu>() {
         init {
-            val lang = LangUtil.getLang("deflatedpickle@launcher#1.0.0")
-
-            register(MenuCategory.FILE.name, addMenu(JMenu(lang.trans("menu.file"))))
-            register(MenuCategory.TOOLS.name, addMenu(JMenu(lang.trans("menu.tools"))))
+            register(MenuCategory.FILE.name, addMenu(MenuFile))
+            register(MenuCategory.TOOLS.name, addMenu(MenuTools))
         }
     }
 

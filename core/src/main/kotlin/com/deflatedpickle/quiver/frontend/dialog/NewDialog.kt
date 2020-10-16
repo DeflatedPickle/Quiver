@@ -1,7 +1,7 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.quiver.backend.lang.QuiverLang
 import com.deflatedpickle.quiver.backend.util.*
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
@@ -15,22 +15,20 @@ import java.io.File
 import javax.swing.*
 import javax.swing.text.PlainDocument
 
-val lang = LangUtil.getLang("deflatedpickle@quiver#1.2.0")
-
-class NewDialog : TaskDialog(PluginUtil.window, lang.trans("dialog.new.title")) {
-    val namespaceEntry = JXTextField(lang.trans("dialog.new.namespace")).apply {
-        toolTipText = lang.trans("dialog.new.namespace.tooltip")
+class NewDialog : TaskDialog(PluginUtil.window, QuiverLang.trans("dialog.new.title")) {
+    val namespaceEntry = JXTextField(QuiverLang.trans("dialog.new.namespace")).apply {
+        toolTipText = QuiverLang.trans("dialog.new.namespace.tooltip")
         (document as PlainDocument).documentFilter = Filters.FILE
     }
-    val nameEntry = JXTextField(lang.trans("dialog.new.name")).apply {
-        toolTipText = lang.trans("dialog.new.name.tooltip")
+    val nameEntry = JXTextField(QuiverLang.trans("dialog.new.name")).apply {
+        toolTipText = QuiverLang.trans("dialog.new.name.tooltip")
         (document as PlainDocument).documentFilter = Filters.FILE
     }
     val locationEntry = ButtonField(
-        lang.trans("dialog.new.location"),
-        lang.trans("dialog.new.location.tooltip"),
+        QuiverLang.trans("dialog.new.location"),
+        QuiverLang.trans("dialog.new.location.tooltip"),
         Filters.PATH,
-        lang.trans("dialog.new.location.open")
+        QuiverLang.trans("dialog.new.location.open")
     ) {
         val directoryChooser = JFileChooser().apply {
             currentDirectory = File(".")
@@ -56,11 +54,11 @@ class NewDialog : TaskDialog(PluginUtil.window, lang.trans("dialog.new.title")) 
             )
         }
 
-        toolTipText = lang.trans("dialog.new.version.tooltip")
+        toolTipText = QuiverLang.trans("dialog.new.version.tooltip")
         selectedItem = this.itemCount
     }
-    val descriptionEntry = JXTextArea(lang.trans("dialog.new.description")).apply {
-        toolTipText = lang.trans("dialog.new.description.tooltip")
+    val descriptionEntry = JXTextArea(QuiverLang.trans("dialog.new.description")).apply {
+        toolTipText = QuiverLang.trans("dialog.new.description.tooltip")
         border = BorderFactory.createEtchedBorder()
     }
 
@@ -82,8 +80,8 @@ class NewDialog : TaskDialog(PluginUtil.window, lang.trans("dialog.new.title")) 
         for (packType in PackType.values()) {
             this.getChildButton(packType).apply {
                 toolTipText = when(packType) {
-                    PackType.EMPTY_PACK -> lang.trans("dialog.new.type.empty.tooltip")
-                    PackType.DEFAULT_PACK -> lang.trans("dialog.new.type.default.tooltip")
+                    PackType.EMPTY_PACK -> QuiverLang.trans("dialog.new.type.empty.tooltip")
+                    PackType.DEFAULT_PACK -> QuiverLang.trans("dialog.new.type.default.tooltip")
                 }
                 isOpaque = false
             }
@@ -121,28 +119,28 @@ class NewDialog : TaskDialog(PluginUtil.window, lang.trans("dialog.new.title")) 
             layout = GridBagLayout()
 
             /* Pack */
-            this.add(JXTitledSeparator(lang.trans("dialog.new.separator.pack")), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(QuiverLang.trans("dialog.new.separator.pack")), FillHorizontalFinishLine)
 
-            this.add(JXLabel(lang.trans("dialog.new.namespace") + ":"), StickEast)
+            this.add(JXLabel(QuiverLang.trans("dialog.new.namespace") + ":"), StickEast)
             this.add(namespaceEntry, FillHorizontalFinishLine)
 
-            this.add(JXLabel(lang.trans("dialog.new.name") + ":"), StickEast)
+            this.add(JXLabel(QuiverLang.trans("dialog.new.name") + ":"), StickEast)
             this.add(nameEntry, FillHorizontalFinishLine)
 
-            this.add(JXLabel(lang.trans("dialog.new.location") + ":"), StickEast)
+            this.add(JXLabel(QuiverLang.trans("dialog.new.location") + ":"), StickEast)
             this.add(locationEntry, FillHorizontalFinishLine)
 
             /* Metadata */
-            this.add(JXTitledSeparator(lang.trans("dialog.new.metadata")), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(QuiverLang.trans("dialog.new.metadata")), FillHorizontalFinishLine)
 
-            this.add(JXLabel(lang.trans("dialog.new.version") + ":"), StickEast)
+            this.add(JXLabel(QuiverLang.trans("dialog.new.version") + ":"), StickEast)
             this.add(packVersionComboBox, FillHorizontalFinishLine)
 
-            this.add(JXLabel(lang.trans("dialog.new.description") + ":"), StickEast)
+            this.add(JXLabel(QuiverLang.trans("dialog.new.description") + ":"), StickEast)
             this.add(descriptionEntry, FillHorizontalFinishLine)
 
             /* Pack Type */
-            this.add(JXTitledSeparator(lang.trans("dialog.new.type")), FillHorizontalFinishLine)
+            this.add(JXTitledSeparator(QuiverLang.trans("dialog.new.type")), FillHorizontalFinishLine)
 
             this.add(JXPanel().apply {
                 isOpaque = false

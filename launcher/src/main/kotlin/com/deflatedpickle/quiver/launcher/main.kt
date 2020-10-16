@@ -178,28 +178,6 @@ fun main(args: Array<String>) {
         }
     }
 
-    // Load the lang files into a fake registry
-    for (plugin in PluginUtil.loadedPlugins) {
-        try {
-            // Create and register a Lang instance
-            LangUtil.addLang(
-                PluginUtil.pluginToSlug(plugin),
-                Lang(
-                    prefix = plugin.value.replace("_", ""),
-                    lang = ConfigUtil.getSettings<QuiverSettings>("deflatedpickle@quiver#1.2.0").language,
-                    classLoader = ClassGraphUtil.classLoader
-                )
-            )
-        } catch (e: ReflectionsException) {
-            continue
-        }
-        // For whatever reason haruhi tries to load a bundle for itself
-        // when one doesn't exist, so we'll catch this
-        catch (e: MissingResourceException) {
-            continue
-        }
-    }
-
     SwingUtilities.invokeLater {
         Window.jMenuBar = MenuBar
         Window.add(Toolbar, BorderLayout.PAGE_START)
