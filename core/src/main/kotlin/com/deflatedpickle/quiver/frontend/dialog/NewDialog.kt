@@ -28,8 +28,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         Filters.PATH,
         "Open"
     ) {
-        val directoryChooser = JFileChooser().apply {
-            currentDirectory = File(".")
+        val directoryChooser = JFileChooser(
+            it.field.text
+        ).apply {
             fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             isAcceptAllFileFilterUsed = false
         }
@@ -38,8 +39,11 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         if (openResult == JFileChooser.APPROVE_OPTION) {
             it.field.text = directoryChooser.selectedFile.absolutePath
         }
+    }.apply {
+        this.field.text = DotMinecraft.dotMinecraft.resolve("resourcepacks").absolutePath
     }
 
+    // We'll cache a few game versions here so we don't keep generating them
     private val packToVersion = Array(6) {
         PackUtil.packVersionToGameVersion(it + 1)
     }

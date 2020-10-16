@@ -57,8 +57,9 @@ object ActionUtil {
     }
 
     fun openPack() {
-        val directoryChooser = JFileChooser().apply {
-            currentDirectory = File(".")
+        val directoryChooser = JFileChooser(
+            DotMinecraft.dotMinecraft.resolve("resourcepacks").absolutePath
+        ).apply {
             fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
             isAcceptAllFileFilterUsed = false
         }
