@@ -69,6 +69,12 @@ distZip {
 run {
     args = ['indev']
 
+    doFirst {
+        file("run").mkdirs()
+    }
+
+    workingDir "run"
+
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
