@@ -31,12 +31,19 @@ object Tree : JXTree(DefaultMutableTreeNode()) {
                 ?.userObject as File?
         }
 
+        this.addSelectionListener()
+        this.setCellRender()
+    }
+
+    private fun addSelectionListener() {
         this.addTreeSelectionListener {
             val folder = (it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File
             Table.refresh(folder)
             EventSelectFolder.trigger(folder)
         }
+    }
 
+    private fun setCellRender() {
         this.setCellRenderer(object : DefaultTreeCellRenderer() {
             override fun getTreeCellRendererComponent(
                 tree: JTree?,

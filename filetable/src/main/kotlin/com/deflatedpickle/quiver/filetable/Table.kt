@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel
 object Table : JXTable() {
     private val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
         override fun getColumnClass(columnIndex: Int): Class<*> =
-            when(columnIndex) {
+            when (columnIndex) {
                 0 -> File::class.java
                 else -> String::class.java
             }
@@ -41,13 +41,16 @@ object Table : JXTable() {
         this.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
 
         this.componentPopupMenu = FilePopupMenu {
-            if (this.selectedRow >= 0) {
+            if (this.selectedRow >= 0)
                 fileModel.getValueAt(this.selectedRow, 0) as File?
-            } else {
-                null
-            }
+            else null
         }
 
+        this.addSelectionListener()
+        this.addFileRenderer()
+    }
+
+    private fun addSelectionListener() {
         this.selectionModel.addListSelectionListener {
             if (!it.valueIsAdjusting) {
                 if (this.selectedRow >= 0) {
@@ -68,7 +71,9 @@ object Table : JXTable() {
                 }
             }
         }
+    }
 
+    private fun addFileRenderer() {
         this.setDefaultRenderer(File::class.java, object : DefaultTableCellRenderer() {
             override fun getTableCellRendererComponent(
                 table: JTable, value: Any,
