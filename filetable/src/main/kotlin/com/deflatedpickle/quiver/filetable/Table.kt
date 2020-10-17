@@ -5,6 +5,7 @@ import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
+import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import org.jdesktop.swingx.JXTable
 import java.io.File
 import javax.swing.JPopupMenu
@@ -38,6 +39,14 @@ object Table : JXTable() {
         this.selectionMode = ListSelectionModel.SINGLE_SELECTION
 
         this.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
+
+        this.componentPopupMenu = FilePopupMenu {
+            if (this.selectedRow >= 0) {
+                fileModel.getValueAt(this.selectedRow, 0) as File?
+            } else {
+                null
+            }
+        }
 
         this.selectionModel.addListSelectionListener {
             if (!it.valueIsAdjusting) {

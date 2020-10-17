@@ -1,6 +1,5 @@
 package com.deflatedpickle.quiver.filepanel
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -85,13 +84,14 @@ object FilePanel {
                     .getChildButton(0).apply { isSelected = true }
                     .actionListeners
                     .first()
-                        // The action isn't performed when we select it
-                        // So we have to send out an event for it
+                    // The action isn't performed when we select it (silly, right?)
+                    // So we have to send out an event for it
                     .actionPerformed(
                         ActionEvent(
                             this,
                             ActionEvent.ACTION_PERFORMED,
-                            null)
+                            null
+                        )
                     )
             }
 

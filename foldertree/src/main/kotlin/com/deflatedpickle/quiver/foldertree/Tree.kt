@@ -3,9 +3,14 @@ package com.deflatedpickle.quiver.foldertree
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filetable.Table
+import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import org.jdesktop.swingx.JXTree
 import java.awt.Component
+import java.awt.Desktop
 import java.io.File
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeCellRenderer
@@ -20,6 +25,11 @@ object Tree : JXTree(DefaultMutableTreeNode()) {
         this.expandsSelectedPaths = true
 
         this.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
+
+        this.componentPopupMenu = FilePopupMenu {
+            (Tree.selectionPath?.lastPathComponent as DefaultMutableTreeNode?)
+                ?.userObject as File?
+        }
 
         this.addTreeSelectionListener {
             val folder = (it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File

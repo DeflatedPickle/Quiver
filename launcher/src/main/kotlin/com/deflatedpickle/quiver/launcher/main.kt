@@ -80,7 +80,11 @@ fun main(args: Array<String>) {
                 .build()
                 .parent(Window)
                 .showException(e)
-            exitProcess(0)
+            // If the window isn't open and an error pops up
+            // it's probably not going to open
+            if (!Window.isVisible) {
+                exitProcess(0)
+            }
         }
     }
     logger.trace("Registered a default exception handler")
