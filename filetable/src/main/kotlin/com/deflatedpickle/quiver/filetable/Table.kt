@@ -1,14 +1,19 @@
 package com.deflatedpickle.quiver.filetable
 
+import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.Component
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
+import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXTable
+import java.awt.datatransfer.DataFlavor
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetDragEvent
+import java.awt.dnd.DropTargetDropEvent
 import java.io.File
-import javax.swing.JPopupMenu
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableCellRenderer
@@ -48,6 +53,7 @@ object Table : JXTable() {
 
         this.addSelectionListener()
         this.addFileRenderer()
+        this.addDropTarget()
     }
 
     private fun addSelectionListener() {
@@ -85,6 +91,30 @@ object Table : JXTable() {
                 row, column
             )
         })
+    }
+
+    private fun addDropTarget() {
+        this.dropTarget = object : DropTarget() {
+            override fun dragEnter(dtde: DropTargetDragEvent) {
+                if (DocumentUtil.current == null) {
+                    dtde.rejectDrag()
+                }
+            }
+
+            override fun drop(dtde: DropTargetDropEvent) {
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE)
+                val files = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+
+                for (i in files) {
+                    if (i.isFile) {
+                        FileUtils.moveFileToDirectory(
+                            i, FileTable.currentDir, true
+                        )
+                        EventCreateFile.trigger(File(FileTable.currentDir, i.name))
+                    }
+                }
+            }
+        }
     }
 
     fun refreshAll() {

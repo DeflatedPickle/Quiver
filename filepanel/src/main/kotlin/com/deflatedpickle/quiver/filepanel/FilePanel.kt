@@ -50,7 +50,8 @@ object FilePanel {
             this.selectedFile = it
 
             for (component in Component.widgetPanel.components) {
-                if (component !is JToolBar) {
+                // Remove everything but the toolbar to change viewers
+                if (component != this.viewerToolbar) {
                     Component.widgetPanel.remove(component)
                 }
             }
@@ -58,28 +59,36 @@ object FilePanel {
 
             val registry = RegistryUtil.get("viewer")
 
-            val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>
+            val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>?
 
-            for (viewer in viewerList) {
-                radioButtonGroup.add(viewer::class.simpleName)
-
-                radioButtonGroup.getChildButton(viewer::class.simpleName).addActionListener { _ ->
-                    for (component in Component.widgetPanel.components) {
-                        if (component !is JToolBar) {
-                            Component.widgetPanel.remove(component)
+            // If there there are viewers for this extension...
+            if (viewerList != null) {
+                for (viewer in viewerList) {
+                    // Add a button to switch to it
+                    radioButtonGroup.add(viewer::class.simpleName)
+                    // Get that button and listen to clicks, to set
+                    radioButtonGroup.getChildButton(viewer::class.simpleName).addActionListener { _ ->
+                        for (component in Component.widgetPanel.components) {
+                            if (component !is JToolBar) {
+                                Component.widgetPanel.remove(component)
+                            }
                         }
+                        EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
+
+                        // Refresh the content in the viewer
+                        viewer.refresh(it)
+                        // Add the viewer wrapped by it's scroller
+                        Component.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
+
+                        // We added the viewer, so we have to repaint it
+                        Component.widgetPanel.repaint()
+                        Component.widgetPanel.revalidate()
                     }
-                    EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
-
-                    viewer.refresh(it)
-                    Component.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
-
-                    Component.widgetPanel.repaint()
-                    Component.widgetPanel.revalidate()
                 }
             }
 
             if (radioButtonGroup.childButtonCount > 0) {
+                // This selects the first viewer
                 radioButtonGroup
                     .getChildButton(0).apply { isSelected = true }
                     .actionListeners
@@ -95,9 +104,11 @@ object FilePanel {
                     )
             }
 
+            // Radio buttons we're added/removed, we need to repaint
             radioButtonGroup.repaint()
             radioButtonGroup.revalidate()
 
+            // We'll also repaint this
             Component.widgetPanel.repaint()
             Component.widgetPanel.revalidate()
         }

@@ -1,7 +1,10 @@
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.rawky.ui.constraints.*
+import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
@@ -9,9 +12,14 @@ import org.jdesktop.swingx.JXTextField
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
+import java.awt.datatransfer.DataFlavor
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetDragEvent
+import java.awt.dnd.DropTargetDropEvent
+import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.JComponent
-import javax.swing.JPopupMenu
 
 object Component : PluginPanel() {
     private val nameLabel = JXLabel("Name")
@@ -65,6 +73,41 @@ object Component : PluginPanel() {
         this.add(openButton, StickWestFinishLine)
 
         this.add(widgetPanel, FillBothFinishLine)
+
+        this.addDropTarget()
+    }
+
+    private fun addDropTarget() {
+        this.dropTarget = object : DropTarget() {
+            override fun dragEnter(dtde: DropTargetDragEvent) {
+                val file = FilePanel.selectedFile
+                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>?
+
+                if (DocumentUtil.current == null || file == null) {
+                    dtde.rejectDrag()
+                } else {
+                    if (fileList != null && FilePanel.selectedFile != null) {
+                        // We only want to allow one file
+                        if (fileList.size != 1 && fileList[0].extension != file.extension) {
+                            dtde.rejectDrag()
+                        }
+                    }
+                }
+            }
+
+            override fun drop(dtde: DropTargetDropEvent) {
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE)
+                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+                val file = fileList[0]
+
+                if (fileList[0].isFile && FilePanel.selectedFile != null) {
+                    FilePanel.selectedFile!!.delete()
+                    // Replace the selected file with the dropped one
+                    FileUtils.moveFile(file, FilePanel.selectedFile)
+                    EventCreateFile.trigger(FilePanel.selectedFile!!)
+                }
+            }
+        }
     }
 
     fun state(enabled: Boolean = true) {
