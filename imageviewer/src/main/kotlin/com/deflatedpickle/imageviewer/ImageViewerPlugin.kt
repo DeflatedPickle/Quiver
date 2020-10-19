@@ -20,7 +20,9 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 )
 object ImageViewerPlugin {
     private val extensionSet = setOf(
-        "png"
+        "png",
+        "jpg",
+        "jpeg"
     )
 
     init {

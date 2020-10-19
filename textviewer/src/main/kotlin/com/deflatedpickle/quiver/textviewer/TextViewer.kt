@@ -14,10 +14,10 @@ object TextViewer : Viewer<File> {
         this.component.text = with.readText()
 
         this.component.syntaxEditingStyle = when (with.extension) {
-            // I'm almost certain they use JSON, though!
-            "json" -> SyntaxConstants.SYNTAX_STYLE_JSON
             // Do resource packs even have properties?
             "properties" -> SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE
+            // I'm almost certain they use JSON, though!
+            "json", "mcmeta" -> SyntaxConstants.SYNTAX_STYLE_JSON
             // I think resource packs can have scripts?
             "js" -> SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT
             // And if people don't want to use JavaScript...
