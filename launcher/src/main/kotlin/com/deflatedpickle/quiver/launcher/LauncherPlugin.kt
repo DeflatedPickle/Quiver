@@ -22,7 +22,7 @@ import javax.swing.JMenu
     type = PluginType.LAUNCHER
 )
 @Suppress("unused")
-object Launcher {
+object LauncherPlugin {
     init {
         EventProgramFinishSetup.addListener {
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)

@@ -1,32 +1,86 @@
 package com.deflatedpickle.quiver.foldertree
 
-import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventCreateFile
-import com.deflatedpickle.haruhi.event.EventPanelFocusGained
-import com.deflatedpickle.quiver.backend.event.EventOpenFile
+import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.quiver.filetable.FileTable
+import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
+import org.jdesktop.swingx.JXTree
+import java.awt.Component
+import java.io.File
+import javax.swing.JTree
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeCellRenderer
+import javax.swing.tree.DefaultTreeModel
+import javax.swing.tree.TreeSelectionModel
 
-@Suppress("unused")
-@Plugin(
-    value = "folder_tree",
-    author = "DeflatedPickle",
-    version = "1.0.0",
-    description = """
-        <br>
-        Provides a panel on which a given file can be configured
-    """,
-    type = PluginType.COMPONENT,
-    component = Component::class
-)
-object FolderTree {
+object FolderTree : JXTree(DefaultMutableTreeNode()) {
     init {
-        EventCreateFile.addListener {
-            Tree.refreshAll()
+        this.showsRootHandles = true
+        this.isRootVisible = false
+        this.scrollsOnExpand = true
+        this.expandsSelectedPaths = true
+
+        this.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
+
+        this.componentPopupMenu = FilePopupMenu {
+            (FolderTree.selectionPath?.lastPathComponent as DefaultMutableTreeNode?)
+                ?.userObject as File?
         }
 
-        EventOpenFile.addListener {
-            Tree.refreshAll()
+        this.addSelectionListener()
+        this.setCellRender()
+    }
+
+    private fun addSelectionListener() {
+        this.addTreeSelectionListener {
+            val folder = (it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File
+            FileTable.refresh(folder)
+            EventSelectFolder.trigger(folder)
         }
+    }
+
+    private fun setCellRender() {
+        this.setCellRenderer(object : DefaultTreeCellRenderer() {
+            override fun getTreeCellRendererComponent(
+                tree: JTree?,
+                value: Any?,
+                selected: Boolean,
+                expanded: Boolean,
+                leaf: Boolean,
+                row: Int,
+                hasFocus: Boolean
+            ): Component = super.getTreeCellRendererComponent(
+                tree,
+                ((value as DefaultMutableTreeNode).userObject as File?)?.name?.split("\\")?.last(),
+                selected, expanded, leaf, row, hasFocus
+            )
+        })
+    }
+
+    fun refreshAll() {
+        this.removeAll()
+
+        val document = DocumentUtil.current
+        val fakeRoot = DefaultMutableTreeNode(DocumentUtil.current)
+        (this.model.root as DefaultMutableTreeNode).add(fakeRoot)
+        refresh(document!!, fakeRoot)
+
+        this.expandAll()
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun refresh(file: File, node: DefaultMutableTreeNode) {
+        file.listFiles()?.filter { it.isDirectory }?.forEach {
+            val newNode = DefaultMutableTreeNode(it)
+            (this.model as DefaultTreeModel).insertNodeInto(
+                newNode,
+                node,
+                0
+            )
+
+            refresh(it, newNode)
+        }
+
+        this.setSelectionRow(0)
     }
 }

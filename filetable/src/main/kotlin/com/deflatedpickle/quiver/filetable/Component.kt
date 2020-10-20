@@ -9,6 +9,6 @@ object Component : PluginPanel() {
     init {
         this.layout = GridBagLayout()
 
-        this.add(JScrollPane(Table), FillBothFinishLine)
+        this.add(JScrollPane(FileTable), FillBothFinishLine)
     }
 }
