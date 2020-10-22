@@ -14,4 +14,8 @@ object DotMinecraft {
 
     val dotMinecraft = dotMinecraftPath.toFile()
     val versions = dotMinecraft.resolve("versions")
+
+    val assets = dotMinecraft.resolve("assets")
+    val assetsIndexes = assets.resolve("indexes")
+    val assetsObjects = assets.resolve("objects")
 }

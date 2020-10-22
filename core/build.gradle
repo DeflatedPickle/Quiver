@@ -24,6 +24,7 @@ dependencies {
     api 'io.github.classgraph:classgraph:4.8.85'
     api 'com.github.Vatuu:discord-rpc:1.6.2'
     api 'me.xdrop:fuzzywuzzy:1.2.0'
+    api "blue.endless:jankson:1.1.0"
 
     // Plugin framework
     api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.2'
@@ -31,8 +32,9 @@ dependencies {
     // Events
     api 'com.github.Fylipp:easy-events:v1.1.0'
 
-    // Extended Swing widgets
+    // Extra Swing widgets
     api 'org.swinglabs:swingx:1.6.1'
+    api 'com.jidesoft:jide-oss:3.6.18'
 
     // Docking framework
     api 'org.dockingframes:docking-frames-common:1.1.1'

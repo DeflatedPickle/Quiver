@@ -1,18 +1,23 @@
 package com.deflatedpickle.quiver.backend.util
 
+import blue.endless.jankson.Jankson
+import blue.endless.jankson.JsonObject
 import com.deflatedpickle.marvin.builder.FileBuilder
 import com.github.underscore.lodash.U
 import net.lingala.zip4j.ZipFile
+import org.apache.commons.io.FileUtils
 import java.io.File
 
 object PackUtil {
+    private val json = Jankson.builder().build()
+
     // https://minecraft.gamepedia.com/Resource_Pack#Folder_structure
-    fun createEmptyPack(path: String, namespace: String) {
+    fun createEmptyPack(path: String) {
         FileBuilder(path)
             .file("pack.mcmeta")
             .dir("assets")
             /*  */.dir("icons").build()
-            /*  */.dir(namespace)
+            /*  */.dir("minecraft")
             /*      */.file("sounds.json")
             /*      */.dir("blockstates").build()
             /*      */.file("gpu_warnlist.json")
@@ -65,7 +70,17 @@ object PackUtil {
             .build()
     }
 
-    fun extractPack(file: File, path: String, namespace: String) {
+    fun extractPack(
+        /**
+         * The JAR of a Minecraft version
+         * ex; .minecraft/versions/1.16.2.jar
+         */
+        file: File,
+        /**
+         * The path were these resources will be placed
+         */
+        path: String
+    ) {
         val zipFile = ZipFile(file)
 
         // TODO: Extract default packs in a secondary thread, making use of zip4j's ProgressMonitor
@@ -74,8 +89,57 @@ object PackUtil {
         }) {
             zipFile.extractFile(
                 i,
-                "$path\\assets\\${namespace}"
+                path
             )
+        }
+    }
+
+    /**
+     * Extracts sounds, extra lang's and icons
+     */
+    fun extractExtraData(
+        /**
+         * The JSON data of a Minecraft version
+         * ex; .minecraft/versions/1.16.2.json
+         */
+        file: File,
+        /**
+         * The path were these resources will be placed
+         */
+        path: String,
+        /**
+         * The resource types to extract
+         */
+        vararg types: ExtraResourceType
+    ) {
+        // This gets the version of index we should use, e.g; 1.14, 1.16
+        val version = this.json
+            .load(file)
+            .getObject("assetIndex")!!
+            .get(String::class.java, "id")
+        // .minecraft/assets/indexes/$version
+        val indexFile = DotMinecraft.assetsIndexes.resolve("$version.json")
+        // Loads indexFile as JSON and gets the "object" key
+        val indexObject = this.json.load(indexFile).getObject("objects")!!
+
+        for ((asset, jsonElement) in indexObject.entries) {
+            // Gets the hash for the current asset
+            val hash = (jsonElement as JsonObject).get(String::class.java, "hash")!!
+
+            for (resourceType in types) {
+                if (asset.startsWith(resourceType.path)) {
+                    // Resolves to the source, using the hash
+                    // The assets are in folders named the first 2 characters of the hash
+                    // Not sure why that is
+                    val source = DotMinecraft.assetsObjects.resolve(hash.substring(0..1)).resolve(hash)
+                    // Gets the namespace to use from the resource type
+                    val namespace = resourceType.path.split("/")[0]
+                    // Constructs the destination, using the namespace and the assets path
+                    val destination = "$path\\assets\\$namespace\\${asset.split("/").drop(1).joinToString(separator = "\\")}"
+                    // Copies the source file to the destination, creating all parent files
+                    FileUtils.copyFile(source, File(destination).apply { parentFile.mkdirs() })
+                }
+            }
         }
     }
 
@@ -108,7 +172,6 @@ object PackUtil {
             else -> VersionProgression(Version(0, 0), Version(0, 0))
         }
 
-
     fun gameVersionToPackVersion(gameVersion: Version): Int =
         when (gameVersion) {
             in Version(1, 6, 1)..Version(1, 8, 9) -> 1
@@ -120,5 +183,5 @@ object PackUtil {
             else -> 0
         }
 
-    // Awful, isn't it?
+    // Awful, isn't it? At least I didn't chain if/else if
 }
