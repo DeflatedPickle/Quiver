@@ -1,105 +1,125 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.filepanel
 
-import com.deflatedpickle.haruhi.api.Registry
-import com.deflatedpickle.haruhi.api.plugin.Plugin
-import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.backend.api.Viewer
-import com.deflatedpickle.quiver.backend.event.EventSelectFile
-import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXRadioGroup
+import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.rawky.ui.constraints.StickEast
+import com.deflatedpickle.rawky.ui.constraints.StickWest
+import com.deflatedpickle.rawky.ui.constraints.StickWestFinishLine
 import java.awt.BorderLayout
-import java.awt.event.ActionEvent
+import java.awt.Desktop
+import java.awt.GridBagLayout
+import java.awt.datatransfer.DataFlavor
+import java.awt.dnd.DnDConstants
+import java.awt.dnd.DropTarget
+import java.awt.dnd.DropTargetDragEvent
+import java.awt.dnd.DropTargetDropEvent
 import java.io.File
-import javax.swing.JToolBar
+import javax.swing.BorderFactory
+import javax.swing.JComponent
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXTextField
 
-@Suppress("unused")
-@Plugin(
-    value = "file_panel",
-    author = "DeflatedPickle",
-    version = "1.0.0",
-    description = """
-        <br>
-        Provides a panel on which a given file can be configured
-    """,
-    type = PluginType.COMPONENT,
-    component = Component::class
-)
-object FilePanel {
-    var selectedFile: File? = null
+object FilePanel : PluginPanel() {
+    private val nameLabel = JXLabel("Name")
+    val nameField = JXTextField("Name").apply { isEnabled = false }
+    private val dotLabel = JXLabel(".")
+    val typeField = JXTextField("Type").apply { isEnabled = false }
 
-    private val radioButtonGroup = JXRadioGroup<String>()
-    private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
+    private val fileSizeLabel = JXLabel("File Size")
+    val fileSize = JXLabel()
+
+    private val openButton = JXButton("Open").apply {
+        isEnabled = false
+
+        addActionListener {
+            Desktop.getDesktop().open(FilePanelPlugin.selectedFile)
+        }
+    }
+
+    private val editButton = JXButton("Edit").apply {
+        isEnabled = false
+
+        addActionListener {
+            Desktop.getDesktop().edit(FilePanelPlugin.selectedFile)
+        }
+    }
+
+    private val widgetArray = arrayOf<JComponent>(
+        // nameField,
+        // typeField,
+        editButton,
+        openButton
+    )
+
+    val widgetPanel = JXPanel().apply {
+        border = BorderFactory.createTitledBorder("View")
+        layout = BorderLayout()
+    }
 
     init {
-        @Suppress("UNCHECKED_CAST")
-        RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
+        this.layout = GridBagLayout()
 
-        EventProgramFinishSetup.addListener {
-            Component.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
-        }
+        this.add(nameLabel, StickEast)
+        this.add(nameField, FillHorizontal)
+        this.add(dotLabel)
+        this.add(typeField, FillHorizontalFinishLine)
 
-        EventSelectFile.addListener {
-            Component.nameField.text = it.nameWithoutExtension
-            Component.typeField.text = it.extension
+        this.add(fileSizeLabel, StickEast)
+        this.add(fileSize, FillHorizontalFinishLine)
 
-            Component.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
+        this.add(editButton, StickWest)
+        this.add(openButton, StickWestFinishLine)
 
-            this.selectedFile = it
+        this.add(widgetPanel, FillBothFinishLine)
 
-            for (component in Component.widgetPanel.components) {
-                if (component !is JToolBar) {
-                    Component.widgetPanel.remove(component)
-                }
-            }
-            radioButtonGroup.setValues(arrayOf())
+        this.addDropTarget()
+    }
 
-            val registry = RegistryUtil.get("viewer")
+    private fun addDropTarget() {
+        this.dropTarget = object : DropTarget() {
+            override fun dragEnter(dtde: DropTargetDragEvent) {
+                val file = FilePanelPlugin.selectedFile
+                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>?
 
-            val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>
-
-            for (viewer in viewerList) {
-                radioButtonGroup.add(viewer::class.simpleName)
-
-                radioButtonGroup.getChildButton(viewer::class.simpleName).addActionListener { _ ->
-                    for (component in Component.widgetPanel.components) {
-                        if (component !is JToolBar) {
-                            Component.widgetPanel.remove(component)
+                if (DocumentUtil.current == null || file == null) {
+                    dtde.rejectDrag()
+                } else {
+                    if (fileList != null && FilePanelPlugin.selectedFile != null) {
+                        // We only want to allow one file
+                        if (fileList.size != 1 && fileList[0].extension != file.extension) {
+                            dtde.rejectDrag()
                         }
                     }
-                    EventChangeViewWidget.trigger(Pair(it, Component.widgetPanel))
-
-                    viewer.refresh(it)
-                    Component.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
-
-                    Component.widgetPanel.repaint()
-                    Component.widgetPanel.revalidate()
                 }
             }
 
-            if (radioButtonGroup.childButtonCount > 0) {
-                radioButtonGroup
-                    .getChildButton(0).apply { isSelected = true }
-                    .actionListeners
-                    .first()
-                    // The action isn't performed when we select it (silly, right?)
-                    // So we have to send out an event for it
-                    .actionPerformed(
-                        ActionEvent(
-                            this,
-                            ActionEvent.ACTION_PERFORMED,
-                            null
-                        )
-                    )
+            override fun drop(dtde: DropTargetDropEvent) {
+                dtde.acceptDrop(DnDConstants.ACTION_MOVE)
+                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+                val file = fileList[0]
+
+                if (fileList[0].isFile && FilePanelPlugin.selectedFile != null) {
+                    FilePanelPlugin.selectedFile!!.delete()
+                    // Replace the selected file with the dropped one
+                    FileUtils.moveFile(file, FilePanelPlugin.selectedFile)
+                    EventCreateFile.trigger(FilePanelPlugin.selectedFile!!)
+                }
             }
+        }
+    }
 
-            radioButtonGroup.repaint()
-            radioButtonGroup.revalidate()
-
-            Component.widgetPanel.repaint()
-            Component.widgetPanel.revalidate()
+    fun state(enabled: Boolean = true) {
+        for (i in widgetArray) {
+            i.isEnabled = enabled
         }
     }
 }

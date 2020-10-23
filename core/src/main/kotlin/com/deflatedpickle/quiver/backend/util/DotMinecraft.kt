@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.backend.util
 
 import io.github.erayerdin.kappdirs.AppDirsFactory
@@ -14,4 +16,8 @@ object DotMinecraft {
 
     val dotMinecraft = dotMinecraftPath.toFile()
     val versions = dotMinecraft.resolve("versions")
+
+    val assets = dotMinecraft.resolve("assets")
+    val assetsIndexes = assets.resolve("indexes")
+    val assetsObjects = assets.resolve("objects")
 }

@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.filetable
 
 import com.deflatedpickle.haruhi.component.PluginPanel
@@ -9,6 +11,6 @@ object Component : PluginPanel() {
     init {
         this.layout = GridBagLayout()
 
-        this.add(JScrollPane(Table), FillBothFinishLine)
+        this.add(JScrollPane(FileTable), FillBothFinishLine)
     }
 }

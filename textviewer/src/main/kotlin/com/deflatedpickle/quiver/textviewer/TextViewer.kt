@@ -1,11 +1,13 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.quiver.backend.api.Viewer
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants
-import org.fife.ui.rtextarea.RTextScrollPane
 import java.io.File
 import javax.swing.JComponent
 import javax.swing.JScrollPane
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants
+import org.fife.ui.rtextarea.RTextScrollPane
 
 object TextViewer : Viewer<File> {
     private val component = Component()
@@ -14,10 +16,10 @@ object TextViewer : Viewer<File> {
         this.component.text = with.readText()
 
         this.component.syntaxEditingStyle = when (with.extension) {
-            // I'm almost certain they use JSON, though!
-            "json" -> SyntaxConstants.SYNTAX_STYLE_JSON
             // Do resource packs even have properties?
             "properties" -> SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE
+            // I'm almost certain they use JSON, though!
+            "json", "mcmeta" -> SyntaxConstants.SYNTAX_STYLE_JSON
             // I think resource packs can have scripts?
             "js" -> SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT
             // And if people don't want to use JavaScript...

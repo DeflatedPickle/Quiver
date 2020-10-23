@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.imageviewer
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -20,7 +22,9 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 )
 object ImageViewerPlugin {
     private val extensionSet = setOf(
-        "png"
+        "png",
+        "jpg",
+        "jpeg"
     )
 
     init {

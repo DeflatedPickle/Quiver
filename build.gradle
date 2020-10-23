@@ -1,99 +1,142 @@
 plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
+	id 'java'
+	id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
 
-    id 'distribution'
-    id 'application'
+	id 'distribution'
+	id 'application'
 
-    id 'com.diffplug.gradle.spotless' version '3.27.0'
+	id 'com.diffplug.spotless' version '5.7.0'
 }
 
 group 'com.deflatedpickle'
-version '1.1.1'
+version '1.3.0'
 
 allprojects {
-    repositories {
-        jcenter()
-        mavenCentral()
+	apply plugin: 'org.jetbrains.kotlin.jvm'
+	apply plugin: 'com.diffplug.spotless'
 
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://github.com/eugener/oxbow/raw/master/maven/repository' }
-    }
+	repositories {
+		jcenter()
+		mavenCentral()
+
+		maven { url 'https://jitpack.io' }
+		maven { url 'https://github.com/eugener/oxbow/raw/master/maven/repository' }
+	}
+
+	spotless {
+		ratchetFrom 'origin/rewrite'
+
+		java {
+			importOrder()
+			removeUnusedImports()
+			googleJavaFormat()
+
+			licenseHeader '/* Copyright (c) $YEAR DeflatedPickle under the MIT license */\n\n'
+		}
+
+		groovyGradle {
+			target '*.gradle'
+			greclipse()
+		}
+
+		kotlin {
+			ktlint()
+
+			licenseHeader '/* Copyright (c) $YEAR DeflatedPickle under the MIT license */\n\n'
+		}
+
+		format 'misc', {
+			target '*.md', '.gitignore'
+
+			trimTrailingWhitespace()
+			indentWithTabs()
+			endWithNewline()
+		}
+	}
 }
 
 startScripts {
-    executableDir = ""
+	executableDir = ""
 }
 
 distributions {
-    //noinspection GroovyAssignabilityCheck
-    main {
-        contents {
-            from files('README.MD', 'LICENSE')
-            from startScripts
+	//noinspection GroovyAssignabilityCheck
+	main {
+		contents {
+			from files('README.MD', 'LICENSE')
+			from startScripts
 
-            subprojects.each { p ->
-                into('plugins') {
-                    from p.getTasksByName("jar", true)
-                }
-            }
-        }
-    }
+			subprojects.each { p ->
+				into('plugins') {
+					from p.getTasksByName("jar", true)
+				}
+			}
+		}
+	}
 }
 
 distZip {
-    eachFile { file ->
-        if (file.path.contains('bin')) {
-            file.exclude()
-        } else if (file.path.contains('lib') && file.name in [
-                'filepanel.jar',
-                'filetable.jar',
-                'foldertree.jar',
-                'imageviewer.jar',
-                'tableviewer.jar',
-                'textviewer.jar',
-                'treeviewer.jar',
-        ]
-                || file.name =~ /discordrpc*./
-                || file.name =~ /pluginmanager*./
-                || file.name =~ /Quiver-\d\.\d\.\d\.jar/
-                || file.name =~ /settingsgui*./
-                || file.name =~ /sniffle*./
-                || file.name =~ /tipoftheday*./) {
-            file.exclude()
-        }
-    }
+	eachFile { file ->
+		def list = []
+
+		// Collect a list of all the JARs produced by submodules
+		subprojects.each { p ->
+			if (p.getTasksByName("jar", true).archiveFile.size > 0) {
+				list.add(
+						p.getTasksByName("jar", true)
+						.archiveFile.first()
+						.getAsFile().get()
+						)
+			}
+		}
+
+		// Files in /bin are copied to the main directory
+		// so we can exclude them
+		if (file.path.contains('bin')) {
+			file.exclude()
+		} else if (file.path.contains('lib') &&
+		// Check if the current file is a submodule
+		file.getFile() in list
+		|| file.name =~ /discordrpc*./
+		|| file.name =~ /pluginmanager*./
+		|| file.name =~ /Quiver-\d\.\d\.\d\.jar/
+		|| file.name =~ /settingsgui*./
+		|| file.name =~ /sniffle*./
+		|| file.name =~ /tipoftheday*./) {
+			file.exclude()
+		}
+	}
 }
 
 run {
-    args = ['indev']
+	args = ['indev']
 
-    doFirst {
-        file("run").mkdirs()
-    }
+	doFirst {
+		file("run").mkdirs()
+	}
 
-    workingDir "run"
+	workingDir "run"
 
-    dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	dependencies {
+		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-        implementation project(':core')
-        runtimeOnly project(':launcher')
+		implementation project(':core')
+		runtimeOnly project(':launcher')
 
-        runtimeOnly project(':foldertree')
-        runtimeOnly project(':filetable')
-        runtimeOnly project(':filepanel')
+		runtimeOnly project(':foldertree')
+		runtimeOnly project(':filetable')
+		runtimeOnly project(':filepanel')
 
-        runtimeOnly project(':textviewer')
-        runtimeOnly project(':tableviewer')
-        runtimeOnly project(':imageviewer')
-        runtimeOnly project(':treeviewer')
+		runtimeOnly project(':textviewer')
+		runtimeOnly project(':tableviewer')
+		runtimeOnly project(':imageviewer')
+		runtimeOnly project(':treeviewer')
 
-        runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
-    }
+		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
+	}
 
-    application {
-        mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
-    }
+	application {
+		mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
+	}
 }

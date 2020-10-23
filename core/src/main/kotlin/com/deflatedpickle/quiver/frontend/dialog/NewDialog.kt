@@ -1,23 +1,38 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.backend.util.*
+import com.deflatedpickle.quiver.backend.util.DotMinecraft
+import com.deflatedpickle.quiver.backend.util.ExtraResourceType
+import com.deflatedpickle.quiver.backend.util.Filters
+import com.deflatedpickle.quiver.backend.util.PackType
+import com.deflatedpickle.quiver.backend.util.PackUtil
+import com.deflatedpickle.quiver.backend.util.VersionUtil
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
+import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
-import org.jdesktop.swingx.*
-import org.oxbow.swingbits.dialog.task.TaskDialog
+import com.jidesoft.swing.CheckBoxList
 import java.awt.GridBagLayout
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.DefaultListCellRenderer
+import javax.swing.JComboBox
+import javax.swing.JFileChooser
+import javax.swing.JPanel
+import javax.swing.JScrollPane
 import javax.swing.text.PlainDocument
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXRadioGroup
+import org.jdesktop.swingx.JXTextArea
+import org.jdesktop.swingx.JXTextField
+import org.jdesktop.swingx.JXTitledSeparator
+import org.oxbow.swingbits.dialog.task.TaskDialog
 
 class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
-    val namespaceEntry = JXTextField("Namespace").apply {
-        toolTipText = "The name of the folder with all the assets; i.e. your username"
-        (document as PlainDocument).documentFilter = Filters.FILE
-    }
     val nameEntry = JXTextField("Name").apply {
         toolTipText = "The name of the pack directory; i.e. the name of the pack"
         (document as PlainDocument).documentFilter = Filters.FILE
@@ -75,13 +90,18 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         }
     }
 
+    val extraResourceTree = CheckBoxList(ExtraResourceType.values()).apply {
+        toolTipText = "Extra resources that aren't included in the default pack"
+        selectAll()
+    }
+
     val packTypeGroup = JXRadioGroup(PackType.values()).apply {
         isOpaque = false
 
         // The buttons have a gray background by default
         for (packType in PackType.values()) {
             this.getChildButton(packType).apply {
-                toolTipText = when(packType) {
+                toolTipText = when (packType) {
                     PackType.EMPTY_PACK -> "Creates an empty pack structure"
                     PackType.DEFAULT_PACK -> "Extracts and copies the default pack for the given version"
                 }
@@ -97,8 +117,12 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         }
 
         addActionListener {
-            defaultVersionComboBox.isEnabled = selectedValue == PackType.DEFAULT_PACK
+            val isDefaultPack = selectedValue == PackType.DEFAULT_PACK
+
+            defaultVersionComboBox.isEnabled = isDefaultPack
+            extraResourceTree.isEnabled = isDefaultPack
         }
+        // This triggers the action listener
         selectedValue = PackType.EMPTY_PACK
     }
 
@@ -122,9 +146,6 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
 
             /* Pack */
             this.add(JXTitledSeparator("Pack"), FillHorizontalFinishLine)
-
-            this.add(JXLabel("Namespace" + ":"), StickEast)
-            this.add(namespaceEntry, FillHorizontalFinishLine)
 
             this.add(JXLabel("Name" + ":"), StickEast)
             this.add(nameEntry, FillHorizontalFinishLine)
@@ -151,6 +172,10 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
 
                 this.add(defaultVersionComboBox, FinishLine)
             }, FillHorizontalFinishLine)
+
+            this.add(JXTitledSeparator("Extra Vanilla Data"), FillHorizontalFinishLine)
+
+            this.add(extraResourceTree, FillBothFinishLine)
         }).apply {
             isOpaque = false
             viewport.isOpaque = false

@@ -1,52 +1,54 @@
 plugins {
-    id 'java'
-    id 'java-library'
+	id 'java'
+	id 'java-library'
 
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+	id 'org.jetbrains.kotlin.jvm'
+	id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 version '1.2.0'
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
 
-    // Utility
-    api 'org.apache.commons:commons-lang3:3.9'
-    api 'commons-io:commons-io:2.7'
-    api 'com.github.DeflatedPickle:marvin:f37b442d08'
-    api 'com.github.javadev:underscore:1.55'
-    api 'com.github.erayerdin:kappdirs:v0.3.1-alpha'
-    api 'net.lingala.zip4j:zip4j:2.6.1'
-    api 'org.reflections:reflections:0.9.12'
-    api 'io.github.classgraph:classgraph:4.8.85'
-    api 'com.github.Vatuu:discord-rpc:1.6.2'
-    api 'me.xdrop:fuzzywuzzy:1.2.0'
+	// Utility
+	api 'org.apache.commons:commons-lang3:3.9'
+	api 'commons-io:commons-io:2.7'
+	api 'com.github.DeflatedPickle:marvin:f37b442d08'
+	api 'com.github.javadev:underscore:1.55'
+	api 'com.github.erayerdin:kappdirs:v0.3.1-alpha'
+	api 'net.lingala.zip4j:zip4j:2.6.1'
+	api 'org.reflections:reflections:0.9.12'
+	api 'io.github.classgraph:classgraph:4.8.85'
+	api 'com.github.Vatuu:discord-rpc:1.6.2'
+	api 'me.xdrop:fuzzywuzzy:1.2.0'
+	api "blue.endless:jankson:1.1.0"
 
-    // Plugin framework
-    api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.2'
+	// Plugin framework
+	api 'com.github.DeflatedPickle.haruhi:haruhi:1.5.2'
 
-    // Events
-    api 'com.github.Fylipp:easy-events:v1.1.0'
+	// Events
+	api 'com.github.Fylipp:easy-events:v1.1.0'
 
-    // Extended Swing widgets
-    api 'org.swinglabs:swingx:1.6.1'
+	// Extra Swing widgets
+	api 'org.swinglabs:swingx:1.6.1'
+	api 'com.jidesoft:jide-oss:3.6.18'
 
-    // Docking framework
-    api 'org.dockingframes:docking-frames-common:1.1.1'
+	// Docking framework
+	api 'org.dockingframes:docking-frames-common:1.1.1'
 
-    // Dialogs
-    api 'org.oxbow:swing-bits:1.0.0-SNAPSHOT'
+	// Dialogs
+	api 'org.oxbow:swing-bits:1.0.0-SNAPSHOT'
 
-    // Layouts
-    api 'com.github.DeflatedPickle:WrapLayout:9ae792ee13'
+	// Layouts
+	api 'com.github.DeflatedPickle:WrapLayout:9ae792ee13'
 
-    // Toasts
-    api 'com.github.DeflatedPickle.tosuto:tosuto:1.7.2'
+	// Toasts
+	api 'com.github.DeflatedPickle.tosuto:tosuto:1.7.2'
 
-    // Logging
-    implementation 'org.apache.logging.log4j:log4j-api:2.11.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.11.1'
+	// Logging
+	implementation 'org.apache.logging.log4j:log4j-api:2.11.1'
+	implementation 'org.apache.logging.log4j:log4j-core:2.11.1'
 }
