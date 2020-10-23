@@ -82,7 +82,10 @@ distZip {
 
 		// Collect a list of all the JARs produced by submodules
 		subprojects.each { p ->
-			if (p.getTasksByName("jar", true).archiveFile.size > 0) {
+			if (
+			!(p.name in ["master", "core", "launcher"]) &&
+			p.getTasksByName("jar", true).archiveFile.size > 0
+			) {
 				list.add(
 						p.getTasksByName("jar", true)
 						.archiveFile.first()
