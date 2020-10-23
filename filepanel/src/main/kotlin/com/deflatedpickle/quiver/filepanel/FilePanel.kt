@@ -1,14 +1,16 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
 import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
-import com.deflatedpickle.rawky.ui.constraints.*
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXLabel
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXTextField
+import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.rawky.ui.constraints.StickEast
+import com.deflatedpickle.rawky.ui.constraints.StickWest
+import com.deflatedpickle.rawky.ui.constraints.StickWestFinishLine
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
@@ -20,6 +22,11 @@ import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.JComponent
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXTextField
 
 object FilePanel : PluginPanel() {
     private val nameLabel = JXLabel("Name")

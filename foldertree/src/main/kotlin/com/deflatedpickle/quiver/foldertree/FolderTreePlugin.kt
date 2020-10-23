@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin

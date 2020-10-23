@@ -1,11 +1,13 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.quiver.backend.api.Viewer
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants
-import org.fife.ui.rtextarea.RTextScrollPane
 import java.io.File
 import javax.swing.JComponent
 import javax.swing.JScrollPane
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants
+import org.fife.ui.rtextarea.RTextScrollPane
 
 object TextViewer : Viewer<File> {
     private val component = Component()

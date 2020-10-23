@@ -1,13 +1,15 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
-import org.oxbow.swingbits.dialog.task.TaskDialog
-import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.io.File
 import javax.swing.JFileChooser
+import org.oxbow.swingbits.dialog.task.TaskDialog
+import org.oxbow.swingbits.dialog.task.TaskDialogs
 
 object ActionUtil {
     fun newPack() {

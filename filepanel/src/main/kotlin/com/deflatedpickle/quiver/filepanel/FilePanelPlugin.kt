@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -8,12 +10,12 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXRadioGroup
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
 import java.io.File
 import javax.swing.JToolBar
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXRadioGroup
 
 @Suppress("unused")
 @Plugin(

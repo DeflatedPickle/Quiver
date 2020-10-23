@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.filetable
 
 import com.deflatedpickle.haruhi.event.EventCreateFile
@@ -6,8 +8,6 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXTable
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
@@ -18,6 +18,8 @@ import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXTable
 
 object FileTable : JXTable() {
     private val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
@@ -82,9 +84,12 @@ object FileTable : JXTable() {
     private fun addFileRenderer() {
         this.setDefaultRenderer(File::class.java, object : DefaultTableCellRenderer() {
             override fun getTableCellRendererComponent(
-                table: JTable, value: Any,
-                isSelected: Boolean, hasFocus: Boolean,
-                row: Int, column: Int
+                table: JTable,
+                value: Any,
+                isSelected: Boolean,
+                hasFocus: Boolean,
+                row: Int,
+                column: Int
             ): java.awt.Component = super.getTableCellRendererComponent(
                 table, (value as File).nameWithoutExtension,
                 isSelected, hasFocus,

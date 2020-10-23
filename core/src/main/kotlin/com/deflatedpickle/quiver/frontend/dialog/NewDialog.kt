@@ -1,15 +1,36 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.backend.util.*
+import com.deflatedpickle.quiver.backend.util.DotMinecraft
+import com.deflatedpickle.quiver.backend.util.ExtraResourceType
+import com.deflatedpickle.quiver.backend.util.Filters
+import com.deflatedpickle.quiver.backend.util.PackType
+import com.deflatedpickle.quiver.backend.util.PackUtil
+import com.deflatedpickle.quiver.backend.util.VersionUtil
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
-import com.deflatedpickle.rawky.ui.constraints.*
+import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
+import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.rawky.ui.constraints.FinishLine
+import com.deflatedpickle.rawky.ui.constraints.StickEast
 import com.jidesoft.swing.CheckBoxList
-import org.jdesktop.swingx.*
-import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.awt.GridBagLayout
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.DefaultListCellRenderer
+import javax.swing.JComboBox
+import javax.swing.JFileChooser
+import javax.swing.JPanel
+import javax.swing.JScrollPane
 import javax.swing.text.PlainDocument
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXRadioGroup
+import org.jdesktop.swingx.JXTextArea
+import org.jdesktop.swingx.JXTextField
+import org.jdesktop.swingx.JXTitledSeparator
+import org.oxbow.swingbits.dialog.task.TaskDialog
 
 class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     val nameEntry = JXTextField("Name").apply {
@@ -80,7 +101,7 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         // The buttons have a gray background by default
         for (packType in PackType.values()) {
             this.getChildButton(packType).apply {
-                toolTipText = when(packType) {
+                toolTipText = when (packType) {
                     PackType.EMPTY_PACK -> "Creates an empty pack structure"
                     PackType.DEFAULT_PACK -> "Extracts and copies the default pack for the given version"
                 }

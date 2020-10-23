@@ -1,33 +1,33 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.launcher
 
-import com.deflatedpickle.haruhi.api.lang.Lang
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.component.PluginPanel
-import com.deflatedpickle.haruhi.event.*
+import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.haruhi.event.EventCreatePluginComponent
+import com.deflatedpickle.haruhi.event.EventCreatedPluginComponents
+import com.deflatedpickle.haruhi.event.EventDeserializedConfig
+import com.deflatedpickle.haruhi.event.EventLoadedPlugins
+import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.event.EventProgramShutdown
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
+import java.awt.BorderLayout
+import java.awt.Dimension
+import java.io.File
+import javax.swing.SwingUtilities
+import javax.swing.UIManager
+import kotlin.system.exitProcess
 import kotlinx.serialization.ImplicitReflectionSerializer
 import org.apache.logging.log4j.LogManager
 import org.fusesource.jansi.AnsiConsole
 import org.oxbow.swingbits.dialog.task.TaskDialogs
-import org.reflections.Reflections
-import org.reflections.ReflectionsException
-import org.reflections.scanners.ResourcesScanner
-import org.reflections.util.ClasspathHelper
-import org.reflections.util.ConfigurationBuilder
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.io.File
-import java.util.*
-import javax.swing.SwingUtilities
-import javax.swing.UIManager
-import kotlin.system.exitProcess
 
 @ImplicitReflectionSerializer
 fun main(args: Array<String>) {

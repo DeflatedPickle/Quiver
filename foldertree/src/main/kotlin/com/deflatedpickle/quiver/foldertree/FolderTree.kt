@@ -1,10 +1,11 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filetable.FileTable
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
-import org.jdesktop.swingx.JXTree
 import java.awt.Component
 import java.io.File
 import javax.swing.JTree
@@ -12,6 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeCellRenderer
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel
+import org.jdesktop.swingx.JXTree
 
 object FolderTree : JXTree(DefaultMutableTreeNode()) {
     init {
