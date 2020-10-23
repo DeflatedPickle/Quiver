@@ -9,7 +9,6 @@ import com.deflatedpickle.haruhi.event.*
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.config.QuiverSettings
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar

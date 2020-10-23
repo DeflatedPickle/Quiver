@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.deflatedpickle'
-version '1.1.1'
+version '1.3.0'
 
 allprojects {
     repositories {
@@ -44,17 +44,26 @@ distributions {
 
 distZip {
     eachFile { file ->
+        def list = []
+
+        // Collect a list of all the JARs produced by submodules
+        subprojects.each { p ->
+            if (p.getTasksByName("jar", true).archiveFile.size > 0) {
+                list.add(
+                        p.getTasksByName("jar", true)
+                                .archiveFile.first()
+                                .getAsFile().get()
+                )
+            }
+        }
+
+        // Files in /bin are copied to the main directory
+        // so we can exclude them
         if (file.path.contains('bin')) {
             file.exclude()
-        } else if (file.path.contains('lib') && file.name in [
-                'filepanel.jar',
-                'filetable.jar',
-                'foldertree.jar',
-                'imageviewer.jar',
-                'tableviewer.jar',
-                'textviewer.jar',
-                'treeviewer.jar',
-        ]
+        } else if (file.path.contains('lib') &&
+                // Check if the current file is a submodule
+                file.getFile() in list
                 || file.name =~ /discordrpc*./
                 || file.name =~ /pluginmanager*./
                 || file.name =~ /Quiver-\d\.\d\.\d\.jar/
