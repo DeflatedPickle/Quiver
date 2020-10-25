@@ -3,8 +3,7 @@
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
-import com.deflatedpickle.haruhi.event.EventCreateFile
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
@@ -14,15 +13,8 @@ import com.deflatedpickle.rawky.ui.constraints.StickWestFinishLine
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
-import java.awt.datatransfer.DataFlavor
-import java.awt.dnd.DnDConstants
-import java.awt.dnd.DropTarget
-import java.awt.dnd.DropTargetDragEvent
-import java.awt.dnd.DropTargetDropEvent
-import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.JComponent
-import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
@@ -53,11 +45,16 @@ object FilePanel : PluginPanel() {
         }
     }
 
+    private val replaceButton = ReplaceButton("Replace").apply {
+        isEnabled = false
+    }
+
     private val widgetArray = arrayOf<JComponent>(
         // nameField,
         // typeField,
         editButton,
-        openButton
+        openButton,
+        replaceButton
     )
 
     val widgetPanel = JXPanel().apply {
@@ -77,44 +74,10 @@ object FilePanel : PluginPanel() {
         this.add(fileSize, FillHorizontalFinishLine)
 
         this.add(editButton, StickWest)
-        this.add(openButton, StickWestFinishLine)
+        this.add(openButton, StickWest)
+        this.add(replaceButton, StickWestFinishLine)
 
         this.add(widgetPanel, FillBothFinishLine)
-
-        this.addDropTarget()
-    }
-
-    private fun addDropTarget() {
-        this.dropTarget = object : DropTarget() {
-            override fun dragEnter(dtde: DropTargetDragEvent) {
-                val file = FilePanelPlugin.selectedFile
-                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>?
-
-                if (DocumentUtil.current == null || file == null) {
-                    dtde.rejectDrag()
-                } else {
-                    if (fileList != null && FilePanelPlugin.selectedFile != null) {
-                        // We only want to allow one file
-                        if (fileList.size != 1 && fileList[0].extension != file.extension) {
-                            dtde.rejectDrag()
-                        }
-                    }
-                }
-            }
-
-            override fun drop(dtde: DropTargetDropEvent) {
-                dtde.acceptDrop(DnDConstants.ACTION_MOVE)
-                val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
-                val file = fileList[0]
-
-                if (fileList[0].isFile && FilePanelPlugin.selectedFile != null) {
-                    FilePanelPlugin.selectedFile!!.delete()
-                    // Replace the selected file with the dropped one
-                    FileUtils.moveFile(file, FilePanelPlugin.selectedFile)
-                    EventCreateFile.trigger(FilePanelPlugin.selectedFile!!)
-                }
-            }
-        }
     }
 
     fun state(enabled: Boolean = true) {

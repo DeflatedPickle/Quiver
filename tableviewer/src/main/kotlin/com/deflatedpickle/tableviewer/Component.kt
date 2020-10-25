@@ -1,19 +1,18 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.tableviewer
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
-import org.jdesktop.swingx.JXTable
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableModel
+import org.jdesktop.swingx.JXTable
 
 class Component : JXTable() {
     val fileModel = DefaultTableModel(arrayOf(""), 0)
 
     init {
         EventProgramFinishSetup.addListener {
-            val lang = LangUtil.getLang("deflatedpickle@table_viewer#1.0.0")
-
             this.fileModel.setDataVector(
                 arrayOf(),
                 arrayOf(

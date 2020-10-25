@@ -4,7 +4,7 @@ package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventCreateFile
+import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.event.EventOpenFile
 
 @Suppress("unused")
@@ -21,7 +21,7 @@ import com.deflatedpickle.quiver.backend.event.EventOpenFile
 )
 object FolderTreePlugin {
     init {
-        EventCreateFile.addListener {
+        EventNewDocument.addListener {
             FolderTree.refreshAll()
         }
 

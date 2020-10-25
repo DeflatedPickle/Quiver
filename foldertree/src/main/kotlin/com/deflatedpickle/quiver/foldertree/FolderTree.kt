@@ -4,7 +4,6 @@ package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
-import com.deflatedpickle.quiver.filetable.FileTable
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import java.awt.Component
 import java.io.File
@@ -36,7 +35,6 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
     private fun addSelectionListener() {
         this.addTreeSelectionListener {
             val folder = (it.path.lastPathComponent as DefaultMutableTreeNode).userObject as File
-            FileTable.refresh(folder)
             EventSelectFolder.trigger(folder)
         }
     }
