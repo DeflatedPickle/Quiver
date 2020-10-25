@@ -135,6 +135,7 @@ run {
 		runtimeOnly project(':tableviewer')
 		runtimeOnly project(':imageviewer')
 		runtimeOnly project(':treeviewer')
+		runtimeOnly project(':modelviewer')
 
 		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
 	}
