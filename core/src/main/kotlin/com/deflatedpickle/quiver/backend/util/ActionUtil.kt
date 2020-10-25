@@ -2,9 +2,8 @@
 
 package com.deflatedpickle.quiver.backend.util
 
-import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.backend.event.EventOpenFile
+import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import java.io.File
 import javax.swing.JFileChooser
@@ -68,7 +67,7 @@ object ActionUtil {
                 }
             }
 
-            EventCreateFile.trigger(DocumentUtil.current!!)
+            EventNewDocument.trigger(DocumentUtil.current!!)
         }
     }
 
@@ -89,7 +88,7 @@ object ActionUtil {
             ) {
                 DocumentUtil.current = directoryChooser.selectedFile
 
-                EventOpenFile.trigger(DocumentUtil.current!!)
+                EventNewDocument.trigger(DocumentUtil.current!!)
             } else {
                 TaskDialogs.error(
                     PluginUtil.window,

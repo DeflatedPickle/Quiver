@@ -8,6 +8,7 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
@@ -113,6 +114,10 @@ object FilePanelPlugin {
             // We'll also repaint this
             FilePanel.widgetPanel.repaint()
             FilePanel.widgetPanel.revalidate()
+        }
+
+        EventReplaceFile.addListener {
+            EventSelectFile.trigger(it)
         }
     }
 }
