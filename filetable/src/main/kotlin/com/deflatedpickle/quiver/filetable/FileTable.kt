@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXTable
 
 object FileTable : JXTable() {
-    private val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
+    val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
         override fun getColumnClass(columnIndex: Int): Class<*> =
             when (columnIndex) {
                 0 -> File::class.java
