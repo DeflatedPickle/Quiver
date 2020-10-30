@@ -6,6 +6,11 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.event.EventOpenFile
+import com.deflatedpickle.quiver.backend.event.EventSearchFolder
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import java.io.File
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.TreePath
 
 @Suppress("unused")
 @Plugin(
@@ -27,6 +32,28 @@ object FolderTreePlugin {
 
         EventOpenFile.addListener {
             FolderTree.refreshAll()
+        }
+
+        EventSearchFolder.addListener {
+            var parent: File? = it.parentFile
+            val selectPath = mutableListOf(it)
+
+            while (parent != null) {
+                selectPath.add(0, parent)
+
+                parent = if (parent.path != DocumentUtil.current!!.path) {
+                    parent.parentFile
+                } else {
+                    null
+                }
+            }
+
+            // This selects the right folder, but not visually
+            FolderTree.selectionPath = TreePath(
+                selectPath.map { file ->
+                    DefaultMutableTreeNode(file)
+                }.toTypedArray()
+            )
         }
     }
 }

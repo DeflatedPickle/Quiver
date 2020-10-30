@@ -1,6 +1,10 @@
 package com.deflatedpickle.quiver.frontend.menu
 
 import blue.endless.jankson.Jankson
+import com.deflatedpickle.quiver.backend.event.EventSearchFile
+import com.deflatedpickle.quiver.backend.event.EventSearchFolder
+import com.deflatedpickle.quiver.backend.event.EventSelectFile
+import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.frontend.extension.add
 import java.io.File
 import javax.swing.JMenu
@@ -13,7 +17,7 @@ class LinkedFilesPopupMenu(
 
     private val texturesMenu = JMenu("Textures")
 
-    override fun setVisible(b: Boolean) {
+    fun validateMenu() {
         this.removeAll()
         this.texturesMenu.removeAll()
 
@@ -26,24 +30,29 @@ class LinkedFilesPopupMenu(
                 "mcmeta" -> handleMeta(file)
             }
         }
+    }
 
+    override fun setVisible(b: Boolean) {
+        this.validateMenu()
         super.setVisible(b)
     }
 
     private fun handlePNG(file: File) {
-        val parentFile = file.parentFile.resolve("${file.name}.mcmeta")
+        val targetFile = file.parentFile.resolve("${file.name}.mcmeta")
 
-        if (parentFile.exists() && parentFile.isFile) {
+        if (targetFile.exists() && targetFile.isFile) {
             this.add("Meta") {
+                EventSearchFile.trigger(targetFile)
             }
         }
     }
 
     private fun handleMeta(file: File) {
-        val parentFile = file.parentFile.resolve("${file.name.split(".")[0]}.png")
+        val targetFile = file.parentFile.resolve("${file.name.split(".")[0]}.png")
 
-        if (parentFile.exists() && parentFile.isFile) {
+        if (targetFile.exists() && targetFile.isFile) {
             this.add("Texture") {
+                EventSearchFile.trigger(targetFile)
             }
         }
     }
@@ -58,12 +67,40 @@ class LinkedFilesPopupMenu(
 
             when {
                 entries.size == 1 -> this.add("Texture") {
+                    val value = jsonObject.get(
+                        String::class.java,
+                        entries.elementAt(0).key
+                    )!!
+
+                    val split = value.split(":")
+                    val textureFile = DocumentUtil.current!!
+                        .resolve("assets")
+                        .resolve(split[0])
+                        .resolve("textures")
+                        .resolve("${split[1]}.png")
+
+                    EventSearchFolder.trigger(textureFile.parentFile)
+                    EventSearchFile.trigger(textureFile)
                 }
                 entries.size > 1 -> {
-                    for ((key, value) in this.json
+                    for ((key, _) in this.json
                         .load(file)
                         .getObject("textures")!!.entries) {
                         this.texturesMenu.add(key) {
+                            val value = jsonObject.get(
+                                String::class.java,
+                                key
+                            )!!
+
+                            val split = value.split(":")
+                            val textureFile = DocumentUtil.current!!
+                                .resolve("assets")
+                                .resolve(split[0])
+                                .resolve("textures")
+                                .resolve("${split[1]}.png")
+
+                            EventSearchFolder.trigger(textureFile.parentFile)
+                            EventSearchFile.trigger(textureFile)
                         }
                     }
                     this.add(this.texturesMenu)
