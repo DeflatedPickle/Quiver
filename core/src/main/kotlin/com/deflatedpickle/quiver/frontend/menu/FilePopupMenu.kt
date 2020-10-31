@@ -6,6 +6,7 @@ import java.io.File
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 
+// TODO: Add more items to FilePopupMenu, such as Cut, Copy, Paste, Replace, Delete
 class FilePopupMenu(
     val getFile: () -> File?
 ) : JPopupMenu() {
@@ -14,7 +15,7 @@ class FilePopupMenu(
     }
 
     private val editItem = this.add("Edit") {
-        Desktop.getDesktop().open(this.getFile())
+        Desktop.getDesktop().edit(this.getFile())
     }
 
     init {
