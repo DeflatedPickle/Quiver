@@ -7,17 +7,20 @@ import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.rawky.ui.constraints.FillVerticalStickEast
 import com.deflatedpickle.rawky.ui.constraints.StickEast
 import com.deflatedpickle.rawky.ui.constraints.StickWest
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXLabel
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXTextField
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
 import javax.swing.JComponent
+import javax.swing.JSeparator
+import javax.swing.SwingConstants
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXTextField
 
 object FilePanel : PluginPanel() {
     private val nameLabel = JXLabel("Name")
@@ -54,6 +57,7 @@ object FilePanel : PluginPanel() {
         this.add(editButton, StickWest)
         this.add(openButton, StickWest)
         this.add(replaceButton, StickWest)
+        this.add(JSeparator(SwingConstants.VERTICAL), FillVerticalStickEast)
     }
 
     private val widgetArray = arrayOf<JComponent>(
@@ -80,6 +84,8 @@ object FilePanel : PluginPanel() {
         this.add(fileSizeLabel, StickEast)
         this.add(fileSize, FillHorizontalFinishLine)
 
+        // It doesn't actually fill
+        // Not sure why ¯\_(ツ)_/¯
         this.add(fileActionPanel, FillHorizontalFinishLine)
 
         this.add(widgetPanel, FillBothFinishLine)
