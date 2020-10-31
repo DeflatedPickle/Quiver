@@ -3,7 +3,6 @@ package com.deflatedpickle.quiver.frontend.menu
 import blue.endless.jankson.Jankson
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
-import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.frontend.extension.add
 import java.io.File
@@ -25,6 +24,7 @@ class LinkedFilesPopupMenu(
 
         if (file != null && file.isFile) {
             when (file.extension) {
+                // TODO: Support more file links with an API similar to file viewers
                 "png" -> handlePNG(file)
                 "json" -> handleJSON(file)
                 "mcmeta" -> handleMeta(file)
@@ -67,45 +67,41 @@ class LinkedFilesPopupMenu(
 
             when {
                 entries.size == 1 -> this.add("Texture") {
-                    val value = jsonObject.get(
-                        String::class.java,
-                        entries.elementAt(0).key
-                    )!!
-
-                    val split = value.split(":")
-                    val textureFile = DocumentUtil.current!!
-                        .resolve("assets")
-                        .resolve(split[0])
-                        .resolve("textures")
-                        .resolve("${split[1]}.png")
-
-                    EventSearchFolder.trigger(textureFile.parentFile)
-                    EventSearchFile.trigger(textureFile)
+                    this.searchTexture(
+                        jsonObject.get(
+                            String::class.java,
+                            entries.elementAt(0).key
+                        )!!
+                    )
                 }
                 entries.size > 1 -> {
                     for ((key, _) in this.json
                         .load(file)
                         .getObject("textures")!!.entries) {
                         this.texturesMenu.add(key) {
-                            val value = jsonObject.get(
-                                String::class.java,
-                                key
-                            )!!
-
-                            val split = value.split(":")
-                            val textureFile = DocumentUtil.current!!
-                                .resolve("assets")
-                                .resolve(split[0])
-                                .resolve("textures")
-                                .resolve("${split[1]}.png")
-
-                            EventSearchFolder.trigger(textureFile.parentFile)
-                            EventSearchFile.trigger(textureFile)
+                            this.searchTexture(
+                                jsonObject.get(
+                                    String::class.java,
+                                    key
+                                )!!
+                            )
                         }
                     }
                     this.add(this.texturesMenu)
                 }
             }
         }
+    }
+
+    private fun searchTexture(value: String) {
+        val split = value.split(":")
+        val textureFile = DocumentUtil.current!!
+            .resolve("assets")
+            .resolve(split[0])
+            .resolve("textures")
+            .resolve("${split[1]}.png")
+
+        EventSearchFolder.trigger(textureFile.parentFile)
+        EventSearchFile.trigger(textureFile)
     }
 }
