@@ -33,7 +33,7 @@ object FileTablePlugin {
             FileTable.fileModel.getValueAt(FileTable.selectedRow, 0) as File?
         else null
     }
-    
+
     private val linkButton = JSplitButton("Linked  ").apply {
         popupMenu = fileLinkMenu
         isEnabled = false
@@ -44,7 +44,9 @@ object FileTablePlugin {
 
         EventSelectFolder.addListener {
             FileTable.refresh(it)
+        }
 
+        EventSelectFile.addListener {
             // Definitely not the most efficient solution ¯\_(ツ)_/¯
             fileLinkMenu.validateMenu()
             this.linkButton.isEnabled = this.fileLinkMenu.componentCount > 0
