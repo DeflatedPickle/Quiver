@@ -10,7 +10,7 @@ plugins {
 }
 
 group 'com.deflatedpickle'
-version '1.4.1'
+version '1.5.0'
 
 allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
@@ -25,7 +25,7 @@ allprojects {
 	}
 
 	spotless {
-		ratchetFrom 'origin/rewrite'
+		// ratchetFrom 'origin/rewrite'
 
 		java {
 			importOrder()

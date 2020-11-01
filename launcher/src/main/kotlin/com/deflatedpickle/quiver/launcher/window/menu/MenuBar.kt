@@ -1,6 +1,7 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.launcher.window.menu
 
-import com.deflatedpickle.haruhi.util.LangUtil
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.constants.MenuCategory
 import com.deflatedpickle.haruhi.event.EventMenuBarAdd
@@ -25,7 +26,7 @@ object MenuBar : JMenuBar() {
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun addMenu(menu: JMenu) : JMenu {
+    fun addMenu(menu: JMenu): JMenu {
         EventMenuBuild.trigger(menu)
         this.add(menu)
         EventMenuBarAdd.trigger(menu)

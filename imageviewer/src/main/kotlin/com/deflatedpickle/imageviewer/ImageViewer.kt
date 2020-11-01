@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.imageviewer
 
 import com.deflatedpickle.quiver.backend.api.Viewer
@@ -5,7 +7,6 @@ import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.JComponent
 import javax.swing.JScrollPane
-
 
 object ImageViewer : Viewer<File> {
     private val component = Component()

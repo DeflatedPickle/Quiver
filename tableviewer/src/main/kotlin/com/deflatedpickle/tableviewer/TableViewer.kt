@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.tableviewer
 
 import com.deflatedpickle.quiver.backend.api.Viewer

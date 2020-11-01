@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.treeviewer
 
 import blue.endless.jankson.Jankson
@@ -10,7 +12,6 @@ import javax.swing.JComponent
 import javax.swing.JScrollPane
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
-
 
 object TreeViewer : Viewer<File> {
     private val component = Component()
@@ -29,14 +30,14 @@ object TreeViewer : Viewer<File> {
         for ((key, value) in obj.entries) {
             val keyNode = DefaultMutableTreeNode(key)
 
-            when(value) {
+            when (value) {
                 is JsonPrimitive -> {
                     val childNode = DefaultMutableTreeNode(value)
                     keyNode.add(childNode)
                 }
                 is JsonArray -> {
                     for (i in value) {
-                        when(i) {
+                        when (i) {
                             is JsonPrimitive -> {
                                 val childNode = DefaultMutableTreeNode(i)
                                 keyNode.add(childNode)
