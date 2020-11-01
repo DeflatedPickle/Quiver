@@ -1,9 +1,10 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.menu
 
 import com.deflatedpickle.quiver.frontend.extension.add
 import java.awt.Desktop
 import java.io.File
-import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 
 // TODO: Add more items to FilePopupMenu, such as Cut, Copy, Paste, Replace, Delete

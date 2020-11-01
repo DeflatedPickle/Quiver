@@ -1,8 +1,9 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.launcher.window
 
 import bibliothek.gui.dock.common.CControl
 import bibliothek.gui.dock.common.CGrid
-import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
 import com.deflatedpickle.tosuto.ToastWindow
 import java.awt.BorderLayout
 import javax.swing.JFrame

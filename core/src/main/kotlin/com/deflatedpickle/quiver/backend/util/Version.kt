@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.backend.util
 
 class Version(
@@ -77,7 +79,7 @@ class VersionIterator(
 class VersionProgression(
     override val start: Version,
     override val endInclusive: Version
-): Iterable<Version>, ClosedRange<Version> {
+) : Iterable<Version>, ClosedRange<Version> {
     override fun toString(): String = "$start - $endInclusive"
     override fun iterator(): Iterator<Version> = VersionIterator(start, endInclusive)
 }

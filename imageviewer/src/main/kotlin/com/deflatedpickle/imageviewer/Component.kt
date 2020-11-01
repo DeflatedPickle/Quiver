@@ -1,16 +1,17 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.imageviewer
 
 import com.deflatedpickle.quiver.backend.extension.compareTo
-import org.jdesktop.swingx.JXPanel
-import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
-import kotlin.math.min
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
-
+import org.jdesktop.swingx.JXPanel
+import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 
 class Component : JXPanel() {
     lateinit var image: BufferedImage
@@ -42,4 +43,3 @@ class Component : JXPanel() {
         g2d.drawImage(image, x, y, scaleWidth, scaleHeight, this)
     }
 }
-

@@ -26,8 +26,8 @@ This program uses the [haruhi](https://github.com/DeflatedPickle/haruhi) framewo
 Though there isn't an official way to develop external plugins, there are two routes I can think of;
 
 1. Clone this repository and develop your plugin as a submodule
-    - **Pro:** Easier to debug
-    - **Con:** Harder to distribute
+	- **Pro:** Easier to debug
+	- **Con:** Harder to distribute
 2. Develop your plugin in its own repository, then build it and place the build in your install of Quiver's `/plugins` directory when you want to test it
-    - **Pro:** Doesn't require the Quiver source
-    - **Con:** Harder to test
+	- **Pro:** Doesn't require the Quiver source
+	- **Con:** Harder to test
