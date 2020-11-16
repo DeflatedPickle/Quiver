@@ -3,9 +3,9 @@
 package com.deflatedpickle.quiver.frontend.menu
 
 import blue.endless.jankson.Jankson
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.frontend.extension.add
 import java.io.File
 import javax.swing.JMenu
@@ -97,7 +97,7 @@ class LinkedFilesPopupMenu(
 
     private fun searchTexture(value: String) {
         val split = value.split(":")
-        val textureFile = DocumentUtil.current!!
+        val textureFile = Quiver.packDirectory!!
             .resolve("assets")
             .resolve(split[0])
             .resolve("textures")

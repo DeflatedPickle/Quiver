@@ -4,8 +4,10 @@ package com.deflatedpickle.quiver.filetable
 
 import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
+import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import java.awt.datatransfer.DataFlavor
@@ -101,7 +103,7 @@ object FileTable : JXTable() {
     private fun addDropTarget() {
         this.dropTarget = object : DropTarget() {
             override fun dragEnter(dtde: DropTargetDragEvent) {
-                if (DocumentUtil.current == null) {
+                if (Quiver.packDirectory == null) {
                     dtde.rejectDrag()
                 }
             }
@@ -113,9 +115,14 @@ object FileTable : JXTable() {
                 for (i in files) {
                     if (i.isFile) {
                         FileUtils.moveFileToDirectory(
-                            i, FileTablePlugin.currentDir, true
+                            i, Quiver.selectedDir, true
                         )
-                        EventCreateFile.trigger(File(FileTablePlugin.currentDir, i.name))
+
+                        val file = File(Quiver.selectedDir, i.name)
+
+                        EventCreateFile.trigger(file)
+                        EventSelectFolder.trigger(Quiver.selectedDir!!)
+                        EventSearchFile.trigger(file)
                     }
                 }
             }
@@ -125,7 +132,7 @@ object FileTable : JXTable() {
     fun refreshAll() {
         this.removeAll()
 
-        val document = DocumentUtil.current
+        val document = Quiver.packDirectory
         refresh(document!!)
     }
 

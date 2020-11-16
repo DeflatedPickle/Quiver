@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import java.io.File
@@ -23,7 +24,7 @@ object ActionUtil {
                     dialog.locationEntry.field.text
             }\\${dialog.nameEntry.text}"
 
-            DocumentUtil.current = File(path).apply {
+            Quiver.packDirectory = File(path).apply {
                 mkdirs()
                 createNewFile()
             }
@@ -67,7 +68,7 @@ object ActionUtil {
                 }
             }
 
-            EventNewDocument.trigger(DocumentUtil.current!!)
+            EventNewDocument.trigger(Quiver.packDirectory!!)
         }
     }
 
@@ -86,9 +87,9 @@ object ActionUtil {
             if (selected.isDirectory &&
                 selected.resolve("pack.mcmeta").isFile
             ) {
-                DocumentUtil.current = directoryChooser.selectedFile
+                Quiver.packDirectory = directoryChooser.selectedFile
 
-                EventNewDocument.trigger(DocumentUtil.current!!)
+                EventNewDocument.trigger(Quiver.packDirectory!!)
             } else {
                 TaskDialogs.error(
                     PluginUtil.window,

@@ -3,8 +3,8 @@
 package com.deflatedpickle.quiver.filepanel.widget
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.filepanel.FilePanelPlugin
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
@@ -36,10 +36,10 @@ class ReplaceButton(text: String) : JXButton(text) {
                 val selected = directoryChooser.selectedFile
 
                 if (selected.isFile) {
-                    FilePanelPlugin.selectedFile!!.delete()
+                    Quiver.selectedFile!!.delete()
                     // Replace the selected file with the dropped one
-                    FileUtils.moveFile(selected, FilePanelPlugin.selectedFile)
-                    EventReplaceFile.trigger(FilePanelPlugin.selectedFile!!)
+                    FileUtils.moveFile(selected, Quiver.selectedFile)
+                    EventReplaceFile.trigger(Quiver.selectedFile!!)
                 }
             }
         }
@@ -49,17 +49,19 @@ class ReplaceButton(text: String) : JXButton(text) {
         this.dropTarget = object : DropTarget() {
             @Suppress("UNCHECKED_CAST")
             override fun dragEnter(dtde: DropTargetDragEvent) {
-                val file = FilePanelPlugin.selectedFile
+                val file = Quiver.selectedFile
                 val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>?
 
-                if (DocumentUtil.current == null || file == null) {
+                if (Quiver.packDirectory == null || file == null) {
                     dtde.rejectDrag()
                 } else {
-                    if (fileList != null && FilePanelPlugin.selectedFile != null) {
+                    if (fileList != null &&
+                        Quiver.selectedFile != null &&
+                        fileList.size != 1 &&
+                        fileList[0].extension != file.extension
+                    ) {
                         // We only want to allow one file
-                        if (fileList.size != 1 && fileList[0].extension != file.extension) {
-                            dtde.rejectDrag()
-                        }
+                        dtde.rejectDrag()
                     }
                 }
             }
@@ -70,11 +72,11 @@ class ReplaceButton(text: String) : JXButton(text) {
                 val fileList = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
                 val file = fileList[0]
 
-                if (fileList[0].isFile && FilePanelPlugin.selectedFile != null) {
-                    FilePanelPlugin.selectedFile!!.delete()
+                if (fileList[0].isFile && Quiver.selectedFile != null) {
+                    Quiver.selectedFile!!.delete()
                     // Replace the selected file with the dropped one
-                    FileUtils.moveFile(file, FilePanelPlugin.selectedFile)
-                    EventReplaceFile.trigger(FilePanelPlugin.selectedFile!!)
+                    FileUtils.moveFile(file, Quiver.selectedFile)
+                    EventReplaceFile.trigger(Quiver.selectedFile!!)
                 }
             }
         }
