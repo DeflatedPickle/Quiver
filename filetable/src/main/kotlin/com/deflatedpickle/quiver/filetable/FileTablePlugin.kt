@@ -7,7 +7,6 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.ConfigUtil
-import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
@@ -34,8 +33,6 @@ import java.io.File
     settings = FileTableSettings::class
 )
 object FileTablePlugin {
-    var currentDir: File? = null
-
     private val fileLinkMenu = LinkedFilesPopupMenu {
         if (FileTable.selectedRow >= 0)
             FileTable.fileModel.getValueAt(FileTable.selectedRow, 0) as File?
@@ -80,11 +77,6 @@ object FileTablePlugin {
                     this.linkButton.isEnabled =
                         this.fileLinkMenu.componentCount > 0
             }
-        }
-
-        EventOpenFile.addListener {
-            this.currentDir = it
-            FileTable.refreshAll()
         }
 
         EventSearchFile.addListener {

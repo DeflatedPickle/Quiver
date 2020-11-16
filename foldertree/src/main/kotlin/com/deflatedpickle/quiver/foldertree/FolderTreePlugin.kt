@@ -4,10 +4,10 @@ package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.event.EventOpenFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import java.io.File
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
@@ -41,7 +41,7 @@ object FolderTreePlugin {
             while (parent != null) {
                 selectPath.add(0, parent)
 
-                parent = if (parent.path != DocumentUtil.current!!.path) {
+                parent = if (parent.path != Quiver.packDirectory!!.path) {
                     parent.parentFile
                 } else {
                     null

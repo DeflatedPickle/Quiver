@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
@@ -35,7 +36,7 @@ object FilePanel : PluginPanel() {
         isEnabled = false
 
         addActionListener {
-            Desktop.getDesktop().open(FilePanelPlugin.selectedFile)
+            Desktop.getDesktop().open(Quiver.selectedFile)
         }
     }
 
@@ -43,7 +44,7 @@ object FilePanel : PluginPanel() {
         isEnabled = false
 
         addActionListener {
-            Desktop.getDesktop().edit(FilePanelPlugin.selectedFile)
+            Desktop.getDesktop().edit(Quiver.selectedFile)
         }
     }
 

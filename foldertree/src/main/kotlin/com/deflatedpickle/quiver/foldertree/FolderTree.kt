@@ -2,8 +2,8 @@
 
 package com.deflatedpickle.quiver.foldertree
 
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
-import com.deflatedpickle.quiver.backend.util.DocumentUtil
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import java.awt.Component
 import java.io.File
@@ -60,8 +60,8 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
     fun refreshAll() {
         this.removeAll()
 
-        val document = DocumentUtil.current
-        val fakeRoot = DefaultMutableTreeNode(DocumentUtil.current)
+        val document = Quiver.packDirectory
+        val fakeRoot = DefaultMutableTreeNode(Quiver.packDirectory)
         (this.model.root as DefaultMutableTreeNode).add(fakeRoot)
         refresh(document!!, fakeRoot)
 

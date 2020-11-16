@@ -5,6 +5,7 @@ package com.deflatedpickle.quiver.backend.util
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonObject
 import com.deflatedpickle.marvin.builder.FileBuilder
+import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
 import java.io.File
 import net.lingala.zip4j.ZipFile
@@ -146,7 +147,7 @@ object PackUtil {
     }
 
     fun writeMcMeta(version: Int, description: String) {
-        DocumentUtil.current!!.resolve("pack.mcmeta").writeText(
+        Quiver.packDirectory!!.resolve("pack.mcmeta").writeText(
             // I don't know if that's proper formatting, so format it again
             U.formatJson(
                 """

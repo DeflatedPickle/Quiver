@@ -7,6 +7,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
@@ -31,8 +32,6 @@ import org.jdesktop.swingx.JXRadioGroup
     component = FilePanel::class
 )
 object FilePanelPlugin {
-    var selectedFile: File? = null
-
     private val radioButtonGroup = JXRadioGroup<String>()
     private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
@@ -49,8 +48,6 @@ object FilePanelPlugin {
             FilePanel.typeField.text = it.extension
 
             FilePanel.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
-
-            this.selectedFile = it
 
             for (component in FilePanel.widgetPanel.components) {
                 // Remove everything but the toolbar to change viewers
