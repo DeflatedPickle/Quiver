@@ -14,6 +14,8 @@ import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.filetable.config.FileTableSettings
 import com.deflatedpickle.quiver.filetable.util.FileLinkAction
 import com.deflatedpickle.quiver.frontend.menu.LinkedFilesPopupMenu
+import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
+import java.awt.BorderLayout
 import java.io.File
 
 @Suppress("unused")
@@ -33,6 +35,8 @@ import java.io.File
     settings = FileTableSettings::class
 )
 object FileTablePlugin {
+    private val toolbar = SearchToolbar(FileTable.searchable)
+
     private val fileLinkMenu = LinkedFilesPopupMenu {
         if (FileTable.selectedRow >= 0)
             FileTable.fileModel.getValueAt(FileTable.selectedRow, 0) as File?
@@ -54,6 +58,8 @@ object FileTablePlugin {
                 FileLinkAction.REMOVE -> this.linkButton.isEnabled = true
                 FileLinkAction.DISABLE -> FilePanel.fileActionPanel.add(this.linkButton)
             }
+
+            Component.add(this.toolbar, BorderLayout.NORTH)
         }
 
         EventSelectFolder.addListener {
