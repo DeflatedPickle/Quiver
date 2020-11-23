@@ -2,9 +2,11 @@
 
 package com.deflatedpickle.quiver.filepanel
 
+import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.haruhi.component.PluginPanel
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
+import com.deflatedpickle.quiver.frontend.extension.add
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
@@ -14,14 +16,11 @@ import com.deflatedpickle.rawky.ui.constraints.StickWest
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
-import javax.swing.BorderFactory
-import javax.swing.JComponent
-import javax.swing.JSeparator
-import javax.swing.SwingConstants
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
+import javax.swing.*
 
 object FilePanel : PluginPanel() {
     private val nameLabel = JXLabel("Name")
@@ -32,10 +31,13 @@ object FilePanel : PluginPanel() {
     private val fileSizeLabel = JXLabel("File Size")
     val fileSize = JXLabel()
 
-    private val openButton = JXButton("Open").apply {
+    private val openButton = JSplitButton("Open  ").apply {
+        popupMenu = JPopupMenu("Open Alternatives").apply {
+            this.add("Open Folder") { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
+        }
         isEnabled = false
 
-        addActionListener {
+        addButtonClickedActionListener {
             Desktop.getDesktop().open(Quiver.selectedFile)
         }
     }
