@@ -1,11 +1,10 @@
 package com.deflatedpickle.quiver.frontend.widget
 
+import com.deflatedpickle.nagato.NagatoIcon
 import org.jdesktop.swingx.JXSearchField
 import org.jdesktop.swingx.search.Searchable
 import java.util.regex.Pattern
-import javax.swing.JCheckBox
-import javax.swing.JSeparator
-import javax.swing.JToolBar
+import javax.swing.*
 
 class SearchToolbar(
     private val searchable: Searchable
@@ -14,24 +13,30 @@ class SearchToolbar(
         searchMode = JXSearchField.SearchMode.INSTANT
     }
 
-    private val backwardsCheckbox = JCheckBox("Backwards")
+    private val backwardsCheckbox = JToggleButton(NagatoIcon.UNDO).apply {
+        toolTipText = "Backwards"
+    }
 
     // Regex checks
-    private val caseInsensitiveCheckbox = JCheckBox("Case Insensitive").apply {
-        isSelected = true
+    private val matchCaseCheckbox = JToggleButton(NagatoIcon.CASE_INSENSITIVE).apply {
+        toolTipText = "Match Case"
     }
-    private val ignoreWhitespaceCheckbox = JCheckBox("Ignore Whitespace").apply {
+    private val ignoreWhitespaceCheckbox = JToggleButton(NagatoIcon.IGNORE_WHITESPACE).apply {
+        toolTipText = "Ignore Whitespace"
         isSelected = true
     }
 
     // Non-regex checks
-    private val stripSpecialChecks = JCheckBox("Strip Special Characters")
+    private val stripSpecialChecks = JToggleButton(NagatoIcon.STRIP_SPECIAL_CHARACTERS).apply {
+        toolTipText = "Strip Special Characters"
+        isSelected = true
+    }
 
     init {
         this.add(this.searchField)
         this.add(this.backwardsCheckbox)
         this.addSeparator()
-        this.add(this.caseInsensitiveCheckbox)
+        this.add(this.matchCaseCheckbox)
         this.add(this.ignoreWhitespaceCheckbox)
         this.addSeparator()
         this.add(this.stripSpecialChecks)
@@ -45,7 +50,7 @@ class SearchToolbar(
 
             this.search(
                 search,
-                this.caseInsensitiveCheckbox.isSelected,
+                !this.matchCaseCheckbox.isSelected,
                 this.ignoreWhitespaceCheckbox.isSelected
             )
         }

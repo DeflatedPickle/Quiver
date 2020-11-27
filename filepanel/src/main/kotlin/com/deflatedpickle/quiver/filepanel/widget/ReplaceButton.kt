@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.filepanel.widget
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.filepanel.FilePanelPlugin
@@ -17,8 +18,10 @@ import javax.swing.filechooser.FileNameExtensionFilter
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXButton
 
-class ReplaceButton(text: String) : JXButton(text) {
+class ReplaceButton : JXButton(NagatoIcon.REPLACE) {
     init {
+        this.toolTipText = "Replace"
+
         this.addActionListener()
         this.addDropTarget()
     }
