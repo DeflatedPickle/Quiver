@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.frontend.menu
 
 import blue.endless.jankson.Jankson
+import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
@@ -43,7 +44,7 @@ class LinkedFilesPopupMenu(
         val targetFile = file.parentFile.resolve("${file.name}.mcmeta")
 
         if (targetFile.exists() && targetFile.isFile) {
-            this.add("Meta") {
+            this.add("Meta", NagatoIcon.FILE_JSON) {
                 EventSearchFile.trigger(targetFile)
             }
         }
@@ -53,7 +54,7 @@ class LinkedFilesPopupMenu(
         val targetFile = file.parentFile.resolve("${file.name.split(".")[0]}.png")
 
         if (targetFile.exists() && targetFile.isFile) {
-            this.add("Texture") {
+            this.add("Texture", NagatoIcon.PAINTING_BLANK) {
                 EventSearchFile.trigger(targetFile)
             }
         }
@@ -68,7 +69,7 @@ class LinkedFilesPopupMenu(
             val entries = jsonObject.entries
 
             when {
-                entries.size == 1 -> this.add("Texture") {
+                entries.size == 1 -> this.add("Texture", NagatoIcon.PAINTING_BLANK) {
                     this.searchTexture(
                         jsonObject.get(
                             String::class.java,
@@ -80,7 +81,7 @@ class LinkedFilesPopupMenu(
                     for ((key, _) in this.json
                         .load(file)
                         .getObject("textures")!!.entries) {
-                        this.texturesMenu.add(key) {
+                        this.texturesMenu.add(key, NagatoIcon.PAINTING_BLANK) {
                             this.searchTexture(
                                 jsonObject.get(
                                     String::class.java,

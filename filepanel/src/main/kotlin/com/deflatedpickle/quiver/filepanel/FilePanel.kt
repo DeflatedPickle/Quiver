@@ -4,6 +4,7 @@ package com.deflatedpickle.quiver.filepanel
 
 import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.haruhi.component.PluginPanel
+import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
 import com.deflatedpickle.quiver.frontend.extension.add
@@ -31,10 +32,11 @@ object FilePanel : PluginPanel() {
     private val fileSizeLabel = JXLabel("File Size")
     val fileSize = JXLabel()
 
-    private val openButton = JSplitButton("Open  ").apply {
+    private val openButton = JSplitButton("  ", NagatoIcon.FOLDER_OPEN_FILE).apply {
         popupMenu = JPopupMenu("Open Alternatives").apply {
-            this.add("Open Folder") { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
+            this.add("Open Folder", NagatoIcon.FOLDER_OPEN) { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
         }
+        toolTipText = "Open File"
         isEnabled = false
 
         addButtonClickedActionListener {
@@ -42,7 +44,8 @@ object FilePanel : PluginPanel() {
         }
     }
 
-    private val editButton = JXButton("Edit").apply {
+    private val editButton = JXButton(NagatoIcon.PENCIL).apply {
+        toolTipText = "Edit"
         isEnabled = false
 
         addActionListener {
@@ -50,7 +53,7 @@ object FilePanel : PluginPanel() {
         }
     }
 
-    private val replaceButton = ReplaceButton("Replace").apply {
+    private val replaceButton = ReplaceButton().apply {
         isEnabled = false
     }
 

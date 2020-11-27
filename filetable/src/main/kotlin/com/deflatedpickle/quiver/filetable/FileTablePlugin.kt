@@ -7,6 +7,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.ConfigUtil
+import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
@@ -43,7 +44,7 @@ object FileTablePlugin {
         else null
     }
 
-    private val linkButton = JSplitButton("Linked  ").apply {
+    private val linkButton = JSplitButton("  ", NagatoIcon.CHAIN_LINK).apply {
         popupMenu = fileLinkMenu
         isEnabled = false
     }
