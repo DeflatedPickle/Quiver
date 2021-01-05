@@ -3,6 +3,8 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.marvin.util.OSUtil
+import com.deflatedpickle.quiver.backend.extension.toPatternFilter
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
 import com.deflatedpickle.quiver.backend.util.ExtraResourceType
 import com.deflatedpickle.quiver.backend.util.Filters
@@ -17,6 +19,7 @@ import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
 import com.jidesoft.swing.CheckBoxList
 import java.awt.GridBagLayout
+import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
@@ -40,7 +43,7 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     val locationEntry = ButtonField(
         "Location",
         "The location of the pack",
-        Filters.PATH,
+        OSUtil.getOS().toPatternFilter(),
         "Open"
     ) {
         val directoryChooser = JFileChooser(
@@ -79,7 +82,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         border = BorderFactory.createEtchedBorder()
     }
 
-    val defaultVersionComboBox = JComboBox(DotMinecraft.versions.listFiles()!!.filter {
+    val defaultVersionComboBox = JComboBox(
+        // Returns the versions or an empty list if there are none
+        (DotMinecraft.versions.listFiles() ?: listOf<File>().toTypedArray()).filter {
         it.name.matches(VersionUtil.RELEASE) /*|| it.name.matches(VersionUtil.ALPHA) || it.name.matches(VersionUtil.BETA)*/
     }.toTypedArray()).apply {
         for (i in itemCount - 1 downTo 0) {
@@ -116,11 +121,22 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
                 .joinToString(" ") { it.capitalize() }
         }
 
+        // Disables the "Default Pack" radio button if there are no versions
+        if (defaultVersionComboBox.model.size <= 0) {
+            getChildButton(1).isEnabled = false
+        }
+
         addActionListener {
             val isDefaultPack = selectedValue == PackType.DEFAULT_PACK
 
             defaultVersionComboBox.isEnabled = isDefaultPack
             extraResourceTree.isEnabled = isDefaultPack
+
+            if (isDefaultPack) {
+                extraResourceTree.selectAll()
+            } else {
+                extraResourceTree.selectNone()
+            }
         }
         // This triggers the action listener
         selectedValue = PackType.EMPTY_PACK

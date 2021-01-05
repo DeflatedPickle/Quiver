@@ -1,5 +1,6 @@
 rootProject.name = 'Quiver'
 
+// Include the plugins
 include 'master'
 
 include 'core'
@@ -13,3 +14,12 @@ include 'textviewer'
 include 'tableviewer'
 include 'imageviewer'
 include 'treeviewer'
+
+// Include the libraries I use and own
+// This is so I can fix any issues easier
+includeBuild 'libs/haruhi'
+includeBuild 'libs/marvin'
+includeBuild 'libs/nagato'
+includeBuild 'libs/tosuto'
+includeBuild 'libs/undulation'
+includeBuild 'libs/sniffle'
