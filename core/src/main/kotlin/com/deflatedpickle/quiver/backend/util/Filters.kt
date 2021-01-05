@@ -5,6 +5,8 @@ package com.deflatedpickle.quiver.backend.util
 import so.madprogrammer.PatternFilter
 
 object Filters {
-    val FILE = PatternFilter("[^\\./:*?\"<>|]*")
-    val PATH = PatternFilter("[A-Za-z]:[^:*?\"<>|]*")
+    val FILE = PatternFilter("""[^\\./:*?\"<>|]*""")
+    val PATH_WINDOWS = PatternFilter("""[A-Za-z]:[^:*?"<>|]*""")
+    // https://stackoverflow.com/a/28989719
+    val PATH_UNIX = PatternFilter("""^(/[^/ \n]*)+/?$""")
 }

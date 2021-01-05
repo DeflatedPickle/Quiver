@@ -3,16 +3,23 @@
 package com.deflatedpickle.quiver.backend.util
 
 import io.github.erayerdin.kappdirs.AppDirsFactory
+import java.io.File
 
 object DotMinecraft {
     private val appDirs = AppDirsFactory.getInstance()
 
-    val dotMinecraftPath = appDirs.getUserConfigDir(
-        ".minecraft",
-        "",
-        null,
-        true
-    )
+    val dotMinecraftPath = when {
+        System.getProperty("os.name").toLowerCase().startsWith("win") -> appDirs.getUserConfigDir(
+            ".minecraft",
+            "",
+            null,
+            true
+        )
+        // Oh, great
+        // It's somewhere special on Unix
+        else -> File("${System.getProperty("user.home")}/.minecraft").toPath()
+        // Yay!
+    }
 
     val dotMinecraft = dotMinecraftPath.toFile()
     val versions = dotMinecraft.resolve("versions")

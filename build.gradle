@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+	id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
 
 	id 'distribution'
@@ -143,4 +143,10 @@ run {
 	application {
 		mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
 	}
+}
+
+task pushSubmodules(type: Exec) {
+	workingDir "."
+	commandLine "sh", "-c", "git submodule foreach 'git add .'"
+	commandLine "sh", "-c", "git submodule foreach 'git commit -a -m \"Update from submodule\" || :'"
 }
