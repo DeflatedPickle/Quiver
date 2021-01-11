@@ -10,7 +10,9 @@ plugins {
 }
 
 group 'com.deflatedpickle'
+archivesBaseName = 'Quiver'
 version '1.6.2'
+sourceCompatibility = '1.8'
 
 allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'

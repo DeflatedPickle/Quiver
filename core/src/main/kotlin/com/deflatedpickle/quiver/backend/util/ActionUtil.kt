@@ -22,7 +22,7 @@ object ActionUtil {
                     System.getProperty("user.dir")
                 else
                     dialog.locationEntry.field.text
-            }\\${dialog.nameEntry.text}"
+            }/${dialog.nameEntry.text}"
 
             Quiver.packDirectory = File(path).apply {
                 mkdirs()

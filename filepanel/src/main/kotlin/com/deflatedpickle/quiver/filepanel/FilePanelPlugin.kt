@@ -7,14 +7,12 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
-import java.io.File
 import javax.swing.JToolBar
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXRadioGroup
