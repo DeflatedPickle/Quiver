@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
+	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.72'
 
 	id 'distribution'
 	id 'application'
@@ -16,6 +16,7 @@ sourceCompatibility = '1.8'
 
 allprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
+	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 	apply plugin: 'com.diffplug.spotless'
 
 	repositories {
@@ -138,6 +139,9 @@ run {
 		runtimeOnly project(':imageviewer')
 		runtimeOnly project(':treeviewer')
 		runtimeOnly project(':modelviewer')
+
+		runtimeOnly project(':packexport')
+		runtimeOnly project(':packsquashstep')
 
 		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
 	}
