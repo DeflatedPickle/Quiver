@@ -15,6 +15,9 @@ include 'tableviewer'
 include 'imageviewer'
 include 'treeviewer'
 
+include 'packexport'
+include 'packsquashstep'
+
 // Include the libraries I use and own
 // This is so I can fix any issues easier
 includeBuild 'libs/haruhi'
