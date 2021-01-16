@@ -7,7 +7,7 @@ data class PackSquashStepSettings(
     /**
      * The location of your PackSquash executable
      */
-    var location: String = "../natives",
+    var location: String = "../tools",
     /**
      * The name of your PackSquash executable
      */

@@ -13,9 +13,12 @@ import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
 import com.jidesoft.swing.CheckBoxList
+import java.awt.Component
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
+import javax.swing.DefaultListCellRenderer
 import javax.swing.JFileChooser
+import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.text.PlainDocument
@@ -24,7 +27,7 @@ import org.jdesktop.swingx.JXTextField
 import org.jdesktop.swingx.JXTitledSeparator
 import org.oxbow.swingbits.dialog.task.TaskDialog
 
-class ExportPackDialog : TaskDialog(PluginUtil.window, "Export Pack")  {
+class ExportPackDialog : TaskDialog(PluginUtil.window, "Export Pack") {
     val locationEntry = ButtonField(
         "Location",
         "The location to export to",
@@ -57,6 +60,22 @@ class ExportPackDialog : TaskDialog(PluginUtil.window, "Export Pack")  {
 
         exportStepToggleList = CheckBoxList(exportStepList.toTypedArray()).apply {
             toolTipText = "Steps to run when the pack is exported"
+
+            cellRenderer = object : DefaultListCellRenderer() {
+                override fun getListCellRendererComponent(
+                    list: JList<*>,
+                    value: Any,
+                    index: Int,
+                    isSelected: Boolean,
+                    cellHasFocus: Boolean
+                ): Component = super.getListCellRendererComponent(
+                    list,
+                    (value as ExportStep).getName(),
+                    index,
+                    isSelected,
+                    cellHasFocus
+                )
+            }
 
             // Select all the checkboxes of enabled steps
             // addCheckBoxListSelectedValues(exportStepList.filter { it.toggled }.toTypedArray())
