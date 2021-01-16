@@ -8,6 +8,10 @@ import java.io.File
 // More like export step on me, amirite
 interface ExportStep : Comparable<ExportStep> {
     /**
+     * Gets the name of this export step
+     */
+    fun getName(): String
+    /**
      * This explains how the file is manipulated by this step
      */
     fun processFile(file: File)
