@@ -13,7 +13,6 @@ object PackSquashStep : BulkExportStep() {
         val settings = ConfigUtil.getSettings<PackSquashStepSettings>("deflatedpickle@pack_squash_step#1.0.0")
 
         this.logger.debug("Starting the PackSquash command")
-        println(settings.arguments.joinToString(" "))
         ProcessBuilder(
             "${settings.location}/${settings.executable}",
             file.path,

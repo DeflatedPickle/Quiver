@@ -13,11 +13,8 @@ data class PackSquashStepSettings(
      */
     @Suppress("SpellCheckingInspection")
     var executable: String = "packsquash",
-    val arguments: List<String> = listOf(
-        "-c", // This compresses every thing that's already compressed, like PNGs
-        "-a", // This makes PackSquash tell us what files it skips
-        "-m", // This includes all mod files
-        "-o" // This obfuscates the ZIP meaning some programs can't read it
-    ),
-    val timeout: Long = 5L // The amount of seconds to wait if this command doesn't start
+    /**
+     * The amount of seconds to wait if this command doesn't start
+     */
+    val timeout: Long = 5L
 )
