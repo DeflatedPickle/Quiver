@@ -112,7 +112,7 @@ object PackExportPlugin {
             // I was doing that at first, but then I realised I wanted multiple kinds of steps, which requires me to check what kind of step it is
             // Now, that alone wouldn't require this, but as I want a step to run on every file, then a bulk step to run on the whole pack, we have to do this
             // An alternative could be a separate registries for single or bulk steps, but I'm not doing that
-            for ((name, step) in registry.getAll()) {
+            for ((name, step) in registry.getAll().toSortedMap()) {
                 this.logger.trace("Starting the $step step")
 
                 when (step) {
