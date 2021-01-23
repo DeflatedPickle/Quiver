@@ -1,7 +1,8 @@
 package com.deflatedpickle.quiver.packexport.api
 
-import java.io.File
-
+/**
+ * A step during exporting that is applied to [affectedExtensions]
+ */
 abstract class PerFileExportStep(
     /**
      * The kinds of files this step will be applied to
@@ -12,4 +13,6 @@ abstract class PerFileExportStep(
      * - *
      */
     val affectedExtensions: Collection<String>
-) : ExportStep
+) : ExportStep {
+    override fun toString(): String = "PerFileExportStep( ${getName()}: ${getType()}; $affectedExtensions )"
+}

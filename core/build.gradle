@@ -28,6 +28,7 @@ dependencies {
 	api 'com.github.Vatuu:discord-rpc:1.6.2'
 	api 'me.xdrop:fuzzywuzzy:1.2.0'
 	api "blue.endless:jankson:1.1.0"
+	api 'org.jooq:joor-java-8:0.9.13'
 
 	api 'com.deflatedpickle:marvin:1.0.0'
 	api 'com.deflatedpickle:undulation:1.0.0'
@@ -43,6 +44,7 @@ dependencies {
 
 	api 'org.swinglabs:swingx:1.6.1'
 	api 'com.jidesoft:jide-oss:3.6.18'
+	api 'com.github.mikera:swing-console:swing-console-0.1.2'
 
 	// Docking framework
 	api 'org.dockingframes:docking-frames-common:1.1.1'
@@ -54,7 +56,6 @@ dependencies {
 	api 'com.github.DeflatedPickle:WrapLayout:9ae792ee13'
 
 	// Toasts
-	// api 'com.github.DeflatedPickle.tosuto:tosuto:1.7.2'
 	api 'com.deflatedpickle:tosuto:1.7.3'
 
 	// Icons

@@ -1,8 +1,8 @@
 package com.deflatedpickle.quiver.packexport.api
 
-abstract class BulkExportStep(
-    /**
-     * Whether or not to run this step before zipping up the pack
-     */
-    val beforeZip: Boolean = false
-) : ExportStep
+/**
+ * A step during exporting that is run on the pack as a whole
+ */
+abstract class BulkExportStep : ExportStep {
+    override fun toString(): String = "BulkExportStep( ${getName()}: ${getType()} )"
+}

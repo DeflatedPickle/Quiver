@@ -57,6 +57,10 @@ allprojects {
 			endWithNewline()
 		}
 	}
+
+	compileKotlin {
+		kotlinOptions.jvmTarget = sourceCompatibility
+	}
 }
 
 startScripts {
@@ -73,6 +77,9 @@ distributions {
 			subprojects.each { p ->
 				into('plugins') {
 					from p.getTasksByName("jar", true)
+				}
+				into('licenses') {
+
 				}
 			}
 		}

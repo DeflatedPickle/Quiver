@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.quiver.backend.util
 
+import com.deflatedpickle.marvin.util.OSUtil
 import io.github.erayerdin.kappdirs.AppDirsFactory
 import java.io.File
 
@@ -9,7 +10,7 @@ object DotMinecraft {
     private val appDirs = AppDirsFactory.getInstance()
 
     val dotMinecraftPath = when {
-        System.getProperty("os.name").toLowerCase().startsWith("win") -> appDirs.getUserConfigDir(
+        OSUtil.isWindows() -> appDirs.getUserConfigDir(
             ".minecraft",
             "",
             null,

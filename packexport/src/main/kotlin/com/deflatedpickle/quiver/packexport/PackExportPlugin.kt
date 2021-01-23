@@ -9,16 +9,23 @@ import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.frontend.extension.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
 import com.deflatedpickle.quiver.packexport.api.ExportStep
 import com.deflatedpickle.quiver.packexport.api.PerFileExportStep
+import com.deflatedpickle.quiver.packexport.event.EventExportFile
+import com.deflatedpickle.quiver.packexport.event.EventFinishExportStep
+import com.deflatedpickle.quiver.packexport.event.EventStartingExportStep
 import java.io.File
 import java.nio.file.Files
+import java.util.Comparator
 import javax.swing.JMenu
-import net.lingala.zip4j.ZipFile
+import javax.swing.JMenuItem
+import javax.swing.ProgressMonitor
 import org.apache.logging.log4j.LogManager
+import org.jdesktop.swingx.JXButton
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 
@@ -35,17 +42,30 @@ import org.oxbow.swingbits.dialog.task.TaskDialogs
 object PackExportPlugin {
     private val logger = LogManager.getLogger()
 
+    private lateinit var toolbarButton: JXButton
+    private lateinit var menuButton: JMenuItem
+
     init {
+
         EventProgramFinishSetup.addListener {
             RegistryUtil.register("export", Registry<String, MutableList<ExportStep>>())
 
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
             (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                add("Export Pack", NagatoIcon.CUT) { openExportPackGUI() }
+                menuButton = add("Export Pack", NagatoIcon.CUT) { openExportPackGUI() }
+                menuButton.isEnabled = false
                 addSeparator()
             }
 
-            Toolbar.add(NagatoIcon.CUT, "Export Pack") { openExportPackGUI() }
+            toolbarButton = Toolbar.add(NagatoIcon.CUT, "Export Pack") { openExportPackGUI() }
+            toolbarButton.isEnabled = false
+        }
+
+        EventNewDocument.addListener {
+            if (it.exists() && this::toolbarButton.isInitialized && this::menuButton.isInitialized) {
+                toolbarButton.isEnabled = true
+                menuButton.isEnabled = true
+            }
         }
     }
 
@@ -65,7 +85,8 @@ object PackExportPlugin {
                 exportPack(
                     dialog.locationEntry.field.text,
                     // FIXME: This line throws an error, thinking obvious subtypes of ExportStep are just Object
-                    *(dialog.exportStepToggleList.checkBoxListSelectedValues)
+                    *(dialog.exportStepToggleList.checkBoxListSelectedValues.filterIsInstance(ExportStep::class.java)
+                        .toTypedArray())
                 )
             }
         }
@@ -73,15 +94,19 @@ object PackExportPlugin {
 
     private fun exportPack(
         destination: String,
-        vararg toggledSteps: Any
+        vararg toggledSteps: ExportStep
     ) {
         this.logger.info("Attempting to export the pack")
 
+        toggledSteps.sortWith(
+            Comparator
+                .comparing(ExportStep::getType)
+                .thenComparing(ExportStep::getName)
+        )
+        this.logger.debug("Sorted the order of toggled export steps; $toggledSteps")
+
         if (Quiver.packDirectory == null) {
             this.logger.warn("You need to open a pack before exporting it")
-            return
-        } else if (toggledSteps.any { it !is ExportStep }) {
-            this.logger.warn("Toggled steps must only contain instances of ExportStep")
             return
         }
 
@@ -94,6 +119,15 @@ object PackExportPlugin {
         val tempPackFile = tempPack.toFile()
         this.logger.debug("Created a temporary file at: $tempPack")
 
+        var progress = 0
+        val progressMonitor = ProgressMonitor(
+            PluginUtil.window,
+            "Executing export steps",
+            "Copying the open pack to a temporary directory",
+            progress,
+            1 + registry.getAll().size
+        )
+
         Quiver.packDirectory!!.copyRecursively(
             tempPackFile,
             true
@@ -101,6 +135,18 @@ object PackExportPlugin {
             this.logger.warn("There was a problem copying $file to $tempPackFile, skipping it")
             this.logger.error(ioException)
             OnErrorAction.SKIP
+        }.also {
+            if (it) {
+                progressMonitor.setProgress(++progress)
+            } else {
+                TaskDialogs.error(
+                    PluginUtil.window,
+                    "Copying Canceled",
+                    "The copying of the pack to a temporary copy was cancelled"
+                )
+                progressMonitor.close()
+                return
+            }
         }
 
         val contents = tempPackFile.listFiles()
@@ -112,8 +158,17 @@ object PackExportPlugin {
             // I was doing that at first, but then I realised I wanted multiple kinds of steps, which requires me to check what kind of step it is
             // Now, that alone wouldn't require this, but as I want a step to run on every file, then a bulk step to run on the whole pack, we have to do this
             // An alternative could be a separate registries for single or bulk steps, but I'm not doing that
-            for ((name, step) in registry.getAll().toSortedMap()) {
-                this.logger.trace("Starting the $step step")
+            for (step in toggledSteps) {
+                val stepProgress = ProgressMonitor(
+                    PluginUtil.window,
+                    step.getName(),
+                    "Starting...",
+                    0,
+                    Int.MAX_VALUE
+                )
+
+                EventStartingExportStep.trigger(step)
+                val name = step.getName()
 
                 when (step) {
                     is PerFileExportStep -> for (file in it) {
@@ -125,17 +180,28 @@ object PackExportPlugin {
                                     )
                         ) {
                             this.logger.debug("Running the $name step for $file")
-                            step.processFile(file)
+                            progressMonitor.note = "Running the per-file $name step"
+                            step.processFile(file, stepProgress)
+                            EventExportFile.trigger(file)
+                            progressMonitor.setProgress(++progress)
                             this.logger.debug("Finished the $name step for $file")
                         }
                     }
-                    is BulkExportStep -> if (step in toggledSteps) {
+                    is BulkExportStep -> if (
+                        step in toggledSteps
+                    ) {
                         this.logger.debug("Running the $name step for ${Quiver.packDirectory}")
-                        step.processFile(Quiver.packDirectory!!)
+                        progressMonitor.note = "Running the bulk $name step"
+                        step.processFile(File(destination).absoluteFile, stepProgress)
+                        progressMonitor.setProgress(++progress)
                         this.logger.debug("Finished the $name step for ${Quiver.packDirectory}")
                     }
                 }
+
+                EventFinishExportStep.trigger(step)
             }
         }
+
+        progressMonitor.setProgress(++progress)
     }
 }
