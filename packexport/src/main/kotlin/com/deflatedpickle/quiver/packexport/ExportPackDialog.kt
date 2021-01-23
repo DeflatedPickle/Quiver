@@ -76,9 +76,6 @@ class ExportPackDialog : TaskDialog(PluginUtil.window, "Export Pack") {
                     cellHasFocus
                 )
             }
-
-            // Select all the checkboxes of enabled steps
-            // addCheckBoxListSelectedValues(exportStepList.filter { it.toggled }.toTypedArray())
         }
 
         this.fixedComponent = JScrollPane(JPanel().apply {

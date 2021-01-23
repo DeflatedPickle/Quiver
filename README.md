@@ -3,7 +3,7 @@ A resource pack creator and manager for Minecraft.
 
 ## Downloading
 You can find pre-built versions of Quiver [here](https://github.com/deflatedpickle/quiver/releases).
-The most recent build will be labeled as such. Any of the older builds *will* ***not*** be supported, especially v0.\*.\*, so please stay up-to-date.
+The most recent build will be labeled as such. Any of the older builds *will* ***not*** be supported, especially `v0.*.*`, so please stay up-to-date.
 
 ## Running
 You will first need to download a version *(hopefully the latest)* of Quiver *(it should be a zip)*, you will then need to unzip it and then run either `Quiver.bat` or `Quiver` *(depending on if you're on Windows or Linux/MacOS)*

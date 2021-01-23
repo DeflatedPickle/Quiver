@@ -7,6 +7,7 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.packexport.api.ExportStep
 
+@Suppress("unused")
 @Plugin(
     value = "pack_squash_step",
     author = "DeflatedPickle",
@@ -19,7 +20,18 @@ import com.deflatedpickle.quiver.packexport.api.ExportStep
     settings = PackSquashStepSettings::class
 )
 object PackSquashStepPlugin {
+    // TODO: Remove PackSquash processes from the shutdown list when they complete normally
+    val processList = mutableListOf<Process>()
+
     init {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            for (i in processList) {
+                if (i.isAlive) {
+                    i.destroyForcibly()
+                }
+            }
+        })
+
         EventProgramFinishSetup.addListener {
             val exportStepRegistry = RegistryUtil.get("export")
 

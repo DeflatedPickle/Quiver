@@ -7,8 +7,8 @@ import javax.swing.Icon
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 
-fun JMenu.add(text: String, icon: Icon? = null, action: (ActionEvent) -> Unit): JMenuItem {
-    val item = JMenuItem(text, icon).apply { addActionListener { action(it) } }
-    this.add(item)
-    return item
-}
+fun JMenu.add(text: String, icon: Icon? = null, action: (ActionEvent) -> Unit): JMenuItem =
+    JMenuItem(text, icon).apply {
+        addActionListener { action(it) }
+        this@add.add(this)
+    }
