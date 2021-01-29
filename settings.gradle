@@ -18,6 +18,7 @@ include 'modelviewer'
 
 include 'packexport'
 include 'packsquashstep'
+include 'zipstep'
 
 // Include the libraries I use and own
 // This is so I can fix any issues easier

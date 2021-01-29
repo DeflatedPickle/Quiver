@@ -29,6 +29,7 @@ import org.jdesktop.swingx.JXButton
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 
+@Suppress("unused")
 @Plugin(
     value = "pack_export",
     author = "DeflatedPickle",
@@ -84,7 +85,6 @@ object PackExportPlugin {
                 @Suppress("UNCHECKED_CAST")
                 exportPack(
                     dialog.locationEntry.field.text,
-                    // FIXME: This line throws an error, thinking obvious subtypes of ExportStep are just Object
                     *(dialog.exportStepToggleList.checkBoxListSelectedValues.filterIsInstance(ExportStep::class.java)
                         .toTypedArray())
                 )
@@ -165,7 +165,10 @@ object PackExportPlugin {
                     "Starting...",
                     0,
                     Int.MAX_VALUE
-                )
+                ).apply {
+                    millisToPopup = 0
+                    millisToDecideToPopup = 0
+                }
 
                 EventStartingExportStep.trigger(step)
                 val name = step.getName()
@@ -192,7 +195,7 @@ object PackExportPlugin {
                     ) {
                         this.logger.debug("Running the $name step for ${Quiver.packDirectory}")
                         progressMonitor.note = "Running the bulk $name step"
-                        step.processFile(File(destination).absoluteFile, stepProgress)
+                        step.processFile(Quiver.packDirectory!!, stepProgress)
                         progressMonitor.setProgress(++progress)
                         this.logger.debug("Finished the $name step for ${Quiver.packDirectory}")
                     }

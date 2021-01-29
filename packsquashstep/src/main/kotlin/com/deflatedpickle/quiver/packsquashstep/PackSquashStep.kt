@@ -1,26 +1,17 @@
 package com.deflatedpickle.quiver.packsquashstep
 
 import com.deflatedpickle.haruhi.util.ConfigUtil
-import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.marvin.extensions.Thread
 import com.deflatedpickle.marvin.util.OSUtil
-import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
 import com.deflatedpickle.quiver.packexport.api.ExportStepType
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import javax.swing.JProgressBar
 import javax.swing.ProgressMonitor
-import javax.swing.ProgressMonitorInputStream
-import javax.swing.SwingWorker
-import kotlin.reflect.full.declaredMembers
-import kotlin.reflect.jvm.isAccessible
 import kotlinx.serialization.toUtf8Bytes
-import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
-import org.joor.Reflect
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 
 object PackSquashStep : BulkExportStep() {
@@ -40,7 +31,7 @@ object PackSquashStep : BulkExportStep() {
 
         val arguments = """
             |resource_pack_directory = "."
-            |output_file_path = "${file}/${file.nameWithoutExtension}.zip"
+            |output_file_path = "${file.parentFile.absolutePath}/${file.nameWithoutExtension}.zip"
             |${File(settings.settings).readText()}
             """.trimMargin()
         // println(arguments)
@@ -50,7 +41,7 @@ object PackSquashStep : BulkExportStep() {
             "${File(".").canonicalPath}/${settings.location}/${settings.executable}" + if (OSUtil.isWindows()) ".exe" else "",
             "-"
         )
-            .directory(File(file.path))
+            .directory(file)
             .redirectInput(ProcessBuilder.Redirect.PIPE)
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
@@ -72,7 +63,7 @@ object PackSquashStep : BulkExportStep() {
             }
         PackSquashStepPlugin.processList.add(process)
 
-        Thread("PackSquash Feed") {
+        Thread("${getName()} Feed") {
             val outputStream = BufferedInputStream(
                 process.inputStream
             )
@@ -89,6 +80,7 @@ object PackSquashStep : BulkExportStep() {
                     progressMonitor.note = it
                     progressMonitor.setProgress(++progress)
                 }
+                PackSquashStepPlugin.processList
             } catch (e: IOException) {
             }
             progressMonitor.close()

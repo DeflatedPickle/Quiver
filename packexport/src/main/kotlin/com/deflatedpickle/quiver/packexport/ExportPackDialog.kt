@@ -6,7 +6,6 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.backend.extension.toPatternFilter
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
-import com.deflatedpickle.quiver.backend.util.Filters
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.packexport.api.ExportStep
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
@@ -21,9 +20,7 @@ import javax.swing.JFileChooser
 import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JScrollPane
-import javax.swing.text.PlainDocument
 import org.jdesktop.swingx.JXLabel
-import org.jdesktop.swingx.JXTextField
 import org.jdesktop.swingx.JXTitledSeparator
 import org.oxbow.swingbits.dialog.task.TaskDialog
 

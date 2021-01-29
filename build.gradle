@@ -149,6 +149,7 @@ run {
 
 		runtimeOnly project(':packexport')
 		runtimeOnly project(':packsquashstep')
+		runtimeOnly project(':zipstep')
 
 		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
 	}
