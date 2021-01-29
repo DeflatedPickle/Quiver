@@ -1,4 +1,4 @@
-package com.deflatedpickle.quiver.packsquashstep
+package com.deflatedpickle.quiver.zipstep
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -6,36 +6,27 @@ import com.deflatedpickle.haruhi.api.registry.Registry
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.packexport.api.ExportStep
+import com.deflatedpickle.quiver.zipstep.ZipStep
 
 @Suppress("unused")
 @Plugin(
-    value = "pack_squash_step",
+    value = "zip_step",
     author = "DeflatedPickle",
     version = "1.0.0",
     description = """
         <br>
-        A pack export step that utilizes PackSquash to decrease file sizes
+        A pack export step to put the pack in a ZIP
     """,
     type = PluginType.OTHER,
-    settings = PackSquashStepSettings::class
+    settings = ZipStepSettings::class
 )
-object PackSquashStepPlugin {
-    val processList = mutableListOf<Process>()
-
+object ZipStepPlugin {
     init {
-        Runtime.getRuntime().addShutdownHook(Thread {
-            for (i in processList) {
-                if (i.isAlive) {
-                    i.destroyForcibly()
-                }
-            }
-        })
-
         EventProgramFinishSetup.addListener {
             val exportStepRegistry = RegistryUtil.get("export")
 
             @Suppress("UNCHECKED_CAST")
-            (exportStepRegistry as Registry<String, ExportStep>?)?.register("packsquash", PackSquashStep)
+            (exportStepRegistry as Registry<String, ExportStep>?)?.register("zip", ZipStep)
         }
     }
 }
