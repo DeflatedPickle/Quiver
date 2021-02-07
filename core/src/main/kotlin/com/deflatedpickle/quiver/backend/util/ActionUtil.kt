@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog

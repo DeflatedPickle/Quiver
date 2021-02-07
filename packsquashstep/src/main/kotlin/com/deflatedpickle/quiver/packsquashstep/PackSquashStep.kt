@@ -1,6 +1,8 @@
 package com.deflatedpickle.quiver.packsquashstep
 
 import com.deflatedpickle.haruhi.util.ConfigUtil
+import com.deflatedpickle.marvin.Slug
+import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.marvin.extensions.Thread
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
@@ -17,8 +19,15 @@ import org.oxbow.swingbits.dialog.task.TaskDialogs
 object PackSquashStep : BulkExportStep() {
     private val logger = LogManager.getLogger()
 
-    override fun getName(): String = "PackSquash"
+    override fun getSlug(): Slug = Slug(
+        "DeflatedPickle",
+        "PackSquash",
+        Version(1, 0, 0)
+    )
     override fun getType(): ExportStepType = ExportStepType.ZIPPER
+    override fun getIncompatibleTypes(): Collection<ExportStepType> = listOf(
+        ExportStepType.ZIPPER
+    )
 
     override fun processFile(
         file: File,
@@ -63,7 +72,7 @@ object PackSquashStep : BulkExportStep() {
             }
         PackSquashStepPlugin.processList.add(process)
 
-        Thread("${getName()} Feed") {
+        Thread("${getSlug().name} Feed") {
             val outputStream = BufferedInputStream(
                 process.inputStream
             )

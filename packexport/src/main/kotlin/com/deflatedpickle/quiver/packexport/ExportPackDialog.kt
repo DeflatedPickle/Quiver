@@ -3,11 +3,14 @@ package com.deflatedpickle.quiver.packexport
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.marvin.Slug
+import com.deflatedpickle.marvin.extensions.toInt
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.backend.extension.toPatternFilter
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.packexport.api.ExportStep
+import com.deflatedpickle.quiver.packexport.api.ExportStepType
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
@@ -67,11 +70,31 @@ class ExportPackDialog : TaskDialog(PluginUtil.window, "Export Pack") {
                     cellHasFocus: Boolean
                 ): Component = super.getListCellRendererComponent(
                     list,
-                    (value as ExportStep).getName(),
+                    (value as ExportStep).getSlug().name,
                     index,
                     isSelected,
                     cellHasFocus
                 )
+            }
+
+            // This selection listener will disable all incompatible steps and types of all the currently selected steps
+            checkBoxListSelectionModel.addListSelectionListener {
+                if (!it.valueIsAdjusting) {
+                    for (i in 0 until this.model.size) {
+                        val value = this.model.getElementAt(i) as ExportStep
+
+                        for (j in 0 until this.model.size) {
+                            val otherValue = this.model.getElementAt(j) as ExportStep
+
+                            if (i != j && this.checkBoxListSelectionModel.isSelectedIndex(i) && (
+                                        otherValue.getSlug() in value.getIncompatibleSlugs() ||
+                                                otherValue.getType() in value.getIncompatibleTypes())
+                            ) {
+                                removeCheckBoxListSelectedValue(otherValue, false)
+                            }
+                        }
+                    }
+                }
             }
         }
 

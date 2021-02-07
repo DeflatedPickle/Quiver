@@ -14,5 +14,5 @@ abstract class PerFileExportStep(
      */
     val affectedExtensions: Collection<String>
 ) : ExportStep {
-    override fun toString(): String = "PerFileExportStep( ${getName()}: ${getType()}; $affectedExtensions )"
+    override fun toString(): String = "PerFileExportStep( ${getSlug()}: ${getType()}; $affectedExtensions )"
 }

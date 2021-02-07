@@ -4,6 +4,8 @@ package com.deflatedpickle.quiver.backend.util
 
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonObject
+import com.deflatedpickle.marvin.Version
+import com.deflatedpickle.marvin.VersionProgression
 import com.deflatedpickle.marvin.builder.FileBuilder
 import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
