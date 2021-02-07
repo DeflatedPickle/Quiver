@@ -101,7 +101,7 @@ object PackExportPlugin {
         toggledSteps.sortWith(
             Comparator
                 .comparing(ExportStep::getType)
-                .thenComparing(ExportStep::getName)
+                .thenComparing(ExportStep::getSlug)
         )
         this.logger.debug("Sorted the order of toggled export steps; $toggledSteps")
 
@@ -161,7 +161,7 @@ object PackExportPlugin {
             for (step in toggledSteps) {
                 val stepProgress = ProgressMonitor(
                     PluginUtil.window,
-                    step.getName(),
+                    step.getSlug().name,
                     "Starting...",
                     0,
                     Int.MAX_VALUE
@@ -171,7 +171,7 @@ object PackExportPlugin {
                 }
 
                 EventStartingExportStep.trigger(step)
-                val name = step.getName()
+                val name = step.getSlug().name
 
                 when (step) {
                     is PerFileExportStep -> for (file in it) {

@@ -1,5 +1,6 @@
 package com.deflatedpickle.quiver.packexport.api
 
+import com.deflatedpickle.marvin.Slug
 import java.io.File
 import javax.swing.ProgressMonitor
 
@@ -9,9 +10,9 @@ import javax.swing.ProgressMonitor
 // More like export step on me, amirite
 interface ExportStep {
     /**
-     * Gets the name of this export step
+     * Get the slug for this plugin
      */
-    fun getName(): String
+    fun getSlug(): Slug
 
     /**
      * The type of export this is
@@ -19,7 +20,12 @@ interface ExportStep {
     fun getType(): ExportStepType
 
     /**
-     * A collection of [ExportStepType]'s this [ExportStepType] isn't compatible with
+     * A collection of [Slug]'s this [ExportStep] isn't compatible with
+     */
+    fun getIncompatibleSlugs(): Collection<Slug> = listOf()
+
+    /**
+     * A collection of [ExportStepType]'s this [ExportStep] isn't compatible with
      */
     fun getIncompatibleTypes(): Collection<ExportStepType> = listOf()
 

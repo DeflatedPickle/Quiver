@@ -2,6 +2,8 @@ package com.deflatedpickle.quiver.zipstep
 
 import net.lingala.zip4j.progress.ProgressMonitor as ZipProgressMonitor
 import com.deflatedpickle.haruhi.util.ConfigUtil
+import com.deflatedpickle.marvin.Slug
+import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.marvin.extensions.Thread
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
 import com.deflatedpickle.quiver.packexport.api.ExportStepType
@@ -14,8 +16,15 @@ import org.apache.logging.log4j.LogManager
 object ZipStep : BulkExportStep() {
     private val logger = LogManager.getLogger()
 
-    override fun getName(): String = "Zip"
+    override fun getSlug(): Slug = Slug(
+        "DeflatedPickle",
+        "Zip",
+        Version(1, 0, 0)
+    )
     override fun getType(): ExportStepType = ExportStepType.ZIPPER
+    override fun getIncompatibleTypes(): Collection<ExportStepType> = listOf(
+        ExportStepType.ZIPPER
+    )
 
     override fun processFile(
         file: File,
@@ -45,7 +54,7 @@ object ZipStep : BulkExportStep() {
         val zipProgressMonitor = zipFile.progressMonitor
         zipFile.isRunInThread = true
 
-        Thread("${getName()} Feed") {
+        Thread("${getSlug().name} Feed") {
             // For whatever reason, the progress *starts* at 100, so we can't check for that
             while (zipProgressMonitor.percentDone != 99) {
                 if (progressMonitor.isCanceled) {
@@ -62,11 +71,11 @@ object ZipStep : BulkExportStep() {
             @Suppress("NON_EXHAUSTIVE_WHEN")
             when (zipProgressMonitor.result) {
                 ZipProgressMonitor.Result.SUCCESS ->
-                    logger.info("The ${getName()} task finished successfully")
+                    logger.info("The ${getSlug().name} task finished successfully")
                 ZipProgressMonitor.Result.ERROR ->
-                    logger.error("The Zip task ran into the error; ${zipProgressMonitor.exception.message}")
+                    logger.error("The ${getSlug().name} task ran into the error; ${zipProgressMonitor.exception.message}")
                 ZipProgressMonitor.Result.CANCELLED ->
-                    logger.warn("The Zip task was cancelled")
+                    logger.warn("The ${getSlug().name} task was cancelled")
             }
         }.start()
 
