@@ -6,7 +6,6 @@ import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
-import com.deflatedpickle.quiver.filepanel.FilePanelPlugin
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget

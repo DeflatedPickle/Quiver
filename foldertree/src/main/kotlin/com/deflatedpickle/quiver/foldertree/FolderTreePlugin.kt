@@ -4,7 +4,6 @@ package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
-import com.deflatedpickle.haruhi.event.EventCreatePluginComponent
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument

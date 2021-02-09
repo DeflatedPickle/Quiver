@@ -1,6 +1,7 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.zipstep
 
-import net.lingala.zip4j.progress.ProgressMonitor as ZipProgressMonitor
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.marvin.Slug
 import com.deflatedpickle.marvin.Version
@@ -11,6 +12,7 @@ import java.io.File
 import javax.swing.ProgressMonitor
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.ZipParameters
+import net.lingala.zip4j.progress.ProgressMonitor as ZipProgressMonitor
 import org.apache.logging.log4j.LogManager
 
 object ZipStep : BulkExportStep() {

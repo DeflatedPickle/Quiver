@@ -1,10 +1,13 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.widget
 
 import com.deflatedpickle.nagato.NagatoIcon
+import java.util.regex.Pattern
+import javax.swing.JToggleButton
+import javax.swing.JToolBar
 import org.jdesktop.swingx.JXSearchField
 import org.jdesktop.swingx.search.Searchable
-import java.util.regex.Pattern
-import javax.swing.*
 
 class SearchToolbar(
     private val searchable: Searchable
