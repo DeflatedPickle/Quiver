@@ -3,6 +3,7 @@ package com.deflatedpickle.quiver.packsquashstep
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.marvin.Slug
 import com.deflatedpickle.marvin.Version
+import com.deflatedpickle.marvin.exceptions.UnsupportedOperatingSystemException
 import com.deflatedpickle.marvin.extensions.Thread
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
@@ -45,9 +46,16 @@ object PackSquashStep : BulkExportStep() {
             """.trimMargin()
         // println(arguments)
 
+        val system = when(OSUtil.getOS()) {
+            OSUtil.OS.WINDOWS -> ""
+            OSUtil.OS.LINUX -> "linux"
+            OSUtil.OS.MAC -> "macos"
+            else -> throw UnsupportedOperatingSystemException(OSUtil.os)
+        }
+
         this.logger.debug("Starting the PackSquash command")
         val process = ProcessBuilder(
-            "${File(".").canonicalPath}/${settings.location}/${settings.executable}" + if (OSUtil.isWindows()) ".exe" else "",
+            "${File(".").canonicalPath}/${settings.location}/${settings.executable}" + if (OSUtil.isWindows()) ".exe" else "-$system",
             "-"
         )
             .directory(file)

@@ -15,6 +15,7 @@ import com.deflatedpickle.haruhi.event.EventProgramShutdown
 import com.deflatedpickle.haruhi.util.ClassGraphUtil
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
@@ -32,6 +33,9 @@ import org.oxbow.swingbits.dialog.task.TaskDialogs
 
 @ImplicitReflectionSerializer
 fun main(args: Array<String>) {
+    // We'll count the startup time
+    val startTime = System.nanoTime()
+
     // We set the LaF now so any error pop-ups use the use it
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
@@ -39,14 +43,20 @@ fun main(args: Array<String>) {
     System.setProperty("log4j.skipJansi", "false")
     val logger = LogManager.getLogger()
 
-    logger.trace("Installed JANSI for this terminal session")
+    logger.debug("Installed JANSI for this terminal session")
     AnsiConsole.systemInstall()
-
-    logger.trace("Running with Java specification ${Runtime::class.java.`package`.specificationVersion}, implementation ${Runtime::class.java.`package`.implementationVersion}")
 
     // The gradle tasks pass in "indev" argument
     // if it doesn't exist it's not indev
     PluginUtil.isInDev = args.contains("indev")
+
+    logger.info("""
+        |
+        |OS  : ${OSUtil.getOS()} (${OSUtil.os})
+        |Java: ${Runtime::class.java.`package`.specificationVersion} (${Runtime::class.java.`package`.implementationVersion})
+        |Dir : ${System.getProperty("user.dir")}
+        |Dev?: ${PluginUtil.isInDev}
+    """.trimMargin())
 
     PluginUtil.window = Window
     PluginUtil.toastWindow = Window.toastWindow
@@ -57,10 +67,10 @@ fun main(args: Array<String>) {
     // to reduce the instance count
     Runtime.getRuntime().addShutdownHook(object : Thread() {
         override fun run() {
-            logger.trace("Uninstalled JANSI for this terminal session")
+            logger.debug("Uninstalled JANSI for this terminal session")
             AnsiConsole.systemUninstall()
 
-            logger.trace("The JVM instance running Quiver was shutdown")
+            logger.debug("The JVM instance running Quiver was shutdown")
             EventProgramShutdown.trigger(true)
 
             // Changes were probably made, let's serialize the configs again
@@ -87,7 +97,7 @@ fun main(args: Array<String>) {
             }
         }
     }
-    logger.trace("Registered a default exception handler")
+    logger.debug("Registered a default exception handler")
 
     // Plugins are distributed and loaded as JARs
     // when the program is built
@@ -186,6 +196,9 @@ fun main(args: Array<String>) {
         }
     }
 
+    val loadTime = System.nanoTime()
+    logger.debug("Took ${((loadTime - startTime) / 1000) % 60} seconds to load")
+
     SwingUtilities.invokeLater {
         Window.jMenuBar = MenuBar
         Window.add(Toolbar, BorderLayout.PAGE_START)
@@ -204,5 +217,8 @@ fun main(args: Array<String>) {
         EventProgramFinishSetup.trigger(true)
 
         Window.isVisible = true
+
+        val launchTime = System.nanoTime()
+        logger.debug("Took ${((launchTime - loadTime) / 1000) % 60} seconds to launch")
     }
 }
