@@ -1,16 +1,15 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.packexport
 
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.marvin.Slug
-import com.deflatedpickle.marvin.extensions.toInt
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.backend.extension.toPatternFilter
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.packexport.api.ExportStep
-import com.deflatedpickle.quiver.packexport.api.ExportStepType
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast

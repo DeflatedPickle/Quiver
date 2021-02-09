@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.packsquashstep
 
 import com.deflatedpickle.haruhi.util.ConfigUtil
@@ -46,7 +48,7 @@ object PackSquashStep : BulkExportStep() {
             """.trimMargin()
         // println(arguments)
 
-        val system = when(OSUtil.getOS()) {
+        val system = when (OSUtil.getOS()) {
             OSUtil.OS.WINDOWS -> ""
             OSUtil.OS.LINUX -> "linux"
             OSUtil.OS.MAC -> "macos"

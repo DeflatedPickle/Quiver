@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.packexport
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -18,7 +20,6 @@ import com.deflatedpickle.quiver.packexport.api.PerFileExportStep
 import com.deflatedpickle.quiver.packexport.event.EventExportFile
 import com.deflatedpickle.quiver.packexport.event.EventFinishExportStep
 import com.deflatedpickle.quiver.packexport.event.EventStartingExportStep
-import java.io.File
 import java.nio.file.Files
 import java.util.Comparator
 import javax.swing.JMenu

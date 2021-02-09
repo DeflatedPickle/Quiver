@@ -17,11 +17,15 @@ import com.deflatedpickle.rawky.ui.constraints.StickWest
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.GridBagLayout
+import javax.swing.BorderFactory
+import javax.swing.JComponent
+import javax.swing.JPopupMenu
+import javax.swing.JSeparator
+import javax.swing.SwingConstants
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
-import javax.swing.*
 
 object FilePanel : PluginPanel() {
     private val nameLabel = JXLabel("Name")

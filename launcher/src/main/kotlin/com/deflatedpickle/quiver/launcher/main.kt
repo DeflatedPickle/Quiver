@@ -19,7 +19,6 @@ import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
-import com.deflatedpickle.tosuto.ToastItem
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File

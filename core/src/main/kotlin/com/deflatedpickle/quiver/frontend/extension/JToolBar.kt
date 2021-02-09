@@ -2,10 +2,9 @@
 
 package com.deflatedpickle.quiver.frontend.extension
 
-import java.awt.Component
+import javax.swing.Icon
 import javax.swing.JToolBar
 import org.jdesktop.swingx.JXButton
-import javax.swing.Icon
 
 fun JToolBar.add(text: String, action: () -> Unit): JXButton =
     JXButton(text).apply {
