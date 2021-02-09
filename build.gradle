@@ -7,6 +7,7 @@ plugins {
 	id 'application'
 
 	id 'com.diffplug.spotless' version '5.7.0'
+	id "de.undercouch.download" version "4.1.1"
 }
 
 group 'com.deflatedpickle'
@@ -14,7 +15,13 @@ archivesBaseName = 'Quiver'
 version '1.6.2'
 sourceCompatibility = '1.8'
 
+project.ext {
+	licenseDir = new File('licenses', buildDir)
+	toolDir = new File('tools', buildDir)
+}
+
 allprojects {
+	apply plugin: 'distribution'
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 	apply plugin: 'com.diffplug.spotless'
@@ -74,12 +81,20 @@ distributions {
 			from files('README.MD', 'LICENSE')
 			from startScripts
 
+			into('data') {
+				from files('data')
+			}
+
+			into('licenses') {
+				from files("$buildDir/licenses")
+			}
+			into('tools') {
+				from files("$buildDir/tools")
+			}
+
 			subprojects.each { p ->
 				into('plugins') {
 					from p.getTasksByName("jar", true)
-				}
-				into('licenses') {
-
 				}
 			}
 		}
@@ -126,14 +141,17 @@ run {
 	args = ['indev']
 
 	doFirst {
-		file("run").mkdirs()
+		file('run').mkdirs()
+
+		copy {
+			from 'data'
+			into 'run/data'
+		}
 	}
 
-	workingDir "run"
+	workingDir 'run'
 
 	dependencies {
-		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
 		implementation project(':core')
 		runtimeOnly project(':launcher')
 
