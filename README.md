@@ -1,4 +1,7 @@
 # Quiver
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/624f48e8a30a435abc5bcf09afa586ba)](https://app.codacy.com/gh/DeflatedPickle/Quiver?utm_source=github.com&utm_medium=referral&utm_content=DeflatedPickle/Quiver&utm_campaign=Badge_Grade_Settings)
+
 A resource pack creator and manager for Minecraft.
 
 ## Downloading
