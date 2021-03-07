@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.backend.util
 
@@ -28,4 +28,6 @@ object DotMinecraft {
     val assets = dotMinecraft.resolve("assets")
     val assetsIndexes = assets.resolve("indexes")
     val assetsObjects = assets.resolve("objects")
+
+    val resourcePacks = dotMinecraft.resolve("resourcepacks")
 }

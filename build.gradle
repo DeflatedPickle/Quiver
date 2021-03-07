@@ -138,6 +138,10 @@ distZip {
 }
 
 run {
+	/*applicationDefaultJvmArgs = [
+	 "-XX:+UseG1GC"
+	 ]*/
+
 	args = ['indev']
 
 	doFirst {

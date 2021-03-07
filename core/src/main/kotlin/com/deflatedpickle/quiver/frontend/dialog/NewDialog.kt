@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.frontend.dialog
 
@@ -12,21 +12,29 @@ import com.deflatedpickle.quiver.backend.util.PackType
 import com.deflatedpickle.quiver.backend.util.PackUtil
 import com.deflatedpickle.quiver.backend.util.VersionUtil
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
+import com.deflatedpickle.quiver.frontend.widget.FoldingNotificationLabel
+import com.deflatedpickle.quiver.frontend.widget.ThemedBalloonTip
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
+import com.deflatedpickle.undulation.DocumentAdapter
 import com.jidesoft.swing.CheckBoxList
 import java.awt.GridBagLayout
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 import javax.swing.BorderFactory
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.JFileChooser
 import javax.swing.JPanel
 import javax.swing.JScrollPane
+import javax.swing.SwingUtilities
 import javax.swing.text.PlainDocument
+import org.apache.logging.log4j.LogManager
+import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXRadioGroup
@@ -36,11 +44,29 @@ import org.jdesktop.swingx.JXTitledSeparator
 import org.oxbow.swingbits.dialog.task.TaskDialog
 
 class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
-    val nameEntry = JXTextField("Name").apply {
+    private val logger = LogManager.getLogger()
+
+    private fun validationCheck() = nameEntry.text != "" &&
+            locationEntry.field.text != ""
+
+    val postTaskQueue = mutableListOf<() -> Unit>()
+
+    val nameEntry: JXTextField = JXTextField("Name").apply {
         toolTipText = "The name of the pack directory; i.e. the name of the pack"
         (document as PlainDocument).documentFilter = Filters.FILE
+
+        this.document.addDocumentListener(DocumentAdapter {
+            fireValidationFinished(validationCheck())
+            nameNotEmptyTip.isVisible = this.text == ""
+        })
+        // We have to initially fire the validation as we don't have access to the OK button
+        SwingUtilities.invokeLater {
+            fireValidationFinished(this.text != "")
+        }
     }
-    val locationEntry = ButtonField(
+    private val nameNotEmptyTip = ThemedBalloonTip(nameEntry, "Name must not be empty", initiallyVisible = true)
+
+    val locationEntry: ButtonField = ButtonField(
         "Location",
         "The location of the pack",
         OSUtil.getOS().toPatternFilter(),
@@ -58,8 +84,62 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             it.field.text = directoryChooser.selectedFile.absolutePath
         }
     }.apply {
-        this.field.text = DotMinecraft.dotMinecraft.resolve("resourcepacks").absolutePath
+        this.field.text = DotMinecraft.resourcePacks.absolutePath
+
+        this.field.document.addDocumentListener(DocumentAdapter {
+            fireValidationFinished(validationCheck())
+            locationNotEmptyTip.isVisible = this.field.text == ""
+
+            val path = Paths.get(field.text)
+
+            if (Files.exists(path)) {
+                if (path != DotMinecraft.resourcePacks.toPath()) {
+                    // This path isn't in the resource packs, add a button to make a symbolic link
+                    locationHelpCollapsable.setFields(
+                        "Create Symbolic Link?",
+                        "This path isn't in your resource pack folder, would you like to create a link to it?",
+                        JXButton("OK").apply {
+                            addActionListener {
+                                logger.info("Creating a symlink to \"$path\" in \"${DotMinecraft.resourcePacks}\"...")
+                                postTaskQueue.add {
+                                    Files.createSymbolicLink(
+                                        DotMinecraft.resourcePacks
+                                            .resolve(nameEntry.text)
+                                            .toPath(),
+                                        path.resolve(nameEntry.text)
+                                    )
+                                }
+
+                                locationHelpCollapsable.emptyAndClose()
+                            }
+                        }
+                    )
+
+                    locationHelpCollapsable.isCollapsed = false
+                } else {
+                    // Everything's fine, close the collapsable
+                    locationHelpCollapsable.emptyAndClose()
+                }
+            } else {
+                // The given path doesn't exist, add a button to make it
+                locationHelpCollapsable.setFields(
+                    "Missing Directory",
+                    "This directory doesn't exist, would you like to create it?",
+                    JXButton("OK").apply {
+                        addActionListener {
+                            logger.info("Creating a chain of directories at \"$path\"...")
+                            postTaskQueue.add { path.toFile().mkdirs() }
+                            locationHelpCollapsable.emptyAndClose()
+                        }
+                    }
+                )
+
+                locationHelpCollapsable.isCollapsed = false
+            }
+        })
     }
+    private val locationNotEmptyTip = ThemedBalloonTip(locationEntry.field, "Location must not be empty", false)
+    private val locationHelpCollapsable = FoldingNotificationLabel()
 
     // We'll cache a few game versions here so we don't keep generating them
     private val packToVersion = Array(6) {
@@ -74,7 +154,8 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             )
         }
 
-        toolTipText = "The version this pack will be based off of, different versions have different quirks; i.e. lang names"
+        toolTipText =
+            "The version this pack will be based off of, different versions have different quirks; i.e. lang names"
         selectedItem = this.itemCount
     }
     val descriptionEntry = JXTextArea("Description").apply {
@@ -85,8 +166,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     val defaultVersionComboBox = JComboBox(
         // Returns the versions or an empty list if there are none
         (DotMinecraft.versions.listFiles() ?: listOf<File>().toTypedArray()).filter {
-        it.name.matches(VersionUtil.RELEASE) /*|| it.name.matches(VersionUtil.ALPHA) || it.name.matches(VersionUtil.BETA)*/
-    }.toTypedArray()).apply {
+            it.name.matches(VersionUtil.RELEASE) /*|| it.name.matches(VersionUtil.ALPHA) || it.name.matches(VersionUtil.BETA)*/
+        }.toTypedArray()
+    ).apply {
         for (i in itemCount - 1 downTo 0) {
             if (getItemAt(i).name.matches(VersionUtil.RELEASE)) {
                 selectedIndex = i
@@ -143,7 +225,10 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     }
 
     init {
-        setCommands(StandardCommand.OK, StandardCommand.CANCEL)
+        setCommands(
+            StandardCommand.OK,
+            StandardCommand.CANCEL
+        )
 
         this.defaultVersionComboBox.setRenderer { list, value, index, isSelected, cellHasFocus ->
             DefaultListCellRenderer().getListCellRendererComponent(
@@ -168,6 +253,8 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
 
             this.add(JXLabel("Location" + ":"), StickEast)
             this.add(locationEntry, FillHorizontalFinishLine)
+
+            this.add(locationHelpCollapsable, FillBothFinishLine)
 
             /* Metadata */
             this.add(JXTitledSeparator("Metadata"), FillHorizontalFinishLine)

@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.backend.util
 
@@ -67,6 +67,10 @@ object ActionUtil {
                         dialog.descriptionEntry.text
                     )
                 }
+            }
+
+            for (f in dialog.postTaskQueue) {
+                f()
             }
 
             EventNewDocument.trigger(Quiver.packDirectory!!)
