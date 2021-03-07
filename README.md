@@ -1,4 +1,9 @@
 # Quiver
+<a href="https://www.codefactor.io/repository/github/deflatedpickle/quiver"><img src="https://www.codefactor.io/repository/github/deflatedpickle/quiver/badge" alt="CodeFactor" /></a>
+<a href="https://codeclimate.com/github/DeflatedPickle/Quiver/maintainability"><img src="https://api.codeclimate.com/v1/badges/0f980169bbebf3f680b4/maintainability" /></a>
+<a href="https://codebeat.co/projects/github-com-deflatedpickle-quiver-rewrite"><img alt="codebeat badge" src="https://codebeat.co/badges/65a2da8a-28b9-4cd4-ac82-c521cc531a63" /></a>
+<a href="https://www.codacy.com/gh/DeflatedPickle/Quiver/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DeflatedPickle/Quiver&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/ed4a4e2eb4d844eba3f8897869406128"/></a>
+
 A resource pack creator and manager for Minecraft.
 
 ## Downloading
