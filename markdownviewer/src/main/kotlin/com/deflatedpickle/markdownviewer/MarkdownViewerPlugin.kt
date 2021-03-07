@@ -1,6 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
-
-package com.deflatedpickle.quiver.textviewer
+package com.deflatedpickle.markdownviewer
 
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
@@ -11,26 +9,28 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 
 @Suppress("unused")
 @Plugin(
-    value = "text_viewer",
+    value = "markdown_viewer",
     author = "DeflatedPickle",
     version = "1.0.0",
     description = """
         <br>
-        A viewer for text-based files
+        A viewer for Markdown files
     """,
     type = PluginType.OTHER
 )
-object TextViewerPlugin {
+object MarkdownViewerPlugin {
+    // https://superuser.com/a/285878
     private val extensionSet = setOf(
-        "",
-        "mcmeta",
-        "txt",
-        "json",
-        "js", "ts",
-        "gitignore",
-        "bat", "py", "rb",
-        "make", "makefile", "makef", "gmk", "mak",
-        "gradle"
+        "markdown",
+        "mdown",
+        "mkdn",
+        "md",
+        "mkd",
+        "mkwn",
+        "mdtxt",
+        "mdtext",
+        // "text",
+        "Rmd"
     )
 
     init {
@@ -40,9 +40,9 @@ object TextViewerPlugin {
             if (registry != null) {
                 for (i in this.extensionSet) {
                     if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(TextViewer as Viewer<Any>))
+                        registry.register(i, mutableListOf(MarkdownViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(TextViewer as Viewer<Any>)
+                        registry.get(i)!!.add(MarkdownViewer as Viewer<Any>)
                     }
                 }
             }
