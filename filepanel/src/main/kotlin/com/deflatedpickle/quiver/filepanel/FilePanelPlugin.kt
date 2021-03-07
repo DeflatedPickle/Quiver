@@ -14,6 +14,7 @@ import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
 import javax.swing.JToolBar
+import javax.swing.SwingUtilities
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXRadioGroup
 
@@ -74,7 +75,9 @@ object FilePanelPlugin {
                         EventChangeViewWidget.trigger(Pair(it, FilePanel.widgetPanel))
 
                         // Refresh the content in the viewer
-                        viewer.refresh(it)
+                        SwingUtilities.invokeLater {
+                            viewer.refresh(it)
+                        }
                         // Add the viewer wrapped by it's scroller
                         FilePanel.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
 

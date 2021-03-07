@@ -167,6 +167,7 @@ run {
 		runtimeOnly project(':tableviewer')
 		runtimeOnly project(':imageviewer')
 		runtimeOnly project(':treeviewer')
+		runtimeOnly project(':markdownviewer')
 
 		runtimeOnly project(':packexport')
 		runtimeOnly project(':packsquashstep')
