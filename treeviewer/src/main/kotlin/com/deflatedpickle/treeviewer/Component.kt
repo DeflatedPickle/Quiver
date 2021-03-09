@@ -1,8 +1,10 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.treeviewer
 
-import org.jdesktop.swingx.JXTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
+import org.jdesktop.swingx.JXTree
 
 class Component : JXTree() {
     val root = DefaultMutableTreeNode()

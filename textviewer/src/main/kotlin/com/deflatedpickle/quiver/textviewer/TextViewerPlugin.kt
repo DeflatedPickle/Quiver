@@ -1,3 +1,5 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -20,12 +22,12 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 )
 object TextViewerPlugin {
     private val extensionSet = setOf(
+        "",
         "mcmeta",
         "txt",
         "json",
         "js", "ts",
         "gitignore",
-        "md",
         "bat", "py", "rb",
         "make", "makefile", "makef", "gmk", "mak",
         "gradle"

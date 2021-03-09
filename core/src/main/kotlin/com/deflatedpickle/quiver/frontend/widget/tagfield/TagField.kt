@@ -1,13 +1,15 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.widget.tagfield
 
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
-import uk.co.timwise.wraplayout.WrapLayout
 import java.awt.GridBagLayout
-import java.util.*
+import java.util.Locale
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.JPanel
+import uk.co.timwise.wraplayout.WrapLayout
 
 class TagField : JPanel() {
     val tags = mutableListOf<String>()

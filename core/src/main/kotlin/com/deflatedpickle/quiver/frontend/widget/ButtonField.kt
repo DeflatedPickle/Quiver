@@ -1,13 +1,15 @@
+/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.frontend.widget
 
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXTextField
 import java.awt.GridBagLayout
 import javax.swing.text.DocumentFilter
 import javax.swing.text.PlainDocument
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXTextField
 
 class ButtonField(
     prompt: String,

@@ -1,0 +1,18 @@
+[submodule "libs/haruhi"]
+	path = libs/haruhi
+	url = https://github.com/DeflatedPickle/haruhi
+[submodule "libs/marvin"]
+	path = libs/marvin
+	url = https://github.com/DeflatedPickle/marvin
+[submodule "libs/tosuto"]
+	path = libs/tosuto
+	url = https://github.com/DeflatedPickle/tosuto
+[submodule "libs/nagato"]
+	path = libs/nagato
+	url = https://github.com/DeflatedPickle/Nagato
+[submodule "libs/sniffle"]
+	path = libs/sniffle
+	url = https://github.com/DeflatedPickle/sniffle
+[submodule "libs/undulation"]
+	path = libs/undulation
+	url = https://github.com/DeflatedPickle/undulation

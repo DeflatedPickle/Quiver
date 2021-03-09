@@ -1,0 +1,32 @@
+# Quiver default PackSquash config
+#            version 1
+#      Last updated: 17/01/21
+#
+# DO NOT PROVIDE AN INPUT PACK OR OUTPUT ZIP,
+# THESE ARE INJECTED AUTOMATICALLY
+#
+# Other than that, feel free to edit this and make it your own!
+# https://github.com/ComunidadAylas/PackSquash/wiki/Settings-file-format
+
+# General
+# -------
+skip_pack_icon = false
+strict_zip_spec_compliance = false
+compress_already_compressed_files = true
+ignore_system_and_hidden_files = false
+allowed_mods = ["OptiFine"]
+
+# Audio
+# -----
+["**/{sounds}/?*.{og[ga],mp3,wav,flac}"]
+transcode_ogg = true
+channels = 1
+sampling_frequency = 12000
+target_pitch = 1.0
+minimum_bitrate = 32000
+maximum_bitrate = 48000
+
+# Images
+# ------
+["**/{textures}/?*.{png}"]
+quantize_image = true

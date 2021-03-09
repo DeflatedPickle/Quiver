@@ -1,10 +1,11 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.backend.util
 
-import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.quiver.backend.event.EventOpenFile
+import com.deflatedpickle.marvin.Version
+import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import java.io.File
 import javax.swing.JFileChooser
@@ -22,9 +23,9 @@ object ActionUtil {
                     System.getProperty("user.dir")
                 else
                     dialog.locationEntry.field.text
-            }\\${dialog.nameEntry.text}"
+            }/${dialog.nameEntry.text}"
 
-            DocumentUtil.current = File(path).apply {
+            Quiver.packDirectory = File(path).apply {
                 mkdirs()
                 createNewFile()
             }
@@ -68,7 +69,11 @@ object ActionUtil {
                 }
             }
 
-            EventCreateFile.trigger(DocumentUtil.current!!)
+            for (f in dialog.postTaskQueue) {
+                f()
+            }
+
+            EventNewDocument.trigger(Quiver.packDirectory!!)
         }
     }
 
@@ -87,9 +92,9 @@ object ActionUtil {
             if (selected.isDirectory &&
                 selected.resolve("pack.mcmeta").isFile
             ) {
-                DocumentUtil.current = directoryChooser.selectedFile
+                Quiver.packDirectory = directoryChooser.selectedFile
 
-                EventOpenFile.trigger(DocumentUtil.current!!)
+                EventNewDocument.trigger(Quiver.packDirectory!!)
             } else {
                 TaskDialogs.error(
                     PluginUtil.window,

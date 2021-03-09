@@ -8,12 +8,13 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
-import java.io.File
 import javax.swing.JToolBar
+import javax.swing.SwingUtilities
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXRadioGroup
 
@@ -30,8 +31,6 @@ import org.jdesktop.swingx.JXRadioGroup
     component = FilePanel::class
 )
 object FilePanelPlugin {
-    var selectedFile: File? = null
-
     private val radioButtonGroup = JXRadioGroup<String>()
     private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
@@ -48,8 +47,6 @@ object FilePanelPlugin {
             FilePanel.typeField.text = it.extension
 
             FilePanel.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
-
-            this.selectedFile = it
 
             for (component in FilePanel.widgetPanel.components) {
                 // Remove everything but the toolbar to change viewers
@@ -78,7 +75,9 @@ object FilePanelPlugin {
                         EventChangeViewWidget.trigger(Pair(it, FilePanel.widgetPanel))
 
                         // Refresh the content in the viewer
-                        viewer.refresh(it)
+                        SwingUtilities.invokeLater {
+                            viewer.refresh(it)
+                        }
                         // Add the viewer wrapped by it's scroller
                         FilePanel.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
 
@@ -113,6 +112,10 @@ object FilePanelPlugin {
             // We'll also repaint this
             FilePanel.widgetPanel.repaint()
             FilePanel.widgetPanel.revalidate()
+        }
+
+        EventReplaceFile.addListener {
+            EventSelectFile.trigger(it)
         }
     }
 }

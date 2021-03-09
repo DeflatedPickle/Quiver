@@ -4,7 +4,10 @@ package com.deflatedpickle.quiver.backend.util
 
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonObject
+import com.deflatedpickle.marvin.Version
+import com.deflatedpickle.marvin.VersionProgression
 import com.deflatedpickle.marvin.builder.FileBuilder
+import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
 import java.io.File
 import net.lingala.zip4j.ZipFile
@@ -13,6 +16,8 @@ import org.apache.commons.io.FileUtils
 object PackUtil {
     private val json = Jankson.builder().build()
 
+    // This structure is mostly the same through different pack versions
+    // I'm not sure of a good, maintainable way to describe these mild differences
     // https://minecraft.gamepedia.com/Resource_Pack#Folder_structure
     fun createEmptyPack(path: String) {
         FileBuilder(path)
@@ -20,58 +25,61 @@ object PackUtil {
             .dir("assets")
             /*  */.dir("icons").build()
             /*  */.dir("minecraft")
-            /*      */.file("sounds.json")
-            /*      */.dir("blockstates").build()
-            /*      */.file("gpu_warnlist.json")
+            /*    */.file("sounds.json")
+            /*    */.dir("blockstates").build()
+            /*    */.file("gpu_warnlist.json")
+            /*    */.dir("font").build()
+            /*    */.dir("icons").build()
+            /*    */.dir("lang").build()
+            /*    */.dir("models")
+            /*      */.dir("block").build()
+            /*      */.dir("item").build()
+            /*    */.build()
+            /*    */.dir("particles").build()
+            /*    */.dir("sounds").build()
+            /*    */.dir("shaders")
+            /*      */.dir("post").build()
+            /*      */.dir("program").build()
+            /*    */.build()
+            /*    */.dir("texts").build()
+            /*    */.dir("textures")
+            /*      */.dir("block").build()
+            /*      */.dir("colormap").build()
+            /*      */.dir("effect").build()
+            /*      */.dir("entity").build()
+            /*      */.dir("environment").build()
             /*      */.dir("font").build()
-            /*      */.dir("icons").build()
-            /*      */.dir("lang").build()
+            /*      */.dir("gui")
+            /*        */.dir("advancements")
+            /*            */.dir("backgrounds").build()
+            /*          */.build()
+            /*          */.dir("container")
+            /*            */.dir("creative_inventory")
+            /*          */.build()
+            /*          */.dir("presets").build()
+            /*          */.dir("title")
+            /*            */.dir("background").build()
+            /*          */.build()
+            /*      */.build()
+            /*      */.dir("item").build()
+            /*      */.dir("map").build()
+            /*      */.dir("misc").build()
+            /*      */.dir("mob_effect").build()
             /*      */.dir("models")
-            /*          */.dir("block").build()
-            /*          */.dir("item").build()
+            /*        */.dir("armor").build()
             /*      */.build()
-            /*      */.dir("particles").build()
-            /*      */.dir("sounds").build()
-            /*      */.dir("shaders")
-            /*          */.dir("post").build()
-            /*          */.dir("program").build()
-            /*      */.build()
-            /*      */.dir("texts").build()
-            /*      */.dir("textures")
-            /*          */.dir("block").build()
-            /*          */.dir("colormap").build()
-            /*          */.dir("effect").build()
-            /*          */.dir("entity").build()
-            /*          */.dir("environment").build()
-            /*          */.dir("font").build()
-            /*          */.dir("gui")
-            /*              */.dir("advancements")
-            /*                  */.dir("backgrounds").build()
-            /*              */.build()
-            /*              */.dir("container")
-            /*                  */.dir("creative_inventory")
-            /*              */.build()
-            /*              */.dir("presets").build()
-            /*              */.dir("title")
-            /*                  */.dir("background").build()
-            /*              */.build()
-            /*          */.build()
-            /*          */.dir("item").build()
-            /*          */.dir("map").build()
-            /*          */.dir("misc").build()
-            /*          */.dir("mob_effect").build()
-            /*          */.dir("models")
-            /*              */.dir("armor").build()
-            /*          */.build()
-            /*          */.dir("painting").build()
-            /*          */.dir("particle")
-            /*      */.build()
-            /*      */
+            /*      */.dir("painting").build()
+            /*      */.dir("particle").build()
             /*  */.build()
             .build()
             .build()
     }
 
+    /**
+     * Extracts all the resources included in a resource pack
+     *
+     * Note: For default packs, resources like sounds are not bundled, please use [extractExtraData] as well to get those
+     */
     fun extractPack(
         /**
          * The JAR of a Minecraft version
@@ -85,14 +93,17 @@ object PackUtil {
     ) {
         val zipFile = ZipFile(file)
 
+        // FIXME: Doesn't respect folder structures on Linux
         // TODO: Extract default packs in a secondary thread, making use of zip4j's ProgressMonitor
         for (i in zipFile.fileHeaders.filter {
             it.fileName.startsWith("assets/minecraft")
         }) {
-            zipFile.extractFile(
-                i,
-                path
-            )
+            if (!i.isDirectory) {
+                zipFile.extractFile(
+                    i.fileName,
+                    path
+                )
+            }
         }
     }
 
@@ -137,7 +148,7 @@ object PackUtil {
                     // Gets the namespace to use from the resource type
                     val namespace = resourceType.path.split("/")[0]
                     // Constructs the destination, using the namespace and the assets path
-                    val destination = "$path\\assets\\$namespace\\${asset.split("/").drop(1).joinToString(separator = "\\")}"
+                    val destination = "$path/assets/$namespace/${asset.split("/").drop(1).joinToString(separator = "/")}"
                     // Copies the source file to the destination, creating all parent files
                     FileUtils.copyFile(source, File(destination).apply { parentFile.mkdirs() })
                 }
@@ -145,8 +156,11 @@ object PackUtil {
         }
     }
 
+    /**
+     * Writes the MCMeta data to the open pack
+     */
     fun writeMcMeta(version: Int, description: String) {
-        DocumentUtil.current!!.resolve("pack.mcmeta").writeText(
+        Quiver.packDirectory?.resolve("pack.mcmeta")?.writeText(
             // I don't know if that's proper formatting, so format it again
             U.formatJson(
                 """
@@ -170,7 +184,8 @@ object PackUtil {
             3 -> Version(1, 11)..Version(1, 12, 2)
             4 -> Version(1, 13)..Version(1, 14, 4)
             5 -> Version(1, 15)..Version(1, 16, 1)
-            6 -> Version(1, 16, 2)..Version(1, 16, 3)
+            6 -> Version(1, 16, 2)..Version(1, 16, 4)
+            7 -> Version(1, 17, 0)..Version(1, 17, 0)
             else -> VersionProgression(Version(0, 0), Version(0, 0))
         }
 
@@ -181,7 +196,8 @@ object PackUtil {
             in Version(1, 11)..Version(1, 12, 2) -> 3
             in Version(1, 13)..Version(1, 14, 4) -> 4
             in Version(1, 15)..Version(1, 16, 1) -> 5
-            in Version(1, 16, 2)..Version(1, 16, 3) -> 6
+            in Version(1, 16, 2)..Version(1, 16, 4) -> 6
+            in Version(1, 17, 0)..Version(1, 17, 0) -> 7
             else -> 0
         }
 

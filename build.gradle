@@ -1,19 +1,29 @@
 plugins {
 	id 'java'
-	id 'org.jetbrains.kotlin.jvm' version '1.3.70'
-	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.70'
+	id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.72'
 
 	id 'distribution'
 	id 'application'
 
 	id 'com.diffplug.spotless' version '5.7.0'
+	id "de.undercouch.download" version "4.1.1"
 }
 
 group 'com.deflatedpickle'
-version '1.3.0'
+archivesBaseName = 'Quiver'
+version '1.7.0'
+sourceCompatibility = '1.8'
+
+project.ext {
+	licenseDir = new File('licenses', buildDir)
+	toolDir = new File('tools', buildDir)
+}
 
 allprojects {
+	apply plugin: 'distribution'
 	apply plugin: 'org.jetbrains.kotlin.jvm'
+	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 	apply plugin: 'com.diffplug.spotless'
 
 	repositories {
@@ -54,6 +64,10 @@ allprojects {
 			endWithNewline()
 		}
 	}
+
+	compileKotlin {
+		kotlinOptions.jvmTarget = sourceCompatibility
+	}
 }
 
 startScripts {
@@ -66,6 +80,17 @@ distributions {
 		contents {
 			from files('README.MD', 'LICENSE')
 			from startScripts
+
+			into('data') {
+				from files('data')
+			}
+
+			into('licenses') {
+				from files("$buildDir/licenses")
+			}
+			into('tools') {
+				from files("$buildDir/tools")
+			}
 
 			subprojects.each { p ->
 				into('plugins') {
@@ -113,17 +138,24 @@ distZip {
 }
 
 run {
+	/*applicationDefaultJvmArgs = [
+	 "-XX:+UseG1GC"
+	 ]*/
+
 	args = ['indev']
 
 	doFirst {
-		file("run").mkdirs()
+		file('run').mkdirs()
+
+		copy {
+			from 'data'
+			into 'run/data'
+		}
 	}
 
-	workingDir "run"
+	workingDir 'run'
 
 	dependencies {
-		implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
 		implementation project(':core')
 		runtimeOnly project(':launcher')
 
@@ -135,7 +167,12 @@ run {
 		runtimeOnly project(':tableviewer')
 		runtimeOnly project(':imageviewer')
 		runtimeOnly project(':treeviewer')
+		runtimeOnly project(':markdownviewer')
 		runtimeOnly project(':modelviewer')
+
+		runtimeOnly project(':packexport')
+		runtimeOnly project(':packsquashstep')
+		runtimeOnly project(':zipstep')
 
 		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
 	}
@@ -143,4 +180,10 @@ run {
 	application {
 		mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
 	}
+}
+
+task pushSubmodules(type: Exec) {
+	workingDir "."
+	commandLine "sh", "-c", "git submodule foreach 'git add .'"
+	commandLine "sh", "-c", "git submodule foreach 'git commit -a -m \"Update from submodule\" || :'"
 }

@@ -1,0 +1,72 @@
+group 'com.deflatedpickle'
+version '1.0.0'
+sourceCompatibility = '1.8'
+
+dependencies {
+	implementation project(':core')
+	implementation project(':packexport')
+}
+
+def packSquashDir = toolDir.toPath().resolve('packsquash').toFile()
+
+task downloadLicense(type: Download) {
+	src 'https://raw.githubusercontent.com/ComunidadAylas/PackSquash/master/LICENSE'
+	//noinspection GroovyAssignabilityCheck
+	dest new File(packSquashDir, 'LICENSE')
+	overwrite false
+}
+
+task downloadLinux(type: Download) {
+	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.Linux.zip"
+	dest new File(buildDir, 'PackSquash.executable.Linux.zip')
+	overwrite false
+}
+
+task downloadMacOS(type: Download) {
+	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.macOS.zip"
+	dest new File(buildDir, 'PackSquash.executable.macOS.zip')
+	overwrite false
+}
+
+task downloadWin(type: Download) {
+	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.Windows.zip"
+	dest new File(buildDir, 'PackSquash.executable.Windows.zip')
+	overwrite false
+}
+
+task unzipLinux(dependsOn: downloadLinux, type: Copy) {
+	from zipTree(downloadLinux.dest)
+	into packSquashDir
+	rename('packsquash', 'packsquash-linux')
+}
+
+task unzipMacOS(dependsOn: downloadMacOS, type: Copy) {
+	from zipTree(downloadMacOS.dest)
+	into packSquashDir
+	rename('packsquash', 'packsquash-macos')
+}
+
+task unzipWin(dependsOn: downloadWin, type: Copy) {
+	from zipTree(downloadWin.dest)
+	into packSquashDir
+	rename('packsquash.exe', 'packsquash.exe')
+}
+
+rootProject.tasks.getByName('run').with {
+	dependsOn downloadLicense
+	dependsOn unzipLinux
+	dependsOn unzipMacOS
+	dependsOn unzipWin
+
+	copy {
+		from "../build/tools"
+		into '../run/tools'
+	}
+}
+
+distZip.with {
+	dependsOn downloadLicense
+	dependsOn unzipLinux
+	dependsOn unzipMacOS
+	dependsOn unzipWin
+}
