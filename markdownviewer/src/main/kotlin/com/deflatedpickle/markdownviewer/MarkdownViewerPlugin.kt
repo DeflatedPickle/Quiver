@@ -39,10 +39,12 @@ object MarkdownViewerPlugin {
 
             if (registry != null) {
                 for (i in this.extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(MarkdownViewer as Viewer<Any>))
+                    val ext = """.*\.$i"""
+
+                    if (registry.get(ext) == null) {
+                        registry.register(ext, mutableListOf(MarkdownViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(MarkdownViewer as Viewer<Any>)
+                        registry.get(ext)!!.add(MarkdownViewer as Viewer<Any>)
                     }
                 }
             }

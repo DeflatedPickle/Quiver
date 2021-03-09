@@ -35,8 +35,6 @@ object FilePanelPlugin {
     private val radioButtonGroup = JXRadioGroup<String>()
     private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
-    val prefix = "r|"
-
     init {
         @Suppress("UNCHECKED_CAST")
         RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
@@ -63,16 +61,11 @@ object FilePanelPlugin {
 
             // Search through all the registered viewers
             // Add viewers that were registered with a key that matches the file path
-            // Or, add viewers that were registered with a file extension
             val viewerList = mutableListOf<Viewer<Any>>()
             for ((key, value) in registry!!.getAll()) {
                 @Suppress("UNCHECKED_CAST")
                 for (viewer in value as List<Viewer<Any>>) {
-                    if (key.startsWith(prefix)) {
-                        if (it.absolutePath.matches(Regex(key.removePrefix(prefix)))) {
-                            viewerList.add(viewer)
-                        }
-                    } else if (key == it.extension) {
+                    if (it.absolutePath.matches(Regex(key))) {
                         viewerList.add(viewer)
                     }
                 }

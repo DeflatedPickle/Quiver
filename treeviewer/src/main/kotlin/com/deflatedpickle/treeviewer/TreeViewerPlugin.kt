@@ -33,10 +33,12 @@ object TreeViewerPlugin {
 
             if (registry != null) {
                 for (i in extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(TreeViewer as Viewer<Any>))
+                    val ext = """.*\.$i"""
+
+                    if (registry.get(ext) == null) {
+                        registry.register(ext, mutableListOf(TreeViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(TreeViewer as Viewer<Any>)
+                        registry.get(ext)!!.add(TreeViewer as Viewer<Any>)
                     }
                 }
             }

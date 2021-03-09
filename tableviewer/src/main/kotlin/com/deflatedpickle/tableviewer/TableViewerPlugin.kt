@@ -31,10 +31,12 @@ object TableViewerPlugin {
 
             if (registry != null) {
                 for (i in this.extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(TableViewer as Viewer<Any>))
+                    val ext = """.*\.$i"""
+
+                    if (registry.get(ext) == null) {
+                        registry.register(ext, mutableListOf(TableViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(TableViewer as Viewer<Any>)
+                        registry.get(ext)!!.add(TableViewer as Viewer<Any>)
                     }
                 }
             }

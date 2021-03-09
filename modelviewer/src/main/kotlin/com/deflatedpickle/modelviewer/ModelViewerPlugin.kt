@@ -20,8 +20,8 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 )
 object ModelViewerPlugin {
     private val extensionSet = setOf(
-        """r|.*/models/(block|item)/(\*|.*).json""",
-        "obj"
+        """.*/models/(block|item)/.*\.json""",
+        """.*\.obj"""
     )
 
     init {

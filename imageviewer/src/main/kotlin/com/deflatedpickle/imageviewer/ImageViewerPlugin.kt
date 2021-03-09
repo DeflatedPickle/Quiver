@@ -33,10 +33,12 @@ object ImageViewerPlugin {
 
             if (registry != null) {
                 for (i in this.extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(ImageViewer as Viewer<Any>))
+                    val ext = """.*\.$i"""
+
+                    if (registry.get(ext) == null) {
+                        registry.register(ext, mutableListOf(ImageViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(ImageViewer as Viewer<Any>)
+                        registry.get(ext)!!.add(ImageViewer as Viewer<Any>)
                     }
                 }
             }

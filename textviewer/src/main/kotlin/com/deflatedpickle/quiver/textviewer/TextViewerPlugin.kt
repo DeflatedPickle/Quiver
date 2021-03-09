@@ -40,10 +40,12 @@ object TextViewerPlugin {
 
             if (registry != null) {
                 for (i in this.extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(TextViewer as Viewer<Any>))
+                    val ext = """.*\.$i"""
+
+                    if (registry.get(ext) == null) {
+                        registry.register(ext, mutableListOf(TextViewer as Viewer<Any>))
                     } else {
-                        registry.get(i)!!.add(TextViewer as Viewer<Any>)
+                        registry.get(ext)!!.add(TextViewer as Viewer<Any>)
                     }
                 }
             }
