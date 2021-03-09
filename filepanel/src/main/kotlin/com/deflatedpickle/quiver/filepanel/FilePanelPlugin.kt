@@ -7,6 +7,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
+import com.deflatedpickle.marvin.toSlug
 import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
@@ -34,6 +35,8 @@ object FilePanelPlugin {
     private val radioButtonGroup = JXRadioGroup<String>()
     private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
+    val prefix = "r|"
+
     init {
         @Suppress("UNCHECKED_CAST")
         RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
@@ -58,10 +61,25 @@ object FilePanelPlugin {
 
             val registry = RegistryUtil.get("viewer")
 
-            val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>?
+            // Search through all the registered viewers
+            // Add viewers that were registered with a key that matches the file path
+            // Or, add viewers that were registered with a file extension
+            val viewerList = mutableListOf<Viewer<Any>>()
+            for ((key, value) in registry!!.getAll()) {
+                @Suppress("UNCHECKED_CAST")
+                for (viewer in value as List<Viewer<Any>>) {
+                    if (key.startsWith(prefix)) {
+                        if (it.absolutePath.matches(Regex(key.removePrefix(prefix)))) {
+                            viewerList.add(viewer)
+                        }
+                    } else if (key == it.extension) {
+                        viewerList.add(viewer)
+                    }
+                }
+            }
 
             // If there there are viewers for this extension...
-            if (viewerList != null) {
+            if (viewerList.isNotEmpty()) {
                 for (viewer in viewerList) {
                     // Add a button to switch to it
                     radioButtonGroup.add(viewer::class.simpleName)
@@ -78,8 +96,13 @@ object FilePanelPlugin {
                         SwingUtilities.invokeLater {
                             viewer.refresh(it)
                         }
+
                         // Add the viewer wrapped by it's scroller
-                        FilePanel.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
+                        FilePanel.widgetPanel.add(
+                            if (viewer.usesScroller()) viewer.getScroller()!!
+                            else viewer.getComponent(),
+                            BorderLayout.CENTER
+                        )
 
                         // We added the viewer, so we have to repaint it
                         FilePanel.widgetPanel.repaint()

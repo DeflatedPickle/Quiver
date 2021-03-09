@@ -30,7 +30,8 @@ object TextViewerPlugin {
         "gitignore",
         "bat", "py", "rb",
         "make", "makefile", "makef", "gmk", "mak",
-        "gradle"
+        "gradle",
+        "fsh", "vsh"
     )
 
     init {
