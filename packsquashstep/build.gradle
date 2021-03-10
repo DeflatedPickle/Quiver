@@ -8,28 +8,37 @@ dependencies {
 }
 
 def packSquashDir = toolDir.toPath().resolve('packsquash').toFile()
+def packSquashRepo = "https://raw.githubusercontent.com/ComunidadAylas/PackSquash/master"
+def packSquashReleases = "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion"
 
 task downloadLicense(type: Download) {
-	src 'https://raw.githubusercontent.com/ComunidadAylas/PackSquash/master/LICENSE'
+	src "$packSquashRepo/LICENSE"
 	//noinspection GroovyAssignabilityCheck
 	dest new File(packSquashDir, 'LICENSE')
 	overwrite false
 }
 
+task downloadReadMe(type: Download) {
+	src "$packSquashRepo/README.md"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(packSquashDir, 'README.md')
+	overwrite false
+}
+
 task downloadLinux(type: Download) {
-	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.Linux.zip"
+	src "$packSquashReleases/PackSquash.executable.Linux.zip"
 	dest new File(buildDir, 'PackSquash.executable.Linux.zip')
 	overwrite false
 }
 
 task downloadMacOS(type: Download) {
-	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.macOS.zip"
+	src "$packSquashReleases/PackSquash.executable.macOS.zip"
 	dest new File(buildDir, 'PackSquash.executable.macOS.zip')
 	overwrite false
 }
 
 task downloadWin(type: Download) {
-	src "https://github.com/ComunidadAylas/PackSquash/releases/download/$packSquashVersion/PackSquash.executable.Windows.zip"
+	src "$packSquashReleases/PackSquash.executable.Windows.zip"
 	dest new File(buildDir, 'PackSquash.executable.Windows.zip')
 	overwrite false
 }
@@ -54,6 +63,7 @@ task unzipWin(dependsOn: downloadWin, type: Copy) {
 
 rootProject.tasks.getByName('run').with {
 	dependsOn downloadLicense
+	dependsOn downloadReadMe
 	dependsOn unzipLinux
 	dependsOn unzipMacOS
 	dependsOn unzipWin
@@ -66,6 +76,7 @@ rootProject.tasks.getByName('run').with {
 
 distZip.with {
 	dependsOn downloadLicense
+	dependsOn downloadReadMe
 	dependsOn unzipLinux
 	dependsOn unzipMacOS
 	dependsOn unzipWin
