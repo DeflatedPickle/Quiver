@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.filetable
 
@@ -40,7 +40,7 @@ object FileTablePlugin {
 
     private val fileLinkMenu = LinkedFilesPopupMenu {
         if (FileTable.selectedRow >= 0)
-            FileTable.fileModel.getValueAt(FileTable.selectedRow, 0) as File?
+            FileTable.getValueAt(FileTable.selectedRow, 0) as File?
         else null
     }
 
@@ -76,10 +76,16 @@ object FileTablePlugin {
             )
 
             when (settings.noFileLinkAction) {
-                FileLinkAction.REMOVE ->
+                FileLinkAction.REMOVE -> {
                     if (this.fileLinkMenu.componentCount > 0)
                         FilePanel.fileActionPanel.add(linkButton)
                     else FilePanel.fileActionPanel.remove(linkButton)
+
+                    FilePanel.fileActionPanel.apply {
+                        repaint()
+                        revalidate()
+                    }
+                }
                 FileLinkAction.DISABLE ->
                     this.linkButton.isEnabled =
                         this.fileLinkMenu.componentCount > 0
@@ -87,8 +93,9 @@ object FileTablePlugin {
         }
 
         EventSearchFile.addListener {
-            for ((index, value) in FileTable.fileModel.dataVector.toList().withIndex()) {
+            for ((i, value) in FileTable.fileModel.dataVector.toList().withIndex()) {
                 if ((value as List<*>)[0] == it) {
+                    val index = FileTable.convertRowIndexToView(i)
                     FileTable.setRowSelectionInterval(index, index)
                     break
                 }
