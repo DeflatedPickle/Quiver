@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.filetable
 
@@ -50,9 +50,9 @@ object FileTable : JXTable() {
         this.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
 
         this.componentPopupMenu = FilePopupMenu {
-            if (this.selectedRow >= 0)
-                fileModel.getValueAt(this.selectedRow, 0) as File?
-            else null
+            if (this.selectedRow >= 0) {
+                this.getValueAt(this.selectedRow, 0) as File?
+            } else null
         }
 
         this.addSelectionListener()
@@ -64,7 +64,7 @@ object FileTable : JXTable() {
         this.selectionModel.addListSelectionListener {
             if (!it.valueIsAdjusting) {
                 if (this.selectedRow >= 0) {
-                    val value = fileModel.getValueAt(
+                    val value = this.getValueAt(
                         this.selectedRow, 0
                     )
 
