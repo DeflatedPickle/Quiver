@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.filepanel
 
@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent
 import javax.swing.JToolBar
 import javax.swing.SwingUtilities
 import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXRadioGroup
 
 @Suppress("unused")
@@ -42,7 +43,7 @@ object FilePanelPlugin {
             FilePanel.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
         }
 
-        EventSelectFile.addListener {
+        EventSelectFile.addListener { it ->
             FilePanel.nameField.text = it.nameWithoutExtension
             FilePanel.typeField.text = it.extension
 
@@ -79,7 +80,16 @@ object FilePanelPlugin {
                             viewer.refresh(it)
                         }
                         // Add the viewer wrapped by it's scroller
-                        FilePanel.widgetPanel.add(viewer.getScroller(), BorderLayout.CENTER)
+                        FilePanel.widgetPanel.add(JXPanel(BorderLayout()).apply {
+                            add(viewer.getScroller(), BorderLayout.CENTER)
+
+                            viewer.getToolBars()?.let { bar ->
+                                bar.north?.let { add(it, BorderLayout.NORTH) }
+                                bar.east?.let { add(it, BorderLayout.EAST) }
+                                bar.south?.let { add(it, BorderLayout.SOUTH) }
+                                bar.west?.let { add(it, BorderLayout.WEST) }
+                            }
+                        }, BorderLayout.CENTER)
 
                         // We added the viewer, so we have to repaint it
                         FilePanel.widgetPanel.repaint()

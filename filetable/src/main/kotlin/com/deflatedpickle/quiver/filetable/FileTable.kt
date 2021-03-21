@@ -110,6 +110,7 @@ object FileTable : JXTable() {
 
             override fun drop(dtde: DropTargetDropEvent) {
                 dtde.acceptDrop(DnDConstants.ACTION_MOVE)
+                @Suppress("UNCHECKED_CAST")
                 val files = dtde.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
 
                 for (i in files) {

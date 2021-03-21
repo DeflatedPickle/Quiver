@@ -47,7 +47,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     private val logger = LogManager.getLogger()
 
     private fun validationCheck() = nameEntry.text != "" &&
-            locationEntry.field.text != ""
+            locationEntry.field.text != "" && resolutionEntry.text != ""
+
+    private fun validateResolution(text: String) = text.isNotEmpty() && text.toInt() / 16 == 0
 
     val postTaskQueue = mutableListOf<() -> Unit>()
 
@@ -140,6 +142,25 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     }
     private val locationNotEmptyTip = ThemedBalloonTip(locationEntry.field, "Location must not be empty", false)
     private val locationHelpCollapsable = FoldingNotificationLabel()
+
+    val resolutionEntry: JXTextField = JXTextField("Resolution").apply {
+        text = "16"
+
+        toolTipText = "The resolution of the pack"
+        (document as PlainDocument).documentFilter = Filters.INTEGER
+
+        this.document.addDocumentListener(DocumentAdapter {
+            fireValidationFinished(validationCheck())
+            resolutionEmptyTip.isVisible = this.text.isEmpty()
+            resolutionWrongTip.isVisible = validateResolution(this.text)
+        })
+        // We have to initially fire the validation as we don't have access to the OK button
+        SwingUtilities.invokeLater {
+            fireValidationFinished(validateResolution(this.text))
+        }
+    }
+    private val resolutionEmptyTip = ThemedBalloonTip(resolutionEntry, "Resolution must not be empty", initiallyVisible = false)
+    private val resolutionWrongTip = ThemedBalloonTip(resolutionEntry, "Resolution must be a multiplication of 16", initiallyVisible = false)
 
     // We'll cache a few game versions here so we don't keep generating them
     private val packToVersion = Array(6) {
@@ -253,6 +274,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
 
             this.add(JXLabel("Location" + ":"), StickEast)
             this.add(locationEntry, FillHorizontalFinishLine)
+
+            this.add(JXLabel("Resolution" + ":"), StickEast)
+            this.add(resolutionEntry, FillHorizontalFinishLine)
 
             this.add(locationHelpCollapsable, FillBothFinishLine)
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.imageviewer
 
@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
 import org.jdesktop.swingx.JXPanel
 import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 
-class Component : JXPanel() {
+object ImageViewerComponent : JXPanel() {
     lateinit var image: BufferedImage
 
     // https://stackoverflow.com/a/11959928

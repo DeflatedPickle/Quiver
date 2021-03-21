@@ -9,4 +9,6 @@ object Filters {
     val PATH_WINDOWS = PatternFilter("""[A-Za-z]:[^:*?"<>|]*""")
     // https://stackoverflow.com/a/28989719
     val PATH_UNIX = PatternFilter("""^(/[^/\n]*)+/?$""")
+
+    val INTEGER = PatternFilter("[0-9]*")
 }

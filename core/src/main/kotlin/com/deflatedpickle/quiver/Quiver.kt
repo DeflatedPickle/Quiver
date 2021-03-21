@@ -29,6 +29,8 @@ object Quiver {
     var selectedFile: File? = null
         private set
 
+    var resolution = 0
+
     init {
         EventNewDocument.addListener {
             this.packDirectory = it

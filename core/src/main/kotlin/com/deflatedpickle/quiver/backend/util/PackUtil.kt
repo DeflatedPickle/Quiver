@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.backend.util
 
@@ -10,6 +10,7 @@ import com.deflatedpickle.marvin.builder.FileBuilder
 import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
 import java.io.File
+import javax.imageio.ImageIO
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
 
@@ -202,4 +203,24 @@ object PackUtil {
         }
 
     // Awful, isn't it? At least I didn't chain if/else if
+
+    fun findResolution(pack: File = Quiver.packDirectory!!): Int {
+        val textures = pack.resolve("assets").resolve("minecraft").resolve("textures")
+        for (type in arrayOf("item", "block")) {
+            val sub = textures.resolve(type)
+            if (sub.exists()) {
+                for (i in sub.listFiles()!!) {
+                    if (i.extension == "png") {
+                        val image = ImageIO.read(i)
+
+                        if (image.width == image.height) {
+                            return image.width
+                        }
+                    }
+                }
+            }
+        }
+
+        return 0
+    }
 }

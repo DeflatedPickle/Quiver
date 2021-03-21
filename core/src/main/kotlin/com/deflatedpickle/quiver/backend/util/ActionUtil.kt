@@ -6,6 +6,7 @@ import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
+import com.deflatedpickle.quiver.backend.util.PackUtil.findResolution
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import java.io.File
 import javax.swing.JFileChooser
@@ -73,6 +74,8 @@ object ActionUtil {
                 f()
             }
 
+            Quiver.resolution = dialog.resolutionEntry.text.toInt()
+
             EventNewDocument.trigger(Quiver.packDirectory!!)
         }
     }
@@ -93,6 +96,7 @@ object ActionUtil {
                 selected.resolve("pack.mcmeta").isFile
             ) {
                 Quiver.packDirectory = directoryChooser.selectedFile
+                Quiver.resolution = findResolution()
 
                 EventNewDocument.trigger(Quiver.packDirectory!!)
             } else {
