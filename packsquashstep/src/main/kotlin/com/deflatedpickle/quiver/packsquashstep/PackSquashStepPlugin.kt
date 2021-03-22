@@ -19,6 +19,9 @@ import com.deflatedpickle.quiver.packexport.api.ExportStep
         A pack export step that utilizes PackSquash to decrease file sizes
     """,
     type = PluginType.OTHER,
+    dependencies = [
+        "deflatedpickle@pack_export#>=1.0.0"
+    ],
     settings = PackSquashStepSettings::class
 )
 object PackSquashStepPlugin {

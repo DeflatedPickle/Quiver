@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.textviewer
 
@@ -18,7 +18,10 @@ import com.deflatedpickle.quiver.backend.api.Viewer
         <br>
         A viewer for text-based files
     """,
-    type = PluginType.OTHER
+    type = PluginType.OTHER,
+    dependencies = [
+        "deflatedpickle@file_panel#>=1.0.0"
+    ]
 )
 object TextViewerPlugin {
     private val extensionSet = setOf(

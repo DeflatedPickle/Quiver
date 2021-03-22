@@ -14,7 +14,6 @@ import com.deflatedpickle.quiver.backend.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import java.awt.event.ItemEvent
 import java.io.File
-import java.util.concurrent.Semaphore
 import javax.swing.Box
 import javax.swing.JToggleButton
 import javax.swing.JToolBar
@@ -30,7 +29,10 @@ import org.jdesktop.swingx.JXLabel
         <br>
         A viewer for PNG files
     """,
-    type = PluginType.OTHER
+    type = PluginType.OTHER,
+    dependencies = [
+        "deflatedpickle@file_panel#>=1.0.0"
+    ]
 )
 // TODO: Support image animation interpolation
 object ImageViewerPlugin {
@@ -55,8 +57,7 @@ object ImageViewerPlugin {
                     shouldAnimate = false
                     playButton.isSelected = false
                 }
-            }
-            else {
+            } else {
                 ImageViewer.index++
             }
             Quiver.selectedFile?.let { ImageViewer.refresh(it) }

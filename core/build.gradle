@@ -34,7 +34,7 @@ dependencies {
 	api 'com.deflatedpickle:undulation:1.0.0'
 
 	// Plugin framework
-	api 'com.deflatedpickle:haruhi:1.5.2'
+	api 'com.deflatedpickle:haruhi:1.5.4'
 
 	// Events
 	api 'com.github.Fylipp:easy-events:v1.1.0'

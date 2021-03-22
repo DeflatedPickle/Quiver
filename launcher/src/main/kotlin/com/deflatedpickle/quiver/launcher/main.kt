@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.launcher
 
@@ -146,7 +146,7 @@ fun main(args: Array<String>) {
                 // Specific types need a specified field
                 PluginUtil.validateType(it) &&
                 // Dependencies should be "author@plugin#version"
-                PluginUtil.validateDependencySlug(it) &&
+                // PluginUtil.validateDependencySlug(it) &&
                 // The dependency should exist
                 PluginUtil.validateDependencyExistence(it)
     }

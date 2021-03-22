@@ -19,6 +19,9 @@ import com.deflatedpickle.quiver.packexport.api.ExportStep
         A pack export step to put the pack in a ZIP
     """,
     type = PluginType.OTHER,
+    dependencies = [
+        "deflatedpickle@pack_export#>=1.0.0"
+    ],
     settings = ZipStepSettings::class
 )
 object ZipStepPlugin {

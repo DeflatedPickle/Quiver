@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.markdownviewer
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -16,7 +18,10 @@ import com.deflatedpickle.quiver.backend.api.Viewer
         <br>
         A viewer for Markdown files
     """,
-    type = PluginType.OTHER
+    type = PluginType.OTHER,
+    dependencies = [
+        "deflatedpickle@file_panel#>=1.0.0"
+    ]
 )
 object MarkdownViewerPlugin {
     // https://superuser.com/a/285878

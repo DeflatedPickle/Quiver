@@ -31,7 +31,7 @@ import java.io.File
     type = PluginType.COMPONENT,
     component = Component::class,
     dependencies = [
-        "deflatedpickle@file_panel#1.0.0"
+        "deflatedpickle@file_panel#>=1.0.0"
     ],
     settings = FileTableSettings::class
 )

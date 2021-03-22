@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.foldertree
 
@@ -25,7 +25,10 @@ import javax.swing.tree.TreePath
         Provides a panel on which a given file can be configured
     """,
     type = PluginType.COMPONENT,
-    component = Component::class
+    component = Component::class,
+    dependencies = [
+        "deflatedpickle@file_panel#>=1.0.0"
+    ]
 )
 object FolderTreePlugin {
     private val toolbar = SearchToolbar(FolderTree.searchable)
