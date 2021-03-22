@@ -1,0 +1,14 @@
+plugins:
+  fixme:
+    enabled: true
+  git-legal:
+    enabled: true
+  markdownlint:
+    enabled: true
+
+exclude_patterns:
+- "gradle/"
+- "docs/"
+- "libs/"
+- "gradlew"
+- "gradlew.bat"

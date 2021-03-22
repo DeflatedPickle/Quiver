@@ -1,0 +1,18 @@
+name: Succinct Code Counter
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  scc_job:
+    runs-on: ubuntu-latest
+    name: Succinct Code Counter
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Count Lines
+        id: scc
+        uses: iryanbell/scc-docker-action@v1.0.0
+        with:
+          args: ${{ env.workspace }} --binary --ci --exclude-dir .git,gradle,docs --include-ext kt,java,json --min-gen --no-cocomo --count-as mcmeta:json,info:json --verbose
