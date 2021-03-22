@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
 import org.jdesktop.swingx.JXPanel
 import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 
-object ImageViewerComponent : JXPanel() {
+open class ImageViewerComponent : JXPanel() {
     lateinit var image: BufferedImage
 
     // https://stackoverflow.com/a/11959928
