@@ -36,6 +36,7 @@ object ImageViewer : Viewer<File> {
     override fun getComponent() = ImageViewerComponent
     override fun getScroller() = JScrollPane(this.getComponent())
     override fun getToolBars() = Viewer.ToolBarPosition(
+        north = ImageViewerPlugin.mediaToolbar,
         south = ImageViewerPlugin.toolbar
     )
 }
