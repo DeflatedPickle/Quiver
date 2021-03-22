@@ -1,6 +1,6 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
-package com.deflatedpickle.imageviewer
+package com.deflatedpickle.spritesheetviewer
 
 import blue.endless.jankson.Jankson
 import com.deflatedpickle.haruhi.api.Registry
@@ -35,7 +35,7 @@ import org.jdesktop.swingx.JXLabel
     ]
 )
 // TODO: Support image animation interpolation
-object SpritesheetViewerPlugin {
+object SpriteSheetViewerPlugin {
     private val extensionSet = setOf(
         "png",
         "jpg", "jpeg"
@@ -137,7 +137,7 @@ object SpritesheetViewerPlugin {
             val registry = RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?
 
             if (registry != null) {
-                for (i in this.extensionSet) {
+                for (i in extensionSet) {
                     if (registry.get(i) == null) {
                         @Suppress("UNCHECKED_CAST")
                         registry.register(i, mutableListOf(SpriteSheetViewer as Viewer<Any>))
@@ -150,7 +150,7 @@ object SpritesheetViewerPlugin {
         }
 
         EventSelectFile.addListener {
-            if (::animationThread.isInitialized) animationThread.interrupt()
+            if (this::animationThread.isInitialized) animationThread.interrupt()
             shouldAnimate = false
 
             if (it.extension !in extensionSet) return@addListener
@@ -184,11 +184,11 @@ object SpritesheetViewerPlugin {
 
     internal fun validateButtons() {
         if (loopButton.isSelected) {
-            this.nextButton.isEnabled = true
-            this.previousButton.isEnabled = true
+            nextButton.isEnabled = true
+            previousButton.isEnabled = true
         } else {
-            this.nextButton.isEnabled = SpriteSheetViewer.index < SpriteSheetViewer.maxIndex
-            this.previousButton.isEnabled = SpriteSheetViewer.index > 0
+            nextButton.isEnabled = SpriteSheetViewer.index < SpriteSheetViewer.maxIndex
+            previousButton.isEnabled = SpriteSheetViewer.index > 0
         }
     }
 }

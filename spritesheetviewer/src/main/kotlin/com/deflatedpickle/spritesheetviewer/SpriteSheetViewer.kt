@@ -1,6 +1,6 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
-package com.deflatedpickle.imageviewer
+package com.deflatedpickle.spritesheetviewer
 
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.api.Viewer
@@ -14,7 +14,7 @@ object SpriteSheetViewer : Viewer<File> {
     var index = 0
         set(value) {
             field = min(max(value, 0), maxIndex)
-            SpritesheetViewerPlugin.validateButtons()
+            SpriteSheetViewerPlugin.validateButtons()
         }
     var maxIndex = 0
 
@@ -24,8 +24,8 @@ object SpriteSheetViewer : Viewer<File> {
         if (image.width == Quiver.resolution) {
             SpriteSheetComponent.image = image.getSubimage(0, index * Quiver.resolution, Quiver.resolution, Quiver.resolution)
             maxIndex = (image.height / Quiver.resolution) - 1
-            SpritesheetViewerPlugin.indexLabel.text = "${index + 1}/${maxIndex + 1}"
-            SpritesheetViewerPlugin.validateButtons()
+            SpriteSheetViewerPlugin.indexLabel.text = "${index + 1}/${maxIndex + 1}"
+            SpriteSheetViewerPlugin.validateButtons()
         } else {
             SpriteSheetComponent.image = image
         }
@@ -34,9 +34,9 @@ object SpriteSheetViewer : Viewer<File> {
     }
 
     override fun getComponent() = SpriteSheetComponent
-    override fun getScroller() = JScrollPane(this.getComponent())
+    override fun getScroller() = JScrollPane(getComponent())
     override fun getToolBars() = Viewer.ToolBarPosition(
-        north = SpritesheetViewerPlugin.mediaToolbar,
-        south = SpritesheetViewerPlugin.toolbar
+        north = SpriteSheetViewerPlugin.mediaToolbar,
+        south = SpriteSheetViewerPlugin.toolbar
     )
 }
