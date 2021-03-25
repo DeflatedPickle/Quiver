@@ -17,6 +17,6 @@ interface Viewer<T : Any> {
     fun refresh(with: T)
 
     fun getComponent(): Component
-    fun getScroller(): JScrollPane
+    fun getScroller(): JScrollPane? = null
     fun getToolBars(): ToolBarPosition? = null
 }

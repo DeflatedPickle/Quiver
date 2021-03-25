@@ -23,7 +23,7 @@ import org.jdesktop.swingx.JXRadioGroup
 @Plugin(
     value = "file_panel",
     author = "DeflatedPickle",
-    version = "1.0.0",
+    version = "1.1.1",
     description = """
         <br>
         Provides a panel on which a given file can be configured
@@ -81,7 +81,7 @@ object FilePanelPlugin {
                         }
                         // Add the viewer wrapped by it's scroller
                         FilePanel.widgetPanel.add(JXPanel(BorderLayout()).apply {
-                            add(viewer.getScroller(), BorderLayout.CENTER)
+                            add(viewer.getScroller() ?: viewer.getComponent(), BorderLayout.CENTER)
 
                             viewer.getToolBars()?.let { bar ->
                                 bar.north?.let { add(it, BorderLayout.NORTH) }
