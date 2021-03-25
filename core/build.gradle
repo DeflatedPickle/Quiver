@@ -11,7 +11,7 @@ version '1.2.0'
 dependencies {
 	api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	api "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-	api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+	api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0-1.4.0-dev-5730"
 
 	// Logging
 	api 'org.apache.logging.log4j:log4j-api:2.11.1'
