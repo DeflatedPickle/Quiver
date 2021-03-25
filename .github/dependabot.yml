@@ -3,13 +3,12 @@ updates:
 - package-ecosystem: gradle
   directory: "/"
   schedule:
-    interval: monthly
-  open-pull-requests-limit: 10
+    interval: weekly
+  open-pull-requests-limit: 50
   target-branch: rewrite
   reviewers:
   - DeflatedPickle
   assignees:
   - DeflatedPickle
   labels:
-  - dependencies
   - dependabot
