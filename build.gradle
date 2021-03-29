@@ -6,7 +6,7 @@ plugins {
 	id 'distribution'
 	id 'application'
 
-	id 'com.diffplug.spotless' version '5.11.0'
+	id 'com.diffplug.spotless' version '5.11.1'
 	id "de.undercouch.download" version "4.1.1"
 }
 
