@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.spritesheetviewer
 
