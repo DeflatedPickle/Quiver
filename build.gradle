@@ -1,19 +1,19 @@
 plugins {
 	id 'java'
-	id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-	id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.72'
+	id 'org.jetbrains.kotlin.jvm'
+	id 'org.jetbrains.kotlin.plugin.serialization'
 
 	id 'distribution'
 	id 'application'
 
-	id 'com.diffplug.spotless' version '5.11.0'
-	id "de.undercouch.download" version "4.1.1"
+	id 'com.diffplug.spotless'
+	id 'de.undercouch.download'
 }
 
-group 'com.deflatedpickle'
-archivesBaseName = 'Quiver'
-version '1.7.0'
-sourceCompatibility = '1.8'
+group "$group"
+archivesBaseName = "$name"
+version "$version"
+sourceCompatibility = "$jvmTarget"
 
 project.ext {
 	licenseDir = new File('licenses', buildDir)
@@ -42,7 +42,7 @@ allprojects {
 			removeUnusedImports()
 			googleJavaFormat()
 
-			licenseHeader '/* Copyright (c) $YEAR DeflatedPickle under the MIT license */\n\n'
+			licenseHeader "$licenseHeader\n\n"
 		}
 
 		groovyGradle {
@@ -53,7 +53,7 @@ allprojects {
 		kotlin {
 			ktlint()
 
-			licenseHeader '/* Copyright (c) $YEAR DeflatedPickle under the MIT license */\n\n'
+			licenseHeader "$licenseHeader\n\n"
 		}
 
 		format 'misc', {
@@ -174,16 +174,13 @@ run {
 		runtimeOnly project(':packsquashstep')
 		runtimeOnly project(':zipstep')
 
-		runtimeOnly 'com.github.DeflatedPickle:sniffle:e00cc3a565'
+		runtimeOnly "sniffle:discordrpc"
+		runtimeOnly "sniffle:pluginmanager"
+		runtimeOnly "sniffle:settingsgui"
+		runtimeOnly "sniffle:tipoftheday"
 	}
 
 	application {
 		mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
 	}
-}
-
-task pushSubmodules(type: Exec) {
-	workingDir "."
-	commandLine "sh", "-c", "git submodule foreach 'git add .'"
-	commandLine "sh", "-c", "git submodule foreach 'git commit -a -m \"Update from submodule\" || :'"
 }
