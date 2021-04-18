@@ -13,7 +13,7 @@ import java.io.File
 @Plugin(
     value = "quiver",
     author = "DeflatedPickle",
-    version = "1.7.0",
+    version = "1.9.1",
     description = """
         <br>
         A program for creating Minecraft resource-packs

@@ -33,9 +33,15 @@ include 'zipstep'
 
 // Include the libraries I use and own
 // This is so I can fix any issues easier
+// include 'libs:sniffle:discordrpc'
+
+[/*'discordrpc',*/ 'pluginmanager', 'settingsgui', 'tipoftheday'].each {
+    include it
+    project(":$it").projectDir = new File(settingsDir, "libs/sniffle/$it")
+}
+
 includeBuild 'libs/haruhi'
 includeBuild 'libs/marvin'
 includeBuild 'libs/nagato'
 includeBuild 'libs/tosuto'
 includeBuild 'libs/undulation'
-includeBuild 'libs/sniffle'
