@@ -8,8 +8,10 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.backend.event.EventDeleteFile
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
+import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
@@ -126,6 +128,10 @@ object FilePanelPlugin {
 
         EventReplaceFile.addListener {
             EventSelectFile.trigger(it)
+        }
+
+        EventDeleteFile.addListener {
+            EventSelectFolder.trigger(it.parentFile)
         }
     }
 }

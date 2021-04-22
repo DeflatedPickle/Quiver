@@ -6,12 +6,14 @@ plugins {
 	id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
-version '1.2.0'
+version '1.3.0'
 
 dependencies {
 	api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	api "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
 	api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+	api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7'
+	api 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.3.7'
 
 	// Logging
 	api 'org.apache.logging.log4j:log4j-api:2.14.1'
@@ -45,8 +47,17 @@ dependencies {
 	api 'org.swinglabs:swingx:1.6.1'
 	api 'com.jidesoft:jide-oss:3.6.18'
 
-	api 'com.github.mikera:swing-console:swing-console-0.1.2'
+	// api 'com.github.mikera:swing-console:swing-console-0.1.2'
 	api 'net.java.balloontip:balloontip:1.2.4.1'
+
+	// api 'com.github.mickleness:pumpernickel:7721e5641f'
+
+	api 'com.github.bobbylight:RSyntaxTextArea:3.1.2'
+	api 'com.github.bobbylight:RSTALanguageSupport:3.1.1'
+	api 'com.github.bobbylight:SpellChecker:3.1.1'
+	api 'com.github.bobbylight:AutoComplete:3.1.1'
+	api 'com.github.bobbylight:RSTAUI:3.1.1'
+	api 'de.tisoft.rsyntaxtextarea:rsyntaxtextarea-antlr4-extension:0.0.2'
 
 	// Docking framework
 	api 'org.dockingframes:docking-frames-common:1.1.1'

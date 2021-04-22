@@ -18,6 +18,7 @@ import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
+import javax.swing.SortOrder
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 import org.apache.commons.io.FileUtils
@@ -147,5 +148,7 @@ object FileTable : JXTable() {
         if (this.rowCount > 0) {
             this.setRowSelectionInterval(0, 0)
         }
+
+        this.setSortOrder(0, SortOrder.ASCENDING)
     }
 }

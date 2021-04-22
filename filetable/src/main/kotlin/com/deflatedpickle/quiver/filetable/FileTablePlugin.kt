@@ -97,6 +97,7 @@ object FileTablePlugin {
                 if ((value as List<*>)[0] == it) {
                     val index = FileTable.convertRowIndexToView(i)
                     FileTable.setRowSelectionInterval(index, index)
+                    FileTable.scrollRowToVisible(index)
                     break
                 }
             }

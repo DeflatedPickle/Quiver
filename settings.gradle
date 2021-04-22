@@ -1,11 +1,11 @@
 pluginManagement {
-    plugins {
-        id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
-        id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
+	plugins {
+		id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+		id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
 
-        id 'com.diffplug.spotless' version "$spotlessVersion"
-        id 'de.undercouch.download' version "$downloadVersion"
-    }
+		id 'com.diffplug.spotless' version "$spotlessVersion"
+		id 'de.undercouch.download' version "$downloadVersion"
+	}
 }
 
 rootProject.name = 'Quiver'
@@ -33,11 +33,14 @@ include 'zipstep'
 
 // Include the libraries I use and own
 // This is so I can fix any issues easier
-// include 'libs:sniffle:discordrpc'
 
-[/*'discordrpc',*/ 'pluginmanager', 'settingsgui', 'tipoftheday'].each {
-    include it
-    project(":$it").projectDir = new File(settingsDir, "libs/sniffle/$it")
+[
+	/*'discordrpc',*/ 'pluginmanager',
+	'settingsgui',
+	'tipoftheday'
+].each {
+	include it
+	project(":$it").projectDir = new File(settingsDir, "libs/sniffle/$it")
 }
 
 includeBuild 'libs/haruhi'

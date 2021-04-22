@@ -1,13 +1,12 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.filepanel
 
-import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.haruhi.component.PluginPanel
-import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
-import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.quiver.frontend.widget.editButton
+import com.deflatedpickle.quiver.frontend.widget.openButton
 import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
 import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
@@ -19,10 +18,8 @@ import java.awt.Desktop
 import java.awt.GridBagLayout
 import javax.swing.BorderFactory
 import javax.swing.JComponent
-import javax.swing.JPopupMenu
 import javax.swing.JSeparator
 import javax.swing.SwingConstants
-import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
@@ -36,26 +33,13 @@ object FilePanel : PluginPanel() {
     private val fileSizeLabel = JXLabel("File Size")
     val fileSize = JXLabel()
 
-    private val openButton = JSplitButton("  ", NagatoIcon.FOLDER_OPEN_FILE).apply {
-        popupMenu = JPopupMenu("Open Alternatives").apply {
-            this.add("Open Folder", NagatoIcon.FOLDER_OPEN) { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
-        }
-        toolTipText = "Open File"
-        isEnabled = false
+    private val openButton = openButton(
+        false,
+        { Desktop.getDesktop().open(Quiver.selectedFile) },
+        { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
+    )
 
-        addButtonClickedActionListener {
-            Desktop.getDesktop().open(Quiver.selectedFile)
-        }
-    }
-
-    private val editButton = JXButton(NagatoIcon.PENCIL).apply {
-        toolTipText = "Edit"
-        isEnabled = false
-
-        addActionListener {
-            Desktop.getDesktop().edit(Quiver.selectedFile)
-        }
-    }
+    private val editButton = editButton(false) { Desktop.getDesktop().edit(Quiver.selectedFile) }
 
     private val replaceButton = ReplaceButton().apply {
         isEnabled = false
