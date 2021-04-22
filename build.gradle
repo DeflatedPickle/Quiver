@@ -72,6 +72,10 @@ allprojects {
 
 startScripts {
     executableDir = ""
+
+    doLast {
+        windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+    }
 }
 
 distributions {
