@@ -3,6 +3,9 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
+import com.deflatedpickle.marvin.builder.Builder
+import com.deflatedpickle.marvin.builder.FileBuilder
+import com.deflatedpickle.marvin.dsl.DSLFileNode
 import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.backend.extension.toPatternFilter
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
@@ -20,7 +23,10 @@ import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
 import com.deflatedpickle.rawky.ui.constraints.FinishLine
 import com.deflatedpickle.rawky.ui.constraints.StickEast
 import com.deflatedpickle.undulation.DocumentAdapter
+import com.deflatedpickle.undulation.extensions.expandAll
 import com.jidesoft.swing.CheckBoxList
+import com.jidesoft.swing.CheckBoxTree
+import java.awt.Dimension
 import java.awt.GridBagLayout
 import java.io.File
 import java.nio.file.Files
@@ -33,8 +39,11 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.SwingUtilities
 import javax.swing.text.PlainDocument
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.TreePath
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXCollapsiblePane
 import org.jdesktop.swingx.JXLabel
 import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXRadioGroup
@@ -161,6 +170,10 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     }
     private val resolutionEmptyTip = ThemedBalloonTip(resolutionEntry, "Resolution must not be empty", initiallyVisible = false)
     private val resolutionWrongTip = ThemedBalloonTip(resolutionEntry, "Resolution must be a multiplication of 16", initiallyVisible = false)
+    val resolutionCollapsable = JXCollapsiblePane().apply {
+        layout = GridBagLayout()
+        isAnimated = true
+    }
 
     // We'll cache a few game versions here so we don't keep generating them
     private val packToVersion = Array(6) {
@@ -198,9 +211,45 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         }
     }
 
+    val folderStructureRootNode = DefaultMutableTreeNode("root").apply {
+        fun loopNodes(list: List<Builder.Node<File>>, lastNode: DefaultMutableTreeNode) {
+            for (i in list) {
+                val nextNode = DefaultMutableTreeNode(i.get().name)
+                lastNode.add(nextNode)
+            }
+        }
+
+        fun loopBuilders(list: List<FileBuilder>, lastNode: DefaultMutableTreeNode) {
+            for (i in list) {
+                val nextNode = DefaultMutableTreeNode(i.firstNode.get().name)
+                loopNodes(i.nodeList.filterIsInstance<DSLFileNode>(), nextNode)
+                lastNode.add(nextNode)
+                loopBuilders(i.builder.childBuilderList, nextNode)
+            }
+        }
+        val emptyPack = PackUtil.createEmptyPack("", false)
+        // loopNodes(emptyPack.nodeList.filterIsInstance<DSLFileNode>(), this)
+        loopBuilders(emptyPack.childBuilderList, this)
+    }
+    val folderStructure = CheckBoxTree(folderStructureRootNode).apply {
+        toolTipText = "Folder structure of an empty pack"
+        isRootVisible = false
+        this.expandAll()
+        // checkBoxTreeSelectionModel.addSelectionPath(TreePath(folderStructureRootNode))
+        isDigIn = false
+    }
+    val folderStructureCollapsable = JXCollapsiblePane().apply {
+        layout = GridBagLayout()
+        isAnimated = true
+    }
+
     val extraResourceTree = CheckBoxList(ExtraResourceType.values()).apply {
         toolTipText = "Extra resources that aren't included in the default pack"
         selectAll()
+    }
+    val extraResourceCollapsable = JXCollapsiblePane().apply {
+        layout = GridBagLayout()
+        isAnimated = true
     }
 
     val packTypeGroup = JXRadioGroup(PackType.values()).apply {
@@ -234,6 +283,10 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
 
             defaultVersionComboBox.isEnabled = isDefaultPack
             extraResourceTree.isEnabled = isDefaultPack
+
+            resolutionCollapsable.isCollapsed = isDefaultPack
+            folderStructureCollapsable.isCollapsed = isDefaultPack
+            extraResourceCollapsable.isCollapsed = !isDefaultPack
 
             if (isDefaultPack) {
                 extraResourceTree.selectAll()
@@ -275,10 +328,12 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             this.add(JXLabel("Location" + ":"), StickEast)
             this.add(locationEntry, FillHorizontalFinishLine)
 
-            this.add(JXLabel("Resolution" + ":"), StickEast)
-            this.add(resolutionEntry, FillHorizontalFinishLine)
-
             this.add(locationHelpCollapsable, FillBothFinishLine)
+
+            this.add(resolutionCollapsable.apply {
+                this.add(JXLabel("Resolution" + ":"), StickEast)
+                this.add(resolutionEntry, FillHorizontalFinishLine)
+            }, FillBothFinishLine)
 
             /* Metadata */
             this.add(JXTitledSeparator("Metadata"), FillHorizontalFinishLine)
@@ -300,14 +355,23 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
                 this.add(defaultVersionComboBox, FinishLine)
             }, FillHorizontalFinishLine)
 
-            this.add(JXTitledSeparator("Extra Vanilla Data"), FillHorizontalFinishLine)
+            this.add(folderStructureCollapsable.apply {
+                this.add(JXTitledSeparator("Included Files"), FillHorizontalFinishLine)
 
-            this.add(extraResourceTree, FillBothFinishLine)
+                this.add(JScrollPane(folderStructure), FillBothFinishLine)
+            }, FillBothFinishLine)
+
+            this.add(extraResourceCollapsable.apply {
+                this.add(JXTitledSeparator("Extra Vanilla Data"), FillHorizontalFinishLine)
+
+                this.add(JScrollPane(extraResourceTree), FillBothFinishLine)
+            }, FillBothFinishLine)
         }).apply {
             isOpaque = false
             viewport.isOpaque = false
 
             border = BorderFactory.createEmptyBorder()
+            preferredSize = Dimension(500, 500)
         }
     }
 }

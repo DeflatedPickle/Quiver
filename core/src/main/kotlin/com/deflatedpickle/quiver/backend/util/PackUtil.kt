@@ -1,12 +1,16 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("unused")
+
 package com.deflatedpickle.quiver.backend.util
 
 import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonObject
 import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.marvin.VersionProgression
-import com.deflatedpickle.marvin.builder.FileBuilder
+import com.deflatedpickle.marvin.dsl.cabinet
+import com.deflatedpickle.marvin.dsl.dir
+import com.deflatedpickle.marvin.dsl.file
 import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
 import java.io.File
@@ -17,64 +21,149 @@ import org.apache.commons.io.FileUtils
 object PackUtil {
     private val json = Jankson.builder().build()
 
-    // This structure is mostly the same through different pack versions
-    // I'm not sure of a good, maintainable way to describe these mild differences
-    // https://minecraft.gamepedia.com/Resource_Pack#Folder_structure
-    fun createEmptyPack(path: String) {
-        FileBuilder(path)
-            .file("pack.mcmeta")
-            .dir("assets")
-            /*  */.dir("icons").build()
-            /*  */.dir("minecraft")
-            /*    */.file("sounds.json")
-            /*    */.dir("blockstates").build()
-            /*    */.file("gpu_warnlist.json")
-            /*    */.dir("font").build()
-            /*    */.dir("icons").build()
-            /*    */.dir("lang").build()
-            /*    */.dir("models")
-            /*      */.dir("block").build()
-            /*      */.dir("item").build()
-            /*    */.build()
-            /*    */.dir("particles").build()
-            /*    */.dir("sounds").build()
-            /*    */.dir("shaders")
-            /*      */.dir("post").build()
-            /*      */.dir("program").build()
-            /*    */.build()
-            /*    */.dir("texts").build()
-            /*    */.dir("textures")
-            /*      */.dir("block").build()
-            /*      */.dir("colormap").build()
-            /*      */.dir("effect").build()
-            /*      */.dir("entity").build()
-            /*      */.dir("environment").build()
-            /*      */.dir("font").build()
-            /*      */.dir("gui")
-            /*        */.dir("advancements")
-            /*            */.dir("backgrounds").build()
-            /*          */.build()
-            /*          */.dir("container")
-            /*            */.dir("creative_inventory")
-            /*          */.build()
-            /*          */.dir("presets").build()
-            /*          */.dir("title")
-            /*            */.dir("background").build()
-            /*          */.build()
-            /*      */.build()
-            /*      */.dir("item").build()
-            /*      */.dir("map").build()
-            /*      */.dir("misc").build()
-            /*      */.dir("mob_effect").build()
-            /*      */.dir("models")
-            /*        */.dir("armor").build()
-            /*      */.build()
-            /*      */.dir("painting").build()
-            /*      */.dir("particle").build()
-            /*  */.build()
-            .build()
-            .build()
+    data class PackStructure(
+        val packMcMeta: Boolean = true,
+        val assets: Assets? = Assets()
+    ) {
+        data class Assets(
+            val icons: Boolean = true,
+            val minecraft: Minecraft? = Minecraft()
+        )
+
+        data class Minecraft(
+            val soundsJson: Boolean = true,
+            val blockstates: Boolean = true,
+            val gpuWarnlistJson: Boolean = true,
+            val font: Boolean = true,
+            val icons: Boolean = true,
+            val lang: Boolean = true,
+            val models: Models? = Models(),
+            val particles: Boolean = true,
+            val sounds: Boolean = true,
+            val shaders: Shaders? = Shaders(),
+            val texts: Boolean = true,
+            val textures: Textures? = Textures()
+        ) {
+            data class Models(
+                val block: Boolean = true,
+                val item: Boolean = true
+            )
+
+            data class Shaders(
+                val post: Boolean = true,
+                val program: Boolean = true
+            )
+
+            data class Textures(
+                val block: Boolean = true,
+                val colourmap: Boolean = true,
+                val effect: Boolean = true,
+                val entity: Boolean = true,
+                val environment: Boolean = true,
+                val font: Boolean = true,
+                val gui: GUI? = GUI(),
+                val item: Boolean = true,
+                val map: Boolean = true,
+                val misc: Boolean = true,
+                val mobEffect: Boolean = true,
+                val models: Models? = Models(),
+                val painting: Boolean = true,
+                val particle: Boolean = true
+            ) {
+                data class GUI(
+                    val advancements: Advancements? = Advancements(),
+                    val container: Container? = Container(),
+                    val presets: Boolean = true,
+                    val title: Title? = Title()
+                ) {
+                    data class Advancements(
+                        val backgrounds: Boolean = true
+                    )
+
+                    data class Container(
+                        val creativeInventory: Boolean = true
+                    )
+
+                    data class Title(
+                        val background: Boolean = true
+                    )
+                }
+
+                data class Models(
+                    val armor: Boolean = true
+                )
+            }
+        }
     }
+
+    // This structure is mostly the same through different pack versions
+    // I'm not sure of a good, maintainable way to describe these mild differences, though I did write a DSL for it
+    // https://minecraft.gamepedia.com/Resource_Pack#Folder_structure
+    // (02/05/2021) This testing of each file is quite verbose. Perhaps some kind of "checker" could be added to the FileBuilder?
+    fun createEmptyPack(
+        path: String, build: Boolean = true,
+        ps: PackStructure = PackStructure()
+    ) =
+        cabinet(path, build) {
+            if (ps.packMcMeta) file("pack.mcmeta") {
+                +"{}"
+            }
+            if (ps.assets != null) dir("assets") {
+                if (ps.assets.icons) dir("icons") {}
+                if (ps.assets.minecraft != null) dir("minecraft") {
+                    if (ps.assets.minecraft.soundsJson) file("sounds.json") {
+                        +"{}"
+                    }
+                    if (ps.assets.minecraft.blockstates) dir("blockstates") {}
+                    if (ps.assets.minecraft.gpuWarnlistJson) file("gpu_warnlist.json") {
+                        +"{}"
+                    }
+                    if (ps.assets.minecraft.font) dir("font") {}
+                    if (ps.assets.minecraft.icons) dir("icons") {}
+                    if (ps.assets.minecraft.lang) dir("lang") {}
+                    if (ps.assets.minecraft.models != null) dir("models") {
+                        if (ps.assets.minecraft.models.block) dir("block") {}
+                        if (ps.assets.minecraft.models.item) dir("item") {}
+                    }
+                    if (ps.assets.minecraft.particles) dir("particles") {}
+                    if (ps.assets.minecraft.sounds) dir("sounds") {}
+                    if (ps.assets.minecraft.shaders != null) dir("shaders") {
+                        if (ps.assets.minecraft.shaders.post) dir("post") {}
+                        if (ps.assets.minecraft.shaders.program) dir("program") {}
+                    }
+                    if (ps.assets.minecraft.texts) dir("texts") {}
+                    if (ps.assets.minecraft.textures != null) dir("textures") {
+                        if (ps.assets.minecraft.textures.block) dir("block") {}
+                        if (ps.assets.minecraft.textures.colourmap) dir("colormap") {}
+                        if (ps.assets.minecraft.textures.effect) dir("effect") {}
+                        if (ps.assets.minecraft.textures.entity) dir("entity") {}
+                        if (ps.assets.minecraft.textures.environment) dir("environment") {}
+                        if (ps.assets.minecraft.textures.font) dir("font") {}
+                        if (ps.assets.minecraft.textures.gui != null) dir("gui") {
+                            if (ps.assets.minecraft.textures.gui.advancements != null) dir("advancements") {
+                                if (ps.assets.minecraft.textures.gui.advancements.backgrounds) dir("backgrounds") {}
+                            }
+                            if (ps.assets.minecraft.textures.gui.container != null) dir("container") {
+                                if (ps.assets.minecraft.textures.gui.container.creativeInventory) dir("creative_inventory") {}
+                            }
+                            if (ps.assets.minecraft.textures.gui.presets) dir("presets") {}
+                            if (ps.assets.minecraft.textures.gui.title != null) dir("title") {
+                                if (ps.assets.minecraft.textures.gui.title.background) dir("background") {}
+                            }
+                        }
+                        if (ps.assets.minecraft.textures.item) dir("item") {}
+                        if (ps.assets.minecraft.textures.map) dir("map") {}
+                        if (ps.assets.minecraft.textures.misc) dir("misc") {}
+                        if (ps.assets.minecraft.textures.mobEffect) dir("mob_effect") {}
+                        if (ps.assets.minecraft.textures.models != null) dir("models") {
+                            if (ps.assets.minecraft.textures.models.armor) dir("armor") {}
+                        }
+                        if (ps.assets.minecraft.textures.painting) dir("painting") {}
+                        if (ps.assets.minecraft.textures.particle) dir("particle") {}
+                    }
+                }
+            }
+        }
 
     /**
      * Extracts all the resources included in a resource pack
@@ -149,7 +238,8 @@ object PackUtil {
                     // Gets the namespace to use from the resource type
                     val namespace = resourceType.path.split("/")[0]
                     // Constructs the destination, using the namespace and the assets path
-                    val destination = "$path/assets/$namespace/${asset.split("/").drop(1).joinToString(separator = "/")}"
+                    val destination =
+                        "$path/assets/$namespace/${asset.split("/").drop(1).joinToString(separator = "/")}"
                     // Copies the source file to the destination, creating all parent files
                     FileUtils.copyFile(source, File(destination).apply { parentFile.mkdirs() })
                 }
@@ -178,27 +268,27 @@ object PackUtil {
 
     // You guys ready for some YandereDev-level code?
 
-    fun packVersionToGameVersion(packVersion: Int): VersionProgression =
+    fun packVersionToGameVersion(packVersion: PackFormat): VersionProgression =
         when (packVersion) {
-            1 -> Version(1, 6, 1)..Version(1, 8, 9)
-            2 -> Version(1, 9)..Version(1, 10, 2)
-            3 -> Version(1, 11)..Version(1, 12, 2)
-            4 -> Version(1, 13)..Version(1, 14, 4)
-            5 -> Version(1, 15)..Version(1, 16, 1)
-            6 -> Version(1, 16, 2)..Version(1, 16, 4)
-            7 -> Version(1, 17, 0)..Version(1, 17, 0)
-            else -> VersionProgression(Version(0, 0), Version(0, 0))
+            1 -> v1_6_1..v1_8_9
+            2 -> v1_9_0..v1_10_2
+            3 -> v1_11_0..v1_12_0
+            4 -> v1_13_0..v1_14_4
+            5 -> v1_15_0..v1_16_1
+            6 -> v1_16_2..v1_16_4
+            7 -> v1_17_0..v1_17_0
+            else -> Version.ZERO..Version.ZERO
         }
 
-    fun gameVersionToPackVersion(gameVersion: Version): Int =
+    fun gameVersionToPackVersion(gameVersion: Version): PackFormat =
         when (gameVersion) {
-            in Version(1, 6, 1)..Version(1, 8, 9) -> 1
-            in Version(1, 9)..Version(1, 10, 2) -> 2
-            in Version(1, 11)..Version(1, 12, 2) -> 3
-            in Version(1, 13)..Version(1, 14, 4) -> 4
-            in Version(1, 15)..Version(1, 16, 1) -> 5
-            in Version(1, 16, 2)..Version(1, 16, 4) -> 6
-            in Version(1, 17, 0)..Version(1, 17, 0) -> 7
+            in v1_6_1..v1_8_9 -> 1
+            in v1_9_0..v1_10_2 -> 2
+            in v1_11_0..v1_12_0 -> 3
+            in v1_13_0..v1_14_4 -> 4
+            in v1_15_0..v1_16_1 -> 5
+            in v1_16_2..v1_16_4 -> 6
+            in v1_17_0..v1_17_0 -> 7
             else -> 0
         }
 
@@ -224,3 +314,5 @@ object PackUtil {
         return 0
     }
 }
+
+typealias PackFormat = Int

@@ -19,6 +19,7 @@ import com.deflatedpickle.marvin.util.OSUtil
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
+import com.jidesoft.plaf.LookAndFeelFactory
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -209,6 +210,7 @@ fun main(args: Array<String>) {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         SwingUtilities.updateComponentTreeUI(Window)
+        LookAndFeelFactory.installJideExtension()
 
         // This is a catch-all event, used by plugins to run code that depends on setup
         // though the specific events could be used instead
