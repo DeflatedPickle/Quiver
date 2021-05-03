@@ -2,7 +2,7 @@
 
 package com.deflatedpickle.tableviewer
 
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import java.io.File
 import javax.swing.JComponent
 import javax.swing.JScrollPane

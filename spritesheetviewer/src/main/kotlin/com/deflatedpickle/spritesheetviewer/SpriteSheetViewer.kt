@@ -3,7 +3,7 @@
 package com.deflatedpickle.spritesheetviewer
 
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import java.io.File
 import java.lang.Integer.max
 import java.lang.Integer.min

@@ -1,6 +1,6 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
-package com.deflatedpickle.quiver.backend.api
+package com.deflatedpickle.quiver.filepanel.api
 
 import java.awt.Component
 import javax.swing.JScrollPane

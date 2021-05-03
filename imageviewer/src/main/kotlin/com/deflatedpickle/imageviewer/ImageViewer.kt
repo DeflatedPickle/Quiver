@@ -2,7 +2,7 @@
 
 package com.deflatedpickle.imageviewer
 
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.JScrollPane

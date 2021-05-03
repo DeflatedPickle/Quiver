@@ -2,7 +2,7 @@
 
 package com.deflatedpickle.markdownviewer
 
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.util.data.MutableDataSet

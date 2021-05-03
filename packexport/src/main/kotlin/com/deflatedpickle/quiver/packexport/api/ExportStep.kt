@@ -12,7 +12,7 @@ import javax.swing.ProgressMonitor
 // More like export step on me, amirite
 interface ExportStep {
     /**
-     * Get the slug for this plugin
+     * Get the slug for this step
      */
     fun getSlug(): Slug
 

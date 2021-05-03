@@ -2,7 +2,7 @@
 
 package com.deflatedpickle.quiver.textviewer
 
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
 import java.io.File
 import javax.swing.JComponent

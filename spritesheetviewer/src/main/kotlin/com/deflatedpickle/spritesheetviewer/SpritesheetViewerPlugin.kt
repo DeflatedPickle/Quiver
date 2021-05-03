@@ -10,7 +10,7 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.api.Viewer
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import java.awt.event.ItemEvent
 import java.io.File
