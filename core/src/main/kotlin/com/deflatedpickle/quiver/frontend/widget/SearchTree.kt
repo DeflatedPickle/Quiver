@@ -2,8 +2,8 @@
 
 package com.deflatedpickle.quiver.frontend.widget
 
-import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
-import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.undulation.constraints.FillBothFinishLine
+import com.deflatedpickle.undulation.constraints.FillHorizontalFinishLine
 import java.awt.GridBagLayout
 import javax.swing.JScrollPane
 import javax.swing.tree.DefaultMutableTreeNode

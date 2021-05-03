@@ -17,11 +17,11 @@ import com.deflatedpickle.quiver.backend.util.VersionUtil
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.frontend.widget.FoldingNotificationLabel
 import com.deflatedpickle.quiver.frontend.widget.ThemedBalloonTip
-import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
-import com.deflatedpickle.rawky.ui.constraints.FillHorizontal
-import com.deflatedpickle.rawky.ui.constraints.FillHorizontalFinishLine
-import com.deflatedpickle.rawky.ui.constraints.FinishLine
-import com.deflatedpickle.rawky.ui.constraints.StickEast
+import com.deflatedpickle.undulation.constraints.FillBothFinishLine
+import com.deflatedpickle.undulation.constraints.FillHorizontal
+import com.deflatedpickle.undulation.constraints.FillHorizontalFinishLine
+import com.deflatedpickle.undulation.constraints.FinishLine
+import com.deflatedpickle.undulation.constraints.StickEast
 import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.extensions.expandAll
 import com.jidesoft.swing.CheckBoxList
@@ -40,7 +40,6 @@ import javax.swing.JScrollPane
 import javax.swing.SwingUtilities
 import javax.swing.text.PlainDocument
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.TreePath
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXCollapsiblePane

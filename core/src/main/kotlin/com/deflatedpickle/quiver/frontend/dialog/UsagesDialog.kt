@@ -13,7 +13,7 @@ import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
 import com.deflatedpickle.quiver.frontend.widget.editButton
 import com.deflatedpickle.quiver.frontend.widget.openButton
-import com.deflatedpickle.rawky.ui.constraints.FillBothFinishLine
+import com.deflatedpickle.undulation.constraints.FillBothFinishLine
 import com.jidesoft.swing.DefaultOverlayable
 import java.awt.BorderLayout
 import java.awt.Component
