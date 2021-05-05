@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.quiver.foldertree
 
+import com.athaydes.kunion.Union
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
@@ -31,7 +32,7 @@ import javax.swing.tree.TreePath
     ]
 )
 object FolderTreePlugin {
-    private val toolbar = SearchToolbar(FolderTree.searchable)
+    private val toolbar = SearchToolbar(Union.U2.ofA(FolderTree))
 
     init {
         EventProgramFinishSetup.addListener {

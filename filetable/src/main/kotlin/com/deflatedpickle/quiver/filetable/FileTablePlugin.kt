@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.filetable
 
 import com.alexandriasoftware.swing.JSplitButton
+import com.athaydes.kunion.Union
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
@@ -36,7 +37,7 @@ import java.io.File
     settings = FileTableSettings::class
 )
 object FileTablePlugin {
-    private val toolbar = SearchToolbar(FileTable.searchable)
+    private val toolbar = SearchToolbar(Union.U2.ofB(FileTable))
 
     private val fileLinkMenu = LinkedFilesPopupMenu {
         if (FileTable.selectedRow >= 0)
