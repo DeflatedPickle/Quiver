@@ -7,7 +7,7 @@ import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
-import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.undulation.extensions.add
 import java.io.File
 import javax.swing.JMenu
 import javax.swing.JPopupMenu

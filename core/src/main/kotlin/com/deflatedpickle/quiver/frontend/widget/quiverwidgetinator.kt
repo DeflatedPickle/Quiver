@@ -4,7 +4,7 @@ package com.deflatedpickle.quiver.frontend.widget
 
 import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.nagato.NagatoIcon
-import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.undulation.extensions.add
 import javax.swing.JPopupMenu
 import org.jdesktop.swingx.JXButton
 

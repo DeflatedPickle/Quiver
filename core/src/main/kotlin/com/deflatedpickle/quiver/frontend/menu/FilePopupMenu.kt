@@ -10,8 +10,8 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.extension.toAsset
 import com.deflatedpickle.quiver.frontend.dialog.UsagesDialog
-import com.deflatedpickle.quiver.frontend.extension.add
-import com.deflatedpickle.quiver.frontend.extension.disableAll
+import com.deflatedpickle.undulation.extensions.add
+import com.deflatedpickle.undulation.extensions.disableAll
 import com.jidesoft.swing.FolderChooser
 import cr.nate.TransferableImage
 import java.awt.Desktop

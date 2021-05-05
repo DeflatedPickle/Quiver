@@ -9,7 +9,7 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.backend.util.ActionUtil
-import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.undulation.extensions.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import javax.swing.JComponent
 import javax.swing.JMenu

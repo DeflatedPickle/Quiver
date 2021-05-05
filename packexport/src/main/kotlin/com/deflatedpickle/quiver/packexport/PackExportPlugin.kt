@@ -12,7 +12,7 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
-import com.deflatedpickle.quiver.frontend.extension.add
+import com.deflatedpickle.undulation.extensions.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
 import com.deflatedpickle.quiver.packexport.api.ExportStep

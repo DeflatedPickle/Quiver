@@ -2,7 +2,7 @@
 
 package com.deflatedpickle.imageviewer
 
-import com.deflatedpickle.quiver.backend.extension.compareTo
+import com.deflatedpickle.undulation.extensions.compareTo
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
