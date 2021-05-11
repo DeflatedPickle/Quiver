@@ -52,13 +52,13 @@ object FileTablePlugin {
 
     init {
         EventProgramFinishSetup.addListener {
-            val settings = ConfigUtil.getSettings<FileTableSettings>(
+            ConfigUtil.getSettings<FileTableSettings>(
                 "deflatedpickle@file_table#1.0.1"
-            )
-
-            when (settings.noFileLinkAction) {
-                FileLinkAction.REMOVE -> this.linkButton.isEnabled = true
-                FileLinkAction.DISABLE -> FilePanel.fileActionPanel.add(this.linkButton)
+            )?.let { settings ->
+                when (settings.noFileLinkAction) {
+                    FileLinkAction.REMOVE -> this.linkButton.isEnabled = true
+                    FileLinkAction.DISABLE -> FilePanel.fileActionPanel.add(this.linkButton)
+                }
             }
 
             Component.add(this.toolbar, BorderLayout.NORTH)
@@ -72,24 +72,24 @@ object FileTablePlugin {
             // Definitely not the most efficient solution ¯\_(ツ)_/¯
             fileLinkMenu.validateMenu()
 
-            val settings = ConfigUtil.getSettings<FileTableSettings>(
+            ConfigUtil.getSettings<FileTableSettings>(
                 "deflatedpickle@file_table#1.0.1"
-            )
+            )?.let { settings ->
+                when (settings.noFileLinkAction) {
+                    FileLinkAction.REMOVE -> {
+                        if (this.fileLinkMenu.componentCount > 0)
+                            FilePanel.fileActionPanel.add(linkButton)
+                        else FilePanel.fileActionPanel.remove(linkButton)
 
-            when (settings.noFileLinkAction) {
-                FileLinkAction.REMOVE -> {
-                    if (this.fileLinkMenu.componentCount > 0)
-                        FilePanel.fileActionPanel.add(linkButton)
-                    else FilePanel.fileActionPanel.remove(linkButton)
-
-                    FilePanel.fileActionPanel.apply {
-                        repaint()
-                        revalidate()
+                        FilePanel.fileActionPanel.apply {
+                            repaint()
+                            revalidate()
+                        }
                     }
+                    FileLinkAction.DISABLE ->
+                        this.linkButton.isEnabled =
+                            this.fileLinkMenu.componentCount > 0
                 }
-                FileLinkAction.DISABLE ->
-                    this.linkButton.isEnabled =
-                        this.fileLinkMenu.componentCount > 0
             }
         }
 

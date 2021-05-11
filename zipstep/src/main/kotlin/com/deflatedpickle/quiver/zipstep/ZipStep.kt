@@ -34,17 +34,17 @@ object ZipStep : BulkExportStep() {
     ) {
         progressMonitor.maximum = 100
 
-        val settings = ConfigUtil.getSettings<ZipStepSettings>("deflatedpickle@zip_step#1.0.0")
-
         val parameters = ZipParameters().apply {
-            compressionMethod = settings.compressionMethod
-            compressionLevel = settings.compressionLevel
-            isReadHiddenFiles = settings.readHiddenFiles
-            isReadHiddenFolders = settings.readHiddenFolders
-            isWriteExtendedLocalFileHeader = settings.writeExtendedLocalFileHeader
-            fileComment = settings.fileComment
-            symbolicLinkAction = settings.symbolicLinkAction
-            isUnixMode = settings.unixMode
+            ConfigUtil.getSettings<ZipStepSettings>("deflatedpickle@zip_step#1.0.0")?.let { settings ->
+                compressionMethod = settings.compressionMethod
+                compressionLevel = settings.compressionLevel
+                isReadHiddenFiles = settings.readHiddenFiles
+                isReadHiddenFolders = settings.readHiddenFolders
+                isWriteExtendedLocalFileHeader = settings.writeExtendedLocalFileHeader
+                fileComment = settings.fileComment
+                symbolicLinkAction = settings.symbolicLinkAction
+                isUnixMode = settings.unixMode
+            }
         }
 
         val path = "${file.parentFile.absolutePath}/${file.nameWithoutExtension}.zip"

@@ -1,13 +1,13 @@
 plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+	id 'java'
+	id 'org.jetbrains.kotlin.jvm'
+	id 'org.jetbrains.kotlin.plugin.serialization'
 
-    id 'distribution'
-    id 'application'
+	id 'distribution'
+	id 'application'
 
-    id 'com.diffplug.spotless'
-    id 'de.undercouch.download'
+	id 'com.diffplug.spotless'
+	id 'de.undercouch.download'
 }
 
 group "$group"
@@ -16,175 +16,194 @@ version "$version"
 sourceCompatibility = "$jvmTarget"
 
 project.ext {
-    licenseDir = new File('licenses', buildDir)
-    toolDir = new File('tools', buildDir)
+	licenseDir = new File('licenses', buildDir)
+	toolDir = new File('tools', buildDir)
 }
 
 allprojects {
-    apply plugin: 'distribution'
-    apply plugin: 'org.jetbrains.kotlin.jvm'
-    apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
-    apply plugin: 'com.diffplug.spotless'
+	apply plugin: 'java'
+	apply plugin: 'java-library'
+	apply plugin: 'distribution'
+	apply plugin: 'org.jetbrains.kotlin.jvm'
+	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+	apply plugin: 'com.diffplug.spotless'
 
-    repositories {
-        jcenter()
-        mavenCentral()
+	repositories {
+		jcenter()
+		mavenCentral()
 
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://github.com/eugener/oxbow/raw/master/maven/repository' }
-    }
+		maven { url 'https://jitpack.io' }
+		maven { url 'https://github.com/eugener/oxbow/raw/master/maven/repository' }
+	}
 
-    spotless {
-        ratchetFrom 'origin/rewrite'
+	dependencies {
+		api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+		api "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+		api "org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinSerialization}"
+		api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+		api 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.3'
+	}
 
-        java {
-            importOrder()
-            removeUnusedImports()
-            googleJavaFormat()
+	spotless {
+		ratchetFrom 'origin/rewrite'
 
-            licenseHeader "$licenseHeader\n\n"
-        }
+		java {
+			importOrder()
+			removeUnusedImports()
+			googleJavaFormat()
 
-        groovyGradle {
-            target '*.gradle'
-            greclipse()
-        }
+			licenseHeader "$licenseHeader\n\n"
+		}
 
-        kotlin {
-            ktlint()
+		groovyGradle {
+			target '*.gradle'
+			greclipse()
+		}
 
-            licenseHeader "$licenseHeader\n\n"
-        }
+		kotlin {
+			ktlint()
 
-        format 'misc', {
-            target '*.md', '.gitignore'
+			licenseHeader "$licenseHeader\n\n"
+		}
 
-            trimTrailingWhitespace()
-            indentWithTabs()
-            endWithNewline()
-        }
-    }
+		format 'misc', {
+			target '*.md', '.gitignore'
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = sourceCompatibility
-    }
+			trimTrailingWhitespace()
+			indentWithTabs()
+			endWithNewline()
+		}
+	}
+
+	compileKotlin {
+		kotlinOptions.jvmTarget = sourceCompatibility
+
+		kotlinOptions {
+			freeCompilerArgs = [
+				"-Xopt-in=kotlin.RequiresOptIn",
+				"-Xinline-classes"
+			]
+		}
+	}
 }
 
 startScripts {
-    executableDir = ""
+	executableDir = ""
 
-    doLast {
-        windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
-    }
+	doLast {
+		windowsScript.text = windowsScript.text.replaceAll('set CLASSPATH=.*', 'set CLASSPATH=.;%APP_HOME%/lib/*')
+	}
 }
 
 distributions {
-    //noinspection GroovyAssignabilityCheck
-    main {
-        contents {
-            from files('README.MD', 'LICENSE')
-            from startScripts
+	//noinspection GroovyAssignabilityCheck
+	main {
+		contents {
+			from files('README.MD', 'LICENSE')
+			from startScripts
 
-            into('data') {
-                from files('data')
-            }
+			into('data') {
+				from files('data')
+			}
 
-            into('licenses') {
-                from files("$buildDir/licenses")
-            }
-            into('tools') {
-                from files("$buildDir/tools")
-            }
+			into('licenses') {
+				from files("$buildDir/licenses")
+			}
+			into('tools') {
+				from files("$buildDir/tools")
+			}
 
-            subprojects.each { p ->
-                into('plugins') {
-                    from p.getTasksByName("jar", true)
-                }
-            }
-        }
-    }
+			subprojects.each { p ->
+				into('plugins') {
+					from p.getTasksByName("jar", true)
+				}
+			}
+		}
+	}
 }
 
 distZip {
-    def list = []
+	def list = []
 
-    // Collect a list of all the JARs produced by submodules
-    subprojects.each { p ->
-        def jar = p.getTasksByName("jar", true).archiveFile
+	// Collect a list of all the JARs produced by submodules
+	subprojects.each { p ->
+		def jar = p.getTasksByName("jar", true).archiveFile
 
-        if (
-        !(p.name in ["master", "core", "launcher"]) &&
-                jar.size > 0
-        ) {
-            list.add(
-                    jar.first().getAsFile().get()
-            )
-        }
-    }
+		if (
+		!(p.name in ["master", "core", "launcher"]) &&
+		jar.size > 0
+		) {
+			list.add(
+					jar.first().getAsFile().get()
+					)
+		}
+	}
 
-    eachFile { file ->
-        // Files in /bin are copied to the main directory
-        // so we can exclude them
-        if (file.path.contains('bin')) {
-        file.exclude()
-        } else if (file.path.contains('lib') &&
-                // Check if the current file is a submodule
-                file.getFile() in list
-                // || file.name =~ /discordrpc*./
-                // || file.name =~ /pluginmanager*./
-                // || file.name =~ /settingsgui*./
-                // || file.name =~ /sniffle*./
-                // || file.name =~ /tipoftheday*./
-                || file.name =~ /Quiver-\d\.\d\.\d\.jar/) {
-            file.exclude()
-        }
-    }
+	eachFile { file ->
+		// Files in /bin are copied to the main directory
+		// so we can exclude them
+		if (file.path.contains('bin')) {
+			file.exclude()
+		} else if (file.path.contains('lib') &&
+		// Check if the current file is a submodule
+		file.getFile() in list
+		// || file.name =~ /discordrpc*./
+		// || file.name =~ /pluginmanager*./
+		// || file.name =~ /settingsgui*./
+		// || file.name =~ /sniffle*./
+		// || file.name =~ /tipoftheday*./
+		|| file.name =~ /Quiver-\d\.\d\.\d\.jar/) {
+			file.exclude()
+		}
+	}
 }
 
 run {
-    /*applicationDefaultJvmArgs = [
-     "-XX:+UseG1GC"
-     ]*/
+	applicationDefaultJvmArgs = [
+		// "-XX:+UseG1GC"
+		"-Xopt-in=kotlin.RequiresOptIn"
+	]
 
-    args = ['indev']
+	args = ['indev']
 
-    doFirst {
-        file('run').mkdirs()
+	doFirst {
+		file('run').mkdirs()
 
-        copy {
-            from 'data'
-            into 'run/data'
-        }
-    }
+		copy {
+			from 'data'
+			into 'run/data'
+		}
+	}
 
-    workingDir 'run'
+	workingDir 'run'
 
-    dependencies {
-        implementation project(':core')
-        runtimeOnly project(':launcher')
+	dependencies {
+		implementation project(':core')
+		runtimeOnly project(':launcher')
 
-        runtimeOnly project(':foldertree')
-        runtimeOnly project(':filetable')
-        runtimeOnly project(':filepanel')
+		runtimeOnly project(':foldertree')
+		runtimeOnly project(':filetable')
+		runtimeOnly project(':filepanel')
 
-        runtimeOnly project(':textviewer')
-        runtimeOnly project(':tableviewer')
-        runtimeOnly project(':imageviewer')
-        runtimeOnly project(':treeviewer')
-        runtimeOnly project(':markdownviewer')
-        runtimeOnly project(':spritesheetviewer')
+		runtimeOnly project(':textviewer')
+		runtimeOnly project(':tableviewer')
+		runtimeOnly project(':imageviewer')
+		runtimeOnly project(':treeviewer')
+		runtimeOnly project(':markdownviewer')
+		runtimeOnly project(':spritesheetviewer')
 
-        runtimeOnly project(':packexport')
-        runtimeOnly project(':packsquashstep')
-        runtimeOnly project(':zipstep')
+		runtimeOnly project(':packexport')
+		runtimeOnly project(':packsquashstep')
+		runtimeOnly project(':zipstep')
 
-        // runtimeOnly project(':discordrpc')
-        runtimeOnly project(':pluginmanager')
-        runtimeOnly project(':settingsgui')
-        runtimeOnly project(':tipoftheday')
-    }
+		// runtimeOnly project(':discordrpc')
+		runtimeOnly project(':pluginmanager')
+		runtimeOnly project(':settingsgui')
+		runtimeOnly project(':tipoftheday')
+		runtimeOnly project(':swingsettings')
+	}
 
-    application {
-        mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
-    }
+	application {
+		mainClassName = 'com.deflatedpickle.quiver.launcher.MainKt'
+	}
 }

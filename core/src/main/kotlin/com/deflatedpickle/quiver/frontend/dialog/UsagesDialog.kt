@@ -52,7 +52,7 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
     }
 
     private val listModel = DefaultListModel<File>()
-    private val list = JList<File>(this.listModel).apply {
+    private val list = JList(this.listModel).apply {
         cellRenderer = object : DefaultListCellRenderer() {
             override fun getListCellRendererComponent(
                 list: JList<*>?,

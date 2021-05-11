@@ -24,20 +24,19 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
 import kotlin.system.exitProcess
-import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.InternalSerializationApi
 import org.apache.logging.log4j.LogManager
 import org.fusesource.jansi.AnsiConsole
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 
-@ImplicitReflectionSerializer
+@InternalSerializationApi
 fun main(args: Array<String>) {
     // We'll count the startup time
     val startTime = System.nanoTime()
 
     // We set the LaF now so any error pop-ups use the use it
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+    // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     // Setting this property gives us terminal colours
     System.setProperty("log4j.skipJansi", "false")
@@ -208,8 +207,8 @@ fun main(args: Array<String>) {
 
         Window.control.contentArea.deploy(Window.grid)
 
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-        SwingUtilities.updateComponentTreeUI(Window)
+        // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+        // SwingUtilities.updateComponentTreeUI(Window)
         LookAndFeelFactory.installJideExtension()
 
         // This is a catch-all event, used by plugins to run code that depends on setup

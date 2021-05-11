@@ -33,11 +33,12 @@ include 'zipstep'
 
 // Include the libraries I use and own
 // This is so I can fix any issues easier
-
 [
-	/*'discordrpc',*/ 'pluginmanager',
+	/*'discordrpc',*/
+	'pluginmanager',
 	'settingsgui',
-	'tipoftheday'
+	'tipoftheday',
+	'swingsettings'
 ].each {
 	include it
 	project(":$it").projectDir = new File(settingsDir, "libs/sniffle/$it")

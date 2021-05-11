@@ -15,7 +15,6 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import javax.swing.ProgressMonitor
-import kotlinx.serialization.toUtf8Bytes
 import org.apache.logging.log4j.LogManager
 import org.oxbow.swingbits.dialog.task.TaskDialogs
 
@@ -39,15 +38,6 @@ object PackSquashStep : BulkExportStep() {
         var progress = 0
         progressMonitor.maximum = Files.walk(file.toPath()).count().toInt()
 
-        val settings = ConfigUtil.getSettings<PackSquashStepSettings>("deflatedpickle@pack_squash_step#1.0.0")
-
-        val arguments = """
-            |resource_pack_directory = "."
-            |output_file_path = "${file.parentFile.absolutePath}/${file.nameWithoutExtension}.zip"
-            |${File(settings.settings).readText()}
-            """.trimMargin()
-        // println(arguments)
-
         val system = when (OSUtil.getOS()) {
             OSUtil.OS.WINDOWS -> ""
             OSUtil.OS.LINUX -> "linux"
@@ -55,55 +45,64 @@ object PackSquashStep : BulkExportStep() {
             else -> throw UnsupportedOperatingSystemException(OSUtil.os)
         }
 
-        this.logger.debug("Starting the PackSquash command")
-        val process = ProcessBuilder(
-            "${File(".").canonicalPath}/${settings.location}/${settings.executable}" + if (OSUtil.isWindows()) ".exe" else "-$system",
-            "-"
-        )
-            .directory(file)
-            .redirectInput(ProcessBuilder.Redirect.PIPE)
-            .redirectOutput(ProcessBuilder.Redirect.PIPE)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start().apply {
-                try {
-                    if (this.isAlive) {
-                        for (line in arguments.lines()) {
-                            outputStream.write(
-                                "$line${System.lineSeparator()}".toUtf8Bytes()
-                            )
-                        }
-                        outputStream.flush()
-                        outputStream.close()
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    TaskDialogs.showException(e)
-                }
-            }
-        PackSquashStepPlugin.processList.add(process)
+        val settings = ConfigUtil.getSettings<PackSquashStepSettings>("deflatedpickle@pack_squash_step#1.0.0")?.let { settings ->
+            val arguments = """
+            |resource_pack_directory = "."
+            |output_file_path = "${file.parentFile.absolutePath}/${file.nameWithoutExtension}.zip"
+            |${File(settings.settings).readText()}
+            """.trimMargin()
+            // println(arguments)
 
-        Thread("${getSlug().name} Feed") {
-            val outputStream = BufferedInputStream(
-                process.inputStream
+            this.logger.debug("Starting PackSquash")
+            val process = ProcessBuilder(
+                "${File(".").canonicalPath}/${settings.location}/${settings.executable}" + if (OSUtil.isWindows()) ".exe" else "-$system",
+                "-"
             )
-
-            try {
-                outputStream.bufferedReader().forEachLine {
-                    if (progressMonitor.isCanceled) {
-                        this.logger.debug("The PackSquash task was cancelled")
-                        process.destroyForcibly()
-                        return@forEachLine
+                .directory(file)
+                .redirectInput(ProcessBuilder.Redirect.PIPE)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start().apply {
+                    try {
+                        if (this.isAlive) {
+                            for (line in arguments.lines()) {
+                                outputStream.write(
+                                    "$line${System.lineSeparator()}".toByteArray()
+                                )
+                            }
+                            outputStream.flush()
+                            outputStream.close()
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        TaskDialogs.showException(e)
                     }
-
-                    this.logger.trace(it)
-                    progressMonitor.note = it
-                    progressMonitor.setProgress(++progress)
                 }
-                PackSquashStepPlugin.processList
-            } catch (e: IOException) {
-            }
-            progressMonitor.close()
-        }.start()
-        this.logger.debug("Started the PackSquash thread")
+            PackSquashStepPlugin.processList.add(process)
+
+            Thread("${getSlug().name} Feed") {
+                val outputStream = BufferedInputStream(
+                    process.inputStream
+                )
+
+                try {
+                    outputStream.bufferedReader().forEachLine {
+                        if (progressMonitor.isCanceled) {
+                            this.logger.debug("The PackSquash task was cancelled")
+                            process.destroyForcibly()
+                            return@forEachLine
+                        }
+
+                        this.logger.trace(it)
+                        progressMonitor.note = it
+                        progressMonitor.setProgress(++progress)
+                    }
+                    PackSquashStepPlugin.processList
+                } catch (e: IOException) {
+                }
+                progressMonitor.close()
+            }.start()
+            this.logger.debug("Started the PackSquash thread")
+        }
     }
 }

@@ -12,7 +12,6 @@ import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.nagato.NagatoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
-import com.deflatedpickle.undulation.extensions.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.packexport.api.BulkExportStep
 import com.deflatedpickle.quiver.packexport.api.ExportStep
@@ -20,6 +19,7 @@ import com.deflatedpickle.quiver.packexport.api.PerFileExportStep
 import com.deflatedpickle.quiver.packexport.event.EventExportFile
 import com.deflatedpickle.quiver.packexport.event.EventFinishExportStep
 import com.deflatedpickle.quiver.packexport.event.EventStartingExportStep
+import com.deflatedpickle.undulation.extensions.add
 import java.nio.file.Files
 import java.util.Comparator
 import javax.swing.JMenu
@@ -48,7 +48,6 @@ object PackExportPlugin {
     private lateinit var menuButton: JMenuItem
 
     init {
-
         EventProgramFinishSetup.addListener {
             RegistryUtil.register("export", Registry<String, MutableList<ExportStep>>())
 
