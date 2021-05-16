@@ -25,7 +25,10 @@ fun String.toSyntaxEditingStyle() = when (this) {
     "make", "makefile", "makef", "gmk", "mak" -> SyntaxConstants.SYNTAX_STYLE_MAKEFILE
     // Gradle stuff for whatever reason
     "gradle" -> SyntaxConstants.SYNTAX_STYLE_GROOVY
+    // OpenGL shaders and that
+    // There isn't a syntax style for shaders so we'll use the closest
+    "fsh", "vsh" -> SyntaxConstants.SYNTAX_STYLE_C
     // I declare anything else as plain text
-    // Or so it was written
+    // Or so it was written, which it is
     else -> SyntaxConstants.SYNTAX_STYLE_NONE
 }

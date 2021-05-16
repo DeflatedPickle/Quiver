@@ -2,15 +2,22 @@
 
 package com.deflatedpickle.quiver.textviewer
 
-import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
+import com.deflatedpickle.quiver.filepanel.api.Viewer
 import java.io.File
-import javax.swing.JComponent
 import javax.swing.JScrollPane
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rtextarea.RTextScrollPane
 
 object TextViewer : Viewer<File> {
-    private val component = Component()
+    private val component = RSyntaxTextArea().apply {
+        isEditable = false
+
+        antiAliasingEnabled = true
+        isWhitespaceVisible = true
+        paintTabLines = true
+        isCodeFoldingEnabled = true
+    }
 
     override fun refresh(with: File) {
         this.component.text = with.readText()
@@ -18,6 +25,6 @@ object TextViewer : Viewer<File> {
         this.component.syntaxEditingStyle = with.extension.toSyntaxEditingStyle()
     }
 
-    override fun getComponent(): JComponent = this.component
+    override fun getComponent(): RSyntaxTextArea = this.component
     override fun getScroller(): JScrollPane = RTextScrollPane(this.getComponent())
 }

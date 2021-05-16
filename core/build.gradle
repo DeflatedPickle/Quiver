@@ -47,11 +47,11 @@ dependencies {
 
 	// api 'com.github.mickleness:pumpernickel:7721e5641f'
 
-	api 'com.github.bobbylight:RSyntaxTextArea:3.1.2'
-	api 'com.github.bobbylight:RSTALanguageSupport:3.1.1'
-	api 'com.github.bobbylight:SpellChecker:3.1.1'
-	api 'com.github.bobbylight:AutoComplete:3.1.1'
-	api 'com.github.bobbylight:RSTAUI:3.1.1'
+	api 'com.fifesoft:rsyntaxtextarea:3.1.2'
+	api 'com.fifesoft:languagesupport:3.1.1'
+	api 'com.fifesoft:spellchecker:3.1.1'
+	api 'com.fifesoft:autocomplete:3.1.1'
+	api 'com.fifesoft:rstaui:3.1.1'
 	api 'de.tisoft.rsyntaxtextarea:rsyntaxtextarea-antlr4-extension:0.0.2'
 
 	// Docking framework
