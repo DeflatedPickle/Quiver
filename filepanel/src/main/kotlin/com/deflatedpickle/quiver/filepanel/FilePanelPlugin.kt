@@ -1,17 +1,22 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
+import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventDeleteFile
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
+import com.deflatedpickle.quiver.filepanel.api.Program
+import com.deflatedpickle.quiver.filepanel.api.Viewer
+import com.deflatedpickle.quiver.filepanel.config.FilePanelSettings
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
@@ -25,24 +30,34 @@ import org.jdesktop.swingx.JXRadioGroup
 @Plugin(
     value = "file_panel",
     author = "DeflatedPickle",
-    version = "1.1.1",
+    version = "1.2.0",
     description = """
         <br>
         Provides a panel on which a given file can be configured
     """,
     type = PluginType.COMPONENT,
-    component = FilePanel::class
+    component = FilePanel::class,
+    settings = FilePanelSettings::class
 )
 object FilePanelPlugin {
     private val radioButtonGroup = JXRadioGroup<String>()
     private val viewerToolbar = JToolBar("Viewer").apply { add(radioButtonGroup) }
 
+    internal val viewerRegistry = Registry<String, MutableList<Viewer<Any>>>()
+    internal val programRegistry = Registry<String, MutableList<Program>>()
+
     init {
-        @Suppress("UNCHECKED_CAST")
-        RegistryUtil.register("viewer", Registry<String, MutableList<Viewer<Any>>>() as Registry<String, Any>)
+        RegistryUtil.register("viewer", viewerRegistry)
+        RegistryUtil.register("program", programRegistry)
 
         EventProgramFinishSetup.addListener {
             FilePanel.widgetPanel.add(this.viewerToolbar, BorderLayout.NORTH)
+
+            ConfigUtil.getSettings<FilePanelSettings>("deflatedpickle@file_panel#>=1.0.0")?.let { settings ->
+                for (program in settings.linkedPrograms) {
+                    putProgramToRegistry(program)
+                }
+            }
         }
 
         EventSelectFile.addListener { it ->
@@ -50,6 +65,8 @@ object FilePanelPlugin {
             FilePanel.typeField.text = it.extension
 
             FilePanel.fileSize.text = FileUtils.byteCountToDisplaySize(it.length())
+
+            FilePanel.openButton.regenMenu()
 
             for (component in FilePanel.widgetPanel.components) {
                 // Remove everything but the toolbar to change viewers
@@ -60,7 +77,6 @@ object FilePanelPlugin {
             radioButtonGroup.setValues(arrayOf())
 
             val registry = RegistryUtil.get("viewer")
-
             val viewerList = registry?.get(it.extension) as MutableList<Viewer<Any>>?
 
             // If there there are viewers for this extension...
@@ -132,6 +148,16 @@ object FilePanelPlugin {
 
         EventDeleteFile.addListener {
             EventSelectFolder.trigger(it.parentFile)
+        }
+    }
+
+    fun putProgramToRegistry(program: Program) {
+        for (ext in program.extensions) {
+            if (programRegistry.get(ext) == null) {
+                programRegistry.register(ext, mutableListOf(program))
+            } else {
+                programRegistry.get(ext)!!.add(program)
+            }
         }
     }
 }

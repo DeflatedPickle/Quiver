@@ -1,12 +1,14 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.deflatedpickle.quiver.filepanel
 
 import com.deflatedpickle.haruhi.component.PluginPanel
 import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.filepanel.widget.OpenButton
 import com.deflatedpickle.quiver.filepanel.widget.ReplaceButton
 import com.deflatedpickle.quiver.frontend.widget.editButton
-import com.deflatedpickle.quiver.frontend.widget.openButton
 import com.deflatedpickle.undulation.constraints.FillBothFinishLine
 import com.deflatedpickle.undulation.constraints.FillHorizontal
 import com.deflatedpickle.undulation.constraints.FillHorizontalFinishLine
@@ -25,21 +27,18 @@ import org.jdesktop.swingx.JXPanel
 import org.jdesktop.swingx.JXTextField
 
 object FilePanel : PluginPanel() {
-    private val nameLabel = JXLabel("Name")
     val nameField = JXTextField("Name").apply { isEnabled = false }
-    private val dotLabel = JXLabel(".")
     val typeField = JXTextField("Type").apply { isEnabled = false }
 
-    private val fileSizeLabel = JXLabel("File Size")
     val fileSize = JXLabel()
 
-    private val openButton = openButton(
+    val openButton = OpenButton(
         false,
         { Desktop.getDesktop().open(Quiver.selectedFile) },
         { Desktop.getDesktop().open(Quiver.selectedFile?.parentFile) }
     )
 
-    private val editButton = editButton(false) { Desktop.getDesktop().edit(Quiver.selectedFile) }
+    val editButton = editButton(false) { Desktop.getDesktop().edit(Quiver.selectedFile) }
 
     private val replaceButton = ReplaceButton().apply {
         isEnabled = false
@@ -70,12 +69,12 @@ object FilePanel : PluginPanel() {
     init {
         this.layout = GridBagLayout()
 
-        this.add(nameLabel, StickEast)
+        this.add(JXLabel("Name:"), StickEast)
         this.add(nameField, FillHorizontal)
-        this.add(dotLabel)
+        this.add(JXLabel("Type:"))
         this.add(typeField, FillHorizontalFinishLine)
 
-        this.add(fileSizeLabel, StickEast)
+        this.add(JXLabel("File Size:"), StickEast)
         this.add(fileSize, FillHorizontalFinishLine)
 
         // It doesn't actually fill
