@@ -34,15 +34,13 @@ class AssignProgramDialog(
             dialog.isVisible = true
 
             if (dialog.result == StandardCommand.OK) {
-                val program = Program(
+                return Program(
                     dialog.nameEntry.text,
                     dialog.locationEntry.field.text.substringBeforeLast("/"),
                     dialog.locationEntry.field.text.substringAfterLast("/"),
                     dialog.argsEntry.text,
                     dialog.extensionsEntry.tags
                 )
-
-                return program
             }
 
             return null

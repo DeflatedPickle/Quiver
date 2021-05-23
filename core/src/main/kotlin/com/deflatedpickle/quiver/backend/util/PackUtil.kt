@@ -13,10 +13,10 @@ import com.deflatedpickle.marvin.dsl.dir
 import com.deflatedpickle.marvin.dsl.file
 import com.deflatedpickle.quiver.Quiver
 import com.github.underscore.lodash.U
-import java.io.File
-import javax.imageio.ImageIO
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
+import java.io.File
+import javax.imageio.ImageIO
 
 object PackUtil {
     private val json = Jankson.builder().build()
@@ -101,7 +101,8 @@ object PackUtil {
     // https://minecraft.gamepedia.com/Resource_Pack#Folder_structure
     // (02/05/2021) This testing of each file is quite verbose. Perhaps some kind of "checker" could be added to the FileBuilder?
     fun createEmptyPack(
-        path: String, build: Boolean = true,
+        path: String,
+        build: Boolean = true,
         ps: PackStructure = PackStructure()
     ) =
         cabinet(path, build) {
@@ -181,13 +182,15 @@ object PackUtil {
          */
         path: String
     ) {
-        val zipFile = ZipFile(file)
+        val zipFile = ZipFile(file).apply {
+            // isRunInThread = true
+        }
 
-        // FIXME: Doesn't respect folder structures on Linux
-        // TODO: Extract default packs in a secondary thread, making use of zip4j's ProgressMonitor
-        for (i in zipFile.fileHeaders.filter {
-            it.fileName.startsWith("assets/minecraft")
-        }) {
+        for (
+            i in zipFile.fileHeaders.filter {
+                it.fileName.startsWith("assets/minecraft")
+            }
+        ) {
             if (!i.isDirectory) {
                 zipFile.extractFile(
                     i.fileName,
@@ -261,7 +264,7 @@ object PackUtil {
                                 "description": "$description"
                             }
                         }
-                    """.trimIndent()
+                """.trimIndent()
             )
         )
     }

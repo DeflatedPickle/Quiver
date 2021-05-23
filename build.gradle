@@ -61,7 +61,7 @@ allprojects {
 		}
 
 		kotlin {
-			ktlint()
+			ktlint("$ktlintVersion")
 
 			licenseHeader "$licenseHeader\n\n"
 		}
