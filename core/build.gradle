@@ -16,7 +16,7 @@ dependencies {
 	// Utility
 	api 'org.apache.commons:commons-lang3:3.12.0'
 	api 'commons-io:commons-io:2.8.0'
-	api 'com.github.javadev:underscore:1.55'
+	api 'com.github.javadev:underscore:1.65'
 	api 'com.github.erayerdin:kappdirs:v0.3.1-alpha'
 	api 'net.lingala.zip4j:zip4j:2.7.0'
 	api 'org.reflections:reflections:0.9.12'
