@@ -3,7 +3,7 @@
 package com.deflatedpickle.quiver.frontend.widget
 
 import com.athaydes.kunion.Union
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.extensions.getText
 import java.util.regex.Pattern
@@ -36,7 +36,7 @@ class SearchToolbar(
         })
     }
 
-    private val previousButton: JXButton = JXButton(NagatoIcon.ARROW_UP).apply {
+    private val previousButton: JXButton = JXButton(MonoIcon.ARROW_UP).apply {
         toolTipText = "Previous"
         isEnabled = false
 
@@ -54,7 +54,7 @@ class SearchToolbar(
         }
     }
 
-    private val nextButton = JXButton(NagatoIcon.ARROW_DOWN).apply {
+    private val nextButton = JXButton(MonoIcon.ARROW_DOWN).apply {
         toolTipText = "Next"
         isEnabled = false
 
@@ -71,22 +71,22 @@ class SearchToolbar(
         }
     }
 
-    private val loopButton = JToggleButton(NagatoIcon.RELOAD).apply {
+    private val loopButton = JToggleButton(MonoIcon.RELOAD).apply {
         toolTipText = "Loop"
         isSelected = true
     }
 
     // Regex checks
-    private val matchCaseCheckbox = JToggleButton(NagatoIcon.CASE_INSENSITIVE).apply {
+    private val matchCaseCheckbox = JToggleButton(MonoIcon.CASE_INSENSITIVE).apply {
         toolTipText = "Match Case"
     }
-    private val ignoreWhitespaceCheckbox = JToggleButton(NagatoIcon.IGNORE_WHITESPACE).apply {
+    private val ignoreWhitespaceCheckbox = JToggleButton(MonoIcon.IGNORE_WHITESPACE).apply {
         toolTipText = "Ignore Whitespace"
         isSelected = true
     }
 
     // Non-regex checks
-    private val stripSpecialChecks = JToggleButton(NagatoIcon.STRIP_SPECIAL_CHARACTERS).apply {
+    private val stripSpecialChecks = JToggleButton(MonoIcon.STRIP_SPECIAL_CHARACTERS).apply {
         toolTipText = "Strip Special Characters"
         isSelected = true
     }

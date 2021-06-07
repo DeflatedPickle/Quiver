@@ -3,14 +3,14 @@
 package com.deflatedpickle.quiver.frontend.widget
 
 import com.alexandriasoftware.swing.JSplitButton
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.undulation.extensions.add
 import javax.swing.JPopupMenu
 import org.jdesktop.swingx.JXButton
 
-fun openButton(enabled: Boolean, open: () -> Unit, openFolder: () -> Unit) = JSplitButton("  ", NagatoIcon.FOLDER_OPEN_FILE).apply {
+fun openButton(enabled: Boolean, open: () -> Unit, openFolder: () -> Unit) = JSplitButton("  ", MonoIcon.FOLDER_OPEN_FILE).apply {
     popupMenu = JPopupMenu("Open Alternatives").apply {
-        this.add("Open Folder", NagatoIcon.FOLDER_OPEN) { openFolder() }
+        this.add("Open Folder", MonoIcon.FOLDER_OPEN) { openFolder() }
     }
     toolTipText = "Open File"
     isEnabled = enabled
@@ -20,7 +20,7 @@ fun openButton(enabled: Boolean, open: () -> Unit, openFolder: () -> Unit) = JSp
     }
 }
 
-fun editButton(enabled: Boolean, action: () -> Unit) = JXButton(NagatoIcon.PENCIL).apply {
+fun editButton(enabled: Boolean, action: () -> Unit) = JXButton(MonoIcon.PENCIL).apply {
     toolTipText = "Edit"
     isEnabled = enabled
 

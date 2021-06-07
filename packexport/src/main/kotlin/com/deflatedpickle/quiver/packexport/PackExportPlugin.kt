@@ -9,7 +9,7 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.launcher.window.Toolbar
@@ -53,12 +53,12 @@ object PackExportPlugin {
 
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
             (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                menuButton = add("Export Pack", NagatoIcon.CUT) { openExportPackGUI() }
+                menuButton = add("Export Pack", MonoIcon.CUT) { openExportPackGUI() }
                 menuButton.isEnabled = false
                 addSeparator()
             }
 
-            toolbarButton = Toolbar.add(NagatoIcon.CUT, "Export Pack") { openExportPackGUI() }
+            toolbarButton = Toolbar.add(MonoIcon.CUT, "Export Pack") { openExportPackGUI() }
             toolbarButton.isEnabled = false
         }
 

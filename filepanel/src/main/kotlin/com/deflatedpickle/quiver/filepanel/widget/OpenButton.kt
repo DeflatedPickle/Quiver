@@ -5,7 +5,7 @@ package com.deflatedpickle.quiver.filepanel.widget
 import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.FilePanelPlugin
 import com.deflatedpickle.quiver.filepanel.api.Program
@@ -22,7 +22,7 @@ class OpenButton(
     enabled: Boolean,
     val open: () -> Unit,
     val openFolder: () -> Unit,
-) : JSplitButton("  ", NagatoIcon.FOLDER_OPEN_FILE) {
+) : JSplitButton("  ", MonoIcon.FOLDER_OPEN_FILE) {
     init {
         toolTipText = "Open File"
         isEnabled = enabled
@@ -65,7 +65,7 @@ class OpenButton(
                 }
             )
             addSeparator()
-            add("Open Folder", NagatoIcon.FOLDER_OPEN) { openFolder() }
+            add("Open Folder", MonoIcon.FOLDER_OPEN) { openFolder() }
         }
     }
 

@@ -46,6 +46,6 @@ include 'zipstep'
 
 includeBuild 'libs/haruhi'
 includeBuild 'libs/marvin'
-includeBuild 'libs/nagato'
+includeBuild 'libs/monocons'
 includeBuild 'libs/tosuto'
 includeBuild 'libs/undulation'

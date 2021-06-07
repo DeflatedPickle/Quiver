@@ -3,7 +3,7 @@
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
@@ -86,7 +86,7 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
         }
     }
 
-    private val showButton = JXButton(NagatoIcon.SHOW).apply {
+    private val showButton = JXButton(MonoIcon.SHOW).apply {
         addActionListener {
             // println(list.selectedValue.parentFile)
             EventSelectFolder.trigger(list.selectedValue.parentFile)

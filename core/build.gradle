@@ -27,11 +27,11 @@ dependencies {
 	api 'org.jooq:joor-java-8:0.9.14'
 	api 'com.github.renatoathaydes:kunion:0bd9cbfe38'
 
-	api 'com.deflatedpickle:marvin:1.0.0'
-	api 'com.deflatedpickle:undulation:1.0.0'
+	api 'com.deflatedpickle:marvin:'
+	api 'com.deflatedpickle:undulation:'
 
 	// Plugin framework
-	api 'com.deflatedpickle:haruhi:1.5.4'
+	api 'com.deflatedpickle:haruhi:'
 
 	// Events
 	api 'com.github.Fylipp:easy-events:v1.1.0'
@@ -65,8 +65,8 @@ dependencies {
 	api 'com.github.DeflatedPickle:WrapLayout:9ae792ee13'
 
 	// Toasts
-	api 'com.deflatedpickle:tosuto:1.7.3'
+	api 'com.deflatedpickle:tosuto:'
 
 	// Icons
-	api 'com.deflatedpickle:nagato:1.1.0'
+	api 'com.deflatedpickle:monocons:'
 }

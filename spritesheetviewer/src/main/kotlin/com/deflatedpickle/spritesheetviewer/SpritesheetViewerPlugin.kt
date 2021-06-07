@@ -8,7 +8,7 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.nagato.NagatoIcon
+import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
@@ -81,7 +81,7 @@ object SpriteSheetViewerPlugin {
 
     val mediaToolbar = JToolBar("Media")
 
-    private val playButton: JToggleButton = JToggleButton(NagatoIcon.RUN).apply {
+    private val playButton: JToggleButton = JToggleButton(MonoIcon.RUN).apply {
         addItemListener {
             when (it.stateChange) {
                 ItemEvent.SELECTED -> {
@@ -101,7 +101,7 @@ object SpriteSheetViewerPlugin {
         }
     }
 
-    private val loopButton = JToggleButton(NagatoIcon.RELOAD).apply {
+    private val loopButton = JToggleButton(MonoIcon.RELOAD).apply {
         addItemListener {
             validateButtons()
         }
@@ -109,7 +109,7 @@ object SpriteSheetViewerPlugin {
 
     val toolbar = JToolBar("Navigate")
 
-    private val nextButton = JXButton(NagatoIcon.ARROW_RIGHT).apply {
+    private val nextButton = JXButton(MonoIcon.ARROW_RIGHT).apply {
         addActionListener {
             if (loopButton.isSelected && SpriteSheetViewer.index >= SpriteSheetViewer.maxIndex) {
                 SpriteSheetViewer.index = 0
@@ -120,7 +120,7 @@ object SpriteSheetViewerPlugin {
         }
     }
     val indexLabel = JXLabel()
-    private val previousButton = JXButton(NagatoIcon.ARROW_LEFT).apply {
+    private val previousButton = JXButton(MonoIcon.ARROW_LEFT).apply {
         addActionListener {
             if (loopButton.isSelected && SpriteSheetViewer.index <= 0) {
                 SpriteSheetViewer.index = SpriteSheetViewer.maxIndex
