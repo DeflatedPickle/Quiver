@@ -13,3 +13,5 @@
 [submodule "libs/undulation"]
 	path = libs/undulation
 	url = https://github.com/DeflatedPickle/undulation
+[submodule "libs/monocons"]
+	url = https://github.com/DeflatedPickle/monocons
