@@ -1,8 +1,6 @@
 name: Succinct Code Counter
 
-on:
-  push:
-    branches: [ master ]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   scc_job:
