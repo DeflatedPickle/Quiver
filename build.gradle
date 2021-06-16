@@ -88,7 +88,6 @@ allprojects { p ->
 	}
 
 	blossom {
-		println p.property('name')
 		replaceToken('$[name]', p.property('id'))
 		replaceToken('$[author]', p.property('author'))
 		replaceToken('$[version]', p.version)
