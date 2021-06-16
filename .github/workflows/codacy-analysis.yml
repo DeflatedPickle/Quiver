@@ -8,11 +8,7 @@
 
 name: Codacy Security Scan
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   codacy-security-scan:
