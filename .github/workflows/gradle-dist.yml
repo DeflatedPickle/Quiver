@@ -3,7 +3,7 @@
 
 name: Gradle Dist
 
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -13,9 +13,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        task: [distZip, distTar]
-        java-v: [8, 9, 11, 16]
-        java-d: [adopt]
+        task: [distZip, distTar, installDist]
+        java-v: [8]
+        java-d: [adopt-hotspot, adopt-openj9]
 
     steps:
     - uses: actions/checkout@v2
@@ -32,12 +32,12 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle
-      run: ./gradlew ${{ matrix.task }}
+      run: ./gradlew --no-daemon ${{ matrix.task }}
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Quiver-${{ matrix.java-d }}${{ matrix.java-v }}
+        name: Quiver-JDK${{ matrix.java-d }}V${{ matrix.java-v }}
         path: ./build/distributions
 
     - name: Create Release
