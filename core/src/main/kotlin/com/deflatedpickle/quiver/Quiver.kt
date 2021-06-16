@@ -11,9 +11,9 @@ import java.io.File
 
 @Suppress("unused", "SpellCheckingInspection")
 @Plugin(
-    value = "quiver",
-    author = "DeflatedPickle",
-    version = "1.9.1",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A program for creating Minecraft resource-packs

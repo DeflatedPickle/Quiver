@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.filepanel.widget
 
@@ -6,6 +6,8 @@ import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventReplaceFile
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXButton
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
@@ -14,8 +16,6 @@ import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXButton
 
 class ReplaceButton : JXButton(MonoIcon.REPLACE) {
     init {

@@ -10,21 +10,21 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
+import com.deflatedpickle.quiver.filepanel.api.Viewer
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXLabel
 import java.awt.event.ItemEvent
 import java.io.File
 import javax.swing.Box
 import javax.swing.JToggleButton
 import javax.swing.JToolBar
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXLabel
 
 @Suppress("unused")
 @Plugin(
-    value = "sprite_sheet_viewer",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A viewer for PNG files describing animated images

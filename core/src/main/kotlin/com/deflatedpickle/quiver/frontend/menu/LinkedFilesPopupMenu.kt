@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.frontend.menu
 
@@ -78,9 +78,11 @@ class LinkedFilesPopupMenu(
                     )
                 }
                 entries.size > 1 -> {
-                    for ((key, _) in this.json
-                        .load(file)
-                        .getObject("textures")!!.entries) {
+                    for (
+                        (key, _) in this.json
+                            .load(file)
+                            .getObject("textures")!!.entries
+                    ) {
                         this.texturesMenu.add(key, MonoIcon.PAINTING_BLANK) {
                             this.searchTexture(
                                 jsonObject.get(

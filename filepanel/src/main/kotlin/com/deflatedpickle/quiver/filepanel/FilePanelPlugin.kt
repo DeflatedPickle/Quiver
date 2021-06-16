@@ -18,19 +18,19 @@ import com.deflatedpickle.quiver.filepanel.api.Program
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.filepanel.config.FilePanelSettings
 import com.deflatedpickle.quiver.filepanel.event.EventChangeViewWidget
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXRadioGroup
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
 import javax.swing.JToolBar
 import javax.swing.SwingUtilities
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXRadioGroup
 
 @Suppress("unused")
 @Plugin(
-    value = "file_panel",
-    author = "DeflatedPickle",
-    version = "1.2.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         Provides a panel on which a given file can be configured

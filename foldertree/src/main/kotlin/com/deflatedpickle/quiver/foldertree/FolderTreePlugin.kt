@@ -18,9 +18,9 @@ import javax.swing.tree.TreePath
 
 @Suppress("unused")
 @Plugin(
-    value = "folder_tree",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         Provides a panel on which a given file can be configured

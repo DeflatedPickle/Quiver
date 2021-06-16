@@ -11,9 +11,9 @@ import com.deflatedpickle.quiver.packexport.api.ExportStep
 
 @Suppress("unused")
 @Plugin(
-    value = "pack_squash_step",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A pack export step that utilizes PackSquash to decrease file sizes

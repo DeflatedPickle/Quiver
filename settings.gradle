@@ -5,6 +5,7 @@ pluginManagement {
 
 		id 'com.diffplug.spotless' version "$spotlessVersion"
 		id 'de.undercouch.download' version "$downloadVersion"
+		id "net.kyori.blossom" version "$blossomVersion"
 	}
 }
 
@@ -16,10 +17,10 @@ include 'master'
 include 'core'
 include 'launcher'
 
-include 'filepanel'
 include 'filetable'
 include 'foldertree'
 
+include 'filepanel'
 include 'textviewer'
 include 'tableviewer'
 include 'imageviewer'

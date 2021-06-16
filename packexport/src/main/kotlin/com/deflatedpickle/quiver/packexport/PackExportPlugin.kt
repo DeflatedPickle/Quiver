@@ -20,21 +20,20 @@ import com.deflatedpickle.quiver.packexport.event.EventExportFile
 import com.deflatedpickle.quiver.packexport.event.EventFinishExportStep
 import com.deflatedpickle.quiver.packexport.event.EventStartingExportStep
 import com.deflatedpickle.undulation.extensions.add
-import java.nio.file.Files
-import java.util.Comparator
-import javax.swing.JMenu
-import javax.swing.JMenuItem
-import javax.swing.ProgressMonitor
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.JXButton
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import org.oxbow.swingbits.dialog.task.TaskDialogs
+import java.nio.file.Files
+import javax.swing.JMenu
+import javax.swing.JMenuItem
+import javax.swing.ProgressMonitor
 
 @Suppress("unused")
 @Plugin(
-    value = "pack_export",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         An API to define modifications to files when the pack is processed into a ZIP
@@ -85,8 +84,10 @@ object PackExportPlugin {
                 @Suppress("UNCHECKED_CAST")
                 exportPack(
                     dialog.locationEntry.field.text,
-                    *(dialog.exportStepToggleList.checkBoxListSelectedValues.filterIsInstance(ExportStep::class.java)
-                        .toTypedArray())
+                    *(
+                        dialog.exportStepToggleList.checkBoxListSelectedValues.filterIsInstance(ExportStep::class.java)
+                            .toTypedArray()
+                        )
                 )
             }
         }
@@ -176,11 +177,11 @@ object PackExportPlugin {
                 when (step) {
                     is PerFileExportStep -> for (file in it) {
                         if (step in toggledSteps && (
-                                    // Only run for the given extension
-                                    // unless the step uses a wildcard
-                                    file.extension in step.affectedExtensions ||
-                                            step.affectedExtensions.contains("*")
-                                    )
+                            // Only run for the given extension
+                            // unless the step uses a wildcard
+                            file.extension in step.affectedExtensions ||
+                                step.affectedExtensions.contains("*")
+                            )
                         ) {
                             this.logger.debug("Running the $name step for $file")
                             progressMonitor.note = "Running the per-file $name step"

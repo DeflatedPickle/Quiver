@@ -11,9 +11,9 @@ import com.deflatedpickle.quiver.filepanel.api.Viewer
 
 @Suppress("unused")
 @Plugin(
-    value = "tree_viewer",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A viewer for JSON-like files

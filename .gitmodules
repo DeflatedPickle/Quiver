@@ -7,9 +7,6 @@
 [submodule "libs/tosuto"]
 	path = libs/tosuto
 	url = https://github.com/DeflatedPickle/tosuto
-[submodule "libs/nagato"]
-	path = libs/nagato
-	url = https://github.com/DeflatedPickle/Nagato
 [submodule "libs/sniffle"]
 	path = libs/sniffle
 	url = https://github.com/DeflatedPickle/sniffle

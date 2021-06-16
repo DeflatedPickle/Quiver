@@ -6,13 +6,13 @@ import com.athaydes.kunion.Union
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.extensions.getText
-import java.util.regex.Pattern
-import javax.swing.JToggleButton
-import javax.swing.JToolBar
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXSearchField
 import org.jdesktop.swingx.JXTable
 import org.jdesktop.swingx.JXTree
+import java.util.regex.Pattern
+import javax.swing.JToggleButton
+import javax.swing.JToolBar
 
 class SearchToolbar(
     private val widgetUnion: Union.U2<JXTree, JXTable>
@@ -20,20 +20,22 @@ class SearchToolbar(
     private val searchField: JXSearchField = JXSearchField("Search").apply {
         searchMode = JXSearchField.SearchMode.INSTANT
 
-        document.addDocumentListener(DocumentAdapter {
-            val search = processSearchString(it.document.getText(), stripSpecialChecks.isSelected)
+        document.addDocumentListener(
+            DocumentAdapter {
+                val search = processSearchString(it.document.getText(), stripSpecialChecks.isSelected)
 
-            search.isNotBlank().apply {
-                previousButton.isEnabled = this
-                nextButton.isEnabled = this
+                search.isNotBlank().apply {
+                    previousButton.isEnabled = this
+                    nextButton.isEnabled = this
 
-                search(
-                    search,
-                    !matchCaseCheckbox.isSelected,
-                    ignoreWhitespaceCheckbox.isSelected
-                )
+                    search(
+                        search,
+                        !matchCaseCheckbox.isSelected,
+                        ignoreWhitespaceCheckbox.isSelected
+                    )
+                }
             }
-        })
+        )
     }
 
     private val previousButton: JXButton = JXButton(MonoIcon.ARROW_UP).apply {
@@ -123,10 +125,11 @@ class SearchToolbar(
     ) {
         val pattern = Pattern.compile(
             "${
-                if (caseInsensitive) "(?i)" else ""
+            if (caseInsensitive) "(?i)" else ""
             }${
-                if (comments) "(?x)" else ""
-            }$string", Pattern.CANON_EQ
+            if (comments) "(?x)" else ""
+            }$string",
+            Pattern.CANON_EQ
         )
 
         val searchable = this.widgetUnion.use(

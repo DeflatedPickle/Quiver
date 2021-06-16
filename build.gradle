@@ -8,6 +8,7 @@ plugins {
 
 	id 'com.diffplug.spotless'
 	id 'de.undercouch.download'
+	id 'net.kyori.blossom'
 }
 
 group "$group"
@@ -20,16 +21,16 @@ project.ext {
 	toolDir = new File('tools', buildDir)
 }
 
-allprojects {
+allprojects { p ->
 	apply plugin: 'java'
 	apply plugin: 'java-library'
 	apply plugin: 'distribution'
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 	apply plugin: 'com.diffplug.spotless'
+	apply plugin: 'net.kyori.blossom'
 
 	repositories {
-		jcenter()
 		mavenCentral()
 
 		maven { url 'https://jitpack.io' }
@@ -80,10 +81,17 @@ allprojects {
 
 		kotlinOptions {
 			freeCompilerArgs = [
-				"-Xopt-in=kotlin.RequiresOptIn",
+				// "-Xopt-in=kotlin.RequiresOptIn",
 				"-Xinline-classes"
 			]
 		}
+	}
+
+	blossom {
+		println p.property('name')
+		replaceToken('$[name]', p.property('id'))
+		replaceToken('$[author]', p.property('author'))
+		replaceToken('$[version]', p.version)
 	}
 }
 
@@ -129,13 +137,12 @@ distZip {
 	subprojects.each { p ->
 		def jar = p.getTasksByName("jar", true).archiveFile
 
+		// We have to leave these out though
 		if (
 		!(p.name in ["master", "core", "launcher"]) &&
 		jar.size > 0
 		) {
-			list.add(
-					jar.first().getAsFile().get()
-					)
+			list.add(jar.first().getAsFile().get())
 		}
 	}
 
@@ -161,7 +168,7 @@ distZip {
 run {
 	applicationDefaultJvmArgs = [
 		// "-XX:+UseG1GC"
-		"-Xopt-in=kotlin.RequiresOptIn"
+		// "-Xopt-in=kotlin.RequiresOptIn"
 	]
 
 	args = ['indev']

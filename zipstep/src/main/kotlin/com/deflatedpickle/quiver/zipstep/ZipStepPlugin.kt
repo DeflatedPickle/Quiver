@@ -11,9 +11,9 @@ import com.deflatedpickle.quiver.packexport.api.ExportStep
 
 @Suppress("unused")
 @Plugin(
-    value = "zip_step",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A pack export step to put the pack in a ZIP

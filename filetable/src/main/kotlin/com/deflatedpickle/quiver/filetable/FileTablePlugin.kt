@@ -22,9 +22,9 @@ import java.io.File
 
 @Suppress("unused")
 @Plugin(
-    value = "file_table",
-    author = "DeflatedPickle",
-    version = "1.0.1",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         Provides a table to show what files are in a given folder

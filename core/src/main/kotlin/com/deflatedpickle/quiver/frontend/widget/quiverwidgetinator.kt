@@ -5,8 +5,8 @@ package com.deflatedpickle.quiver.frontend.widget
 import com.alexandriasoftware.swing.JSplitButton
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.undulation.extensions.add
-import javax.swing.JPopupMenu
 import org.jdesktop.swingx.JXButton
+import javax.swing.JPopupMenu
 
 fun openButton(enabled: Boolean, open: () -> Unit, openFolder: () -> Unit) = JSplitButton("  ", MonoIcon.FOLDER_OPEN_FILE).apply {
     popupMenu = JPopupMenu("Open Alternatives").apply {

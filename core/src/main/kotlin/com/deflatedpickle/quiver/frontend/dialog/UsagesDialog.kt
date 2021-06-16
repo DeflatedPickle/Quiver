@@ -15,6 +15,13 @@ import com.deflatedpickle.quiver.frontend.widget.editButton
 import com.deflatedpickle.quiver.frontend.widget.openButton
 import com.deflatedpickle.undulation.constraints.FillBothFinishLine
 import com.jidesoft.swing.DefaultOverlayable
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+import org.fife.ui.rtextarea.RTextScrollPane
+import org.fife.ui.rtextarea.SearchContext
+import org.fife.ui.rtextarea.SearchEngine
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXPanel
+import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Desktop
@@ -30,13 +37,6 @@ import javax.swing.JProgressBar
 import javax.swing.JScrollPane
 import javax.swing.JSplitPane
 import javax.swing.JToolBar
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-import org.fife.ui.rtextarea.RTextScrollPane
-import org.fife.ui.rtextarea.SearchContext
-import org.fife.ui.rtextarea.SearchEngine
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXPanel
-import org.oxbow.swingbits.dialog.task.TaskDialog
 
 // TODO: Add a context menu to select items in the file table
 class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
@@ -114,32 +114,37 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
             StandardCommand.OK
         )
 
-        this.fixedComponent = JScrollPane(JPanel().apply {
-            isOpaque = false
-            layout = GridBagLayout()
+        this.fixedComponent = JScrollPane(
+            JPanel().apply {
+                isOpaque = false
+                layout = GridBagLayout()
 
-            add(
-                JSplitPane(
-                    JSplitPane.HORIZONTAL_SPLIT,
-                    DefaultOverlayable(
-                        JScrollPane(list),
-                        progressBar
-                    ),
-                    JXPanel(BorderLayout()).apply {
-                        add(JToolBar().apply {
-                            add(showButton)
-                            add(openButton)
-                            add(editButton)
-                        }, BorderLayout.NORTH)
-                        add(RTextScrollPane(textArea), BorderLayout.CENTER)
-                    }
-                ).apply {
-                    isContinuousLayout = true
-                    resizeWeight = 0.4
-                },
-                FillBothFinishLine
-            )
-        }).apply {
+                add(
+                    JSplitPane(
+                        JSplitPane.HORIZONTAL_SPLIT,
+                        DefaultOverlayable(
+                            JScrollPane(list),
+                            progressBar
+                        ),
+                        JXPanel(BorderLayout()).apply {
+                            add(
+                                JToolBar().apply {
+                                    add(showButton)
+                                    add(openButton)
+                                    add(editButton)
+                                },
+                                BorderLayout.NORTH
+                            )
+                            add(RTextScrollPane(textArea), BorderLayout.CENTER)
+                        }
+                    ).apply {
+                        isContinuousLayout = true
+                        resizeWeight = 0.4
+                    },
+                    FillBothFinishLine
+                )
+            }
+        ).apply {
             isOpaque = false
             viewport.isOpaque = false
 

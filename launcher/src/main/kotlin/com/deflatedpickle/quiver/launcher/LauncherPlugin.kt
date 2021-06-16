@@ -1,4 +1,4 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.launcher
 
@@ -9,15 +9,15 @@ import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.backend.util.ActionUtil
-import com.deflatedpickle.undulation.extensions.add
 import com.deflatedpickle.quiver.launcher.window.Toolbar
+import com.deflatedpickle.undulation.extensions.add
 import javax.swing.JComponent
 import javax.swing.JMenu
 
 @Plugin(
-    value = "launcher",
-    author = "DeflatedPickle",
-    version = "1.0.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A basic launcher

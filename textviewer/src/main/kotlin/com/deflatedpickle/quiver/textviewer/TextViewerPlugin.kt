@@ -2,7 +2,6 @@
 
 package com.deflatedpickle.quiver.textviewer
 
-import org.fife.ui.rsyntaxtextarea.Theme as SyntaxTheme
 import com.deflatedpickle.haruhi.api.Registry
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
@@ -14,18 +13,19 @@ import com.deflatedpickle.marvin.extensions.set
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.textviewer.api.Theme
 import com.deflatedpickle.rawky.settings.SettingsGUI
+import org.reflections.Reflections
+import org.reflections.scanners.ResourcesScanner
 import java.awt.Component
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.SwingUtilities
-import org.reflections.Reflections
-import org.reflections.scanners.ResourcesScanner
+import org.fife.ui.rsyntaxtextarea.Theme as SyntaxTheme
 
 @Suppress("unused")
 @Plugin(
-    value = "text_viewer",
-    author = "DeflatedPickle",
-    version = "1.1.0",
+    value = "$[name]",
+    author = "$[author]",
+    version = "$[version]",
     description = """
         <br>
         A viewer for text-based files
