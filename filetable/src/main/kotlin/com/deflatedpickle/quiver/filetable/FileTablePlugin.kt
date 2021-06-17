@@ -53,7 +53,7 @@ object FileTablePlugin {
     init {
         EventProgramFinishSetup.addListener {
             ConfigUtil.getSettings<FileTableSettings>(
-                "deflatedpickle@file_table#1.0.1"
+                "deflatedpickle@file_table#>=1.0.1"
             )?.let { settings ->
                 when (settings.noFileLinkAction) {
                     FileLinkAction.REMOVE -> this.linkButton.isEnabled = true
@@ -73,10 +73,14 @@ object FileTablePlugin {
             fileLinkMenu.validateMenu()
 
             ConfigUtil.getSettings<FileTableSettings>(
-                "deflatedpickle@file_table#1.0.1"
+                "deflatedpickle@file_table#>=1.0.1"
             )?.let { settings ->
                 when (settings.noFileLinkAction) {
                     FileLinkAction.REMOVE -> {
+                        if (!this.linkButton.isEnabled) {
+                            this.linkButton.isEnabled = true
+                        }
+
                         if (this.fileLinkMenu.componentCount > 0)
                             FilePanel.fileActionPanel.add(linkButton)
                         else FilePanel.fileActionPanel.remove(linkButton)
@@ -86,9 +90,14 @@ object FileTablePlugin {
                             revalidate()
                         }
                     }
-                    FileLinkAction.DISABLE ->
+                    FileLinkAction.DISABLE -> {
+                        if (!FilePanel.fileActionPanel.components.contains(linkButton)) {
+                            FilePanel.fileActionPanel.add(linkButton)
+                        }
+
                         this.linkButton.isEnabled =
                             this.fileLinkMenu.componentCount > 0
+                    }
                 }
             }
         }
