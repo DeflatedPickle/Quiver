@@ -1,5 +1,7 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.deflatedpickle.quiver.frontend.dialog
 
 import com.deflatedpickle.haruhi.util.PluginUtil
@@ -17,15 +19,23 @@ import com.deflatedpickle.quiver.backend.util.VersionUtil
 import com.deflatedpickle.quiver.frontend.widget.ButtonField
 import com.deflatedpickle.quiver.frontend.widget.FoldingNotificationLabel
 import com.deflatedpickle.quiver.frontend.widget.ThemedBalloonTip
+import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.constraints.FillBothFinishLine
 import com.deflatedpickle.undulation.constraints.FillHorizontal
 import com.deflatedpickle.undulation.constraints.FillHorizontalFinishLine
-import com.deflatedpickle.undulation.constraints.FinishLine
 import com.deflatedpickle.undulation.constraints.StickEast
-import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.extensions.expandAll
 import com.jidesoft.swing.CheckBoxList
 import com.jidesoft.swing.CheckBoxTree
+import org.apache.logging.log4j.LogManager
+import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXCollapsiblePane
+import org.jdesktop.swingx.JXLabel
+import org.jdesktop.swingx.JXPanel
+import org.jdesktop.swingx.JXRadioGroup
+import org.jdesktop.swingx.JXTextField
+import org.jdesktop.swingx.JXTitledSeparator
+import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.awt.Dimension
 import java.awt.GridBagLayout
 import java.io.File
@@ -40,16 +50,7 @@ import javax.swing.JScrollPane
 import javax.swing.SwingUtilities
 import javax.swing.text.PlainDocument
 import javax.swing.tree.DefaultMutableTreeNode
-import org.apache.logging.log4j.LogManager
-import org.jdesktop.swingx.JXButton
-import org.jdesktop.swingx.JXCollapsiblePane
-import org.jdesktop.swingx.JXLabel
-import org.jdesktop.swingx.JXPanel
-import org.jdesktop.swingx.JXRadioGroup
-import org.jdesktop.swingx.JXTextArea
-import org.jdesktop.swingx.JXTextField
-import org.jdesktop.swingx.JXTitledSeparator
-import org.oxbow.swingbits.dialog.task.TaskDialog
+import javax.swing.tree.TreePath
 
 class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     private val logger = LogManager.getLogger()
@@ -175,11 +176,11 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     }
 
     // We'll cache a few game versions here so we don't keep generating them
-    private val packToVersion = Array(6) {
+    val packToVersion = Array(6) {
         PackUtil.packVersionToGameVersion(it + 1)
     }
 
-    val packVersionComboBox = JComboBox<Int>((1..6).toList().toTypedArray()).apply {
+    val packVersionComboBox = JComboBox((1..6).toList().toTypedArray()).apply {
         setRenderer { list, value, index, isSelected, cellHasFocus ->
             DefaultListCellRenderer().getListCellRendererComponent(
                 list, packToVersion[value - 1],
@@ -191,9 +192,9 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             "The version this pack will be based off of, different versions have different quirks; i.e. lang names"
         selectedItem = this.itemCount
     }
-    val descriptionEntry = JXTextArea("Description").apply {
+    val descriptionEntry = JXTextField("Description").apply {
         toolTipText = "The description of the pack, used in pack.mcmeta"
-        border = BorderFactory.createEtchedBorder()
+        // border = BorderFactory.createEtchedBorder()
     }
 
     val defaultVersionComboBox = JComboBox(
@@ -234,12 +235,12 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         toolTipText = "Folder structure of an empty pack"
         isRootVisible = false
         this.expandAll()
-        // checkBoxTreeSelectionModel.addSelectionPath(TreePath(folderStructureRootNode))
-        isDigIn = false
+
+        checkBoxTreeSelectionModel.addSelectionPath(TreePath(folderStructureRootNode))
+        isDigIn = true
     }
     val folderStructureCollapsable = JXCollapsiblePane().apply {
         layout = GridBagLayout()
-        isAnimated = true
     }
 
     val extraResourceTree = CheckBoxList(ExtraResourceType.values()).apply {
@@ -248,7 +249,6 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
     }
     val extraResourceCollapsable = JXCollapsiblePane().apply {
         layout = GridBagLayout()
-        isAnimated = true
     }
 
     val packTypeGroup = JXRadioGroup(PackType.values()).apply {
@@ -262,6 +262,14 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
                     PackType.DEFAULT_PACK -> "Extracts and copies the default pack for the given version"
                 }
                 isOpaque = false
+
+                addActionListener {
+                    versionPanel.removeAll()
+                    versionPanel.add(when (packType) {
+                        PackType.EMPTY_PACK -> packVersionComboBox
+                        PackType.DEFAULT_PACK -> defaultVersionComboBox
+                    }, FillHorizontalFinishLine)
+                }
             }
         }
 
@@ -284,6 +292,7 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             extraResourceTree.isEnabled = isDefaultPack
 
             resolutionCollapsable.isCollapsed = isDefaultPack
+
             folderStructureCollapsable.isCollapsed = isDefaultPack
             extraResourceCollapsable.isCollapsed = !isDefaultPack
 
@@ -295,6 +304,13 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
         }
         // This triggers the action listener
         selectedValue = PackType.EMPTY_PACK
+    }
+
+    val versionPanel = JXPanel().apply {
+        isOpaque = false
+        layout = GridBagLayout()
+
+        add(packVersionComboBox, FillHorizontalFinishLine)
     }
 
     init {
@@ -338,7 +354,8 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             this.add(JXTitledSeparator("Metadata"), FillHorizontalFinishLine)
 
             this.add(JXLabel("Version" + ":"), StickEast)
-            this.add(packVersionComboBox, FillHorizontalFinishLine)
+
+            this.add(versionPanel, FillHorizontalFinishLine)
 
             this.add(JXLabel("Description" + ":"), StickEast)
             this.add(descriptionEntry, FillHorizontalFinishLine)
@@ -350,8 +367,6 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
                 isOpaque = false
 
                 this.add(packTypeGroup, FillHorizontal)
-
-                this.add(defaultVersionComboBox, FinishLine)
             }, FillHorizontalFinishLine)
 
             this.add(folderStructureCollapsable.apply {
@@ -370,7 +385,7 @@ class NewDialog : TaskDialog(PluginUtil.window, "Create New Pack") {
             viewport.isOpaque = false
 
             border = BorderFactory.createEmptyBorder()
-            preferredSize = Dimension(500, 500)
+            preferredSize = Dimension(600, 500)
         }
     }
 }

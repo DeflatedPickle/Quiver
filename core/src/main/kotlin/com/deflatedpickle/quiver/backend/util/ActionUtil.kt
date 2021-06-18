@@ -1,5 +1,7 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.haruhi.util.PluginUtil
@@ -8,10 +10,10 @@ import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.util.PackUtil.findResolution
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
-import java.io.File
-import javax.swing.JFileChooser
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import org.oxbow.swingbits.dialog.task.TaskDialogs
+import java.io.File
+import javax.swing.JFileChooser
 
 object ActionUtil {
     fun newPack() {
@@ -139,10 +141,9 @@ object ActionUtil {
                 f()
             }
 
-            if (!dialog.resolutionCollapsable.isCollapsed) {
-                Quiver.resolution = dialog.resolutionEntry.text.toInt()
-            } else {
-                Quiver.resolution = findResolution()
+            when (dialog.packTypeGroup.selectedValue) {
+                PackType.EMPTY_PACK -> Quiver.resolution = dialog.resolutionEntry.text.toInt()
+                PackType.DEFAULT_PACK -> Quiver.resolution = findResolution()
             }
 
             EventNewDocument.trigger(Quiver.packDirectory!!)
