@@ -3,6 +3,8 @@
 package com.deflatedpickle.imageviewer
 
 import com.deflatedpickle.undulation.extensions.compareTo
+import org.jdesktop.swingx.JXPanel
+import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -10,8 +12,6 @@ import java.awt.image.BufferedImage
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import org.jdesktop.swingx.JXPanel
-import so.madprogrammer.ScaleUtil.getScaleFactorToFit
 
 open class ImageViewerComponent : JXPanel() {
     lateinit var image: BufferedImage

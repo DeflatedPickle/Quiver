@@ -8,4 +8,5 @@ dependencies {
 	implementation project(':core')
 	implementation project(':filepanel')
 	implementation project(':imageviewer')
+	implementation project(':swingsettings')
 }

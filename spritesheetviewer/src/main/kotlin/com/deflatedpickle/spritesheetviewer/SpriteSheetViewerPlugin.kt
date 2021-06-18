@@ -12,6 +12,7 @@ import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.api.Viewer
+import com.deflatedpickle.sniffle.swingsettings.event.EventChangeTheme
 import org.jdesktop.swingx.JXButton
 import org.jdesktop.swingx.JXLabel
 import java.awt.event.ItemEvent
@@ -179,6 +180,11 @@ object SpriteSheetViewerPlugin {
 
             toolbar.repaint()
             toolbar.revalidate()
+        }
+
+        EventChangeTheme.addListener {
+            mediaToolbar.updateUI()
+            toolbar.updateUI()
         }
     }
 

@@ -17,6 +17,7 @@ import com.deflatedpickle.quiver.filetable.config.FileTableSettings
 import com.deflatedpickle.quiver.filetable.util.FileLinkAction
 import com.deflatedpickle.quiver.frontend.menu.LinkedFilesPopupMenu
 import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
+import com.deflatedpickle.sniffle.swingsettings.event.EventChangeTheme
 import java.awt.BorderLayout
 import java.io.File
 
@@ -111,6 +112,11 @@ object FileTablePlugin {
                     break
                 }
             }
+        }
+
+        EventChangeTheme.addListener {
+            fileLinkMenu.updateUI()
+            linkButton.updateUI()
         }
     }
 }
