@@ -10,11 +10,16 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
+import org.apache.commons.io.FileUtils
+import org.jdesktop.swingx.JXTable
+import java.awt.Desktop
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetDragEvent
 import java.awt.dnd.DropTargetDropEvent
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.io.File
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
@@ -31,6 +36,14 @@ object FileTable : JXTable() {
                 0 -> File::class.java
                 else -> String::class.java
             }
+    }
+
+    private val mouseListener = object : MouseAdapter() {
+        override fun mouseClicked(e: MouseEvent) {
+            if (e.clickCount == 2) {
+                Desktop.getDesktop().open(Quiver.selectedFile)
+            }
+        }
     }
 
     init {
@@ -55,6 +68,8 @@ object FileTable : JXTable() {
                 this.getValueAt(this.selectedRow, 0) as File?
             } else null
         }
+
+        this.addMouseListener(mouseListener)
 
         this.addSelectionListener()
         this.addFileRenderer()
