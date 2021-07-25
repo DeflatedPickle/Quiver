@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.quiver.backend.extension
 
+import com.deflatedpickle.quiver.Quiver
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 
 fun String.toSyntaxEditingStyle() = when (this) {
@@ -9,6 +10,9 @@ fun String.toSyntaxEditingStyle() = when (this) {
     "properties" -> SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE
     // I'm almost certain they use JSON, though!
     "json", "mcmeta" -> SyntaxConstants.SYNTAX_STYLE_JSON
+    // They changed the format of lang files, let's keep backwards compatibility
+    "lang" -> if (Quiver.resolution >= 3) SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE
+    else SyntaxConstants.SYNTAX_STYLE_JSON
     // I think resource packs can have scripts?
     "js" -> SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT
     // And if people don't want to use JavaScript...

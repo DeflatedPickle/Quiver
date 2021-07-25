@@ -4,7 +4,6 @@
 
 package com.deflatedpickle.quiver.backend.util
 
-import blue.endless.jankson.Jankson
 import blue.endless.jankson.JsonObject
 import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.marvin.VersionProgression
@@ -12,6 +11,7 @@ import com.deflatedpickle.marvin.dsl.cabinet
 import com.deflatedpickle.marvin.dsl.dir
 import com.deflatedpickle.marvin.dsl.file
 import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.Quiver.json
 import com.github.underscore.lodash.U
 import net.lingala.zip4j.ZipFile
 import org.apache.commons.io.FileUtils
@@ -19,8 +19,6 @@ import java.io.File
 import javax.imageio.ImageIO
 
 object PackUtil {
-    private val json = Jankson.builder().build()
-
     data class PackStructure(
         val packMcMeta: Boolean = true,
         val assets: Assets? = Assets()
@@ -219,14 +217,14 @@ object PackUtil {
         vararg types: ExtraResourceType
     ) {
         // This gets the version of index we should use, e.g; 1.14, 1.16
-        val version = this.json
+        val version = json
             .load(file)
             .getObject("assetIndex")!!
             .get(String::class.java, "id")
         // .minecraft/assets/indexes/$version
         val indexFile = DotMinecraft.assetsIndexes.resolve("$version.json")
         // Loads indexFile as JSON and gets the "object" key
-        val indexObject = this.json.load(indexFile).getObject("objects")!!
+        val indexObject = json.load(indexFile).getObject("objects")!!
 
         for ((asset, jsonElement) in indexObject.entries) {
             // Gets the hash for the current asset

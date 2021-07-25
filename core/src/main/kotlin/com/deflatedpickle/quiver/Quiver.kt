@@ -2,11 +2,13 @@
 
 package com.deflatedpickle.quiver
 
+import blue.endless.jankson.Jankson
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
+import com.deflatedpickle.quiver.backend.util.PackFormat
 import java.io.File
 
 @Suppress("unused", "SpellCheckingInspection")
@@ -21,6 +23,8 @@ import java.io.File
     type = PluginType.CORE_API
 )
 object Quiver {
+    internal val json = Jankson.builder().build()
+
     var packDirectory: File? = null
 
     var selectedDir: File? = null
@@ -29,7 +33,8 @@ object Quiver {
     var selectedFile: File? = null
         private set
 
-    var resolution = 0
+    var resolution = -1
+    var format: PackFormat = -1
 
     init {
         EventNewDocument.addListener {

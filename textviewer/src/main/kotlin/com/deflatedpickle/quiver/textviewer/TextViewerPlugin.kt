@@ -12,12 +12,15 @@ import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
 import com.deflatedpickle.marvin.extensions.get
 import com.deflatedpickle.marvin.extensions.set
+import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.textviewer.api.Theme
 import com.deflatedpickle.rawky.settings.SettingsGUI
 import org.reflections.Reflections
 import org.reflections.scanners.ResourcesScanner
 import java.awt.Component
+import java.io.IOException
 import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.SwingUtilities
@@ -57,25 +60,30 @@ object TextViewerPlugin {
             it.split(".").last() == "xml"
         }
 
-        EventProgramFinishSetup.addListener {
-            val registry = RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?
+        EventOpenPack.addListener {
+            if (Quiver.format <= 3) {
+                val registry = RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?
 
-            if (registry != null) {
+                registry?.getOrRegister("lang", ::mutableListOf)?.let { it += TextViewer as Viewer<Any> }
+            }
+        }
+
+        EventProgramFinishSetup.addListener {
+            (RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?)?.let { registry ->
                 for (i in this.extensionSet) {
-                    if (registry.get(i) == null) {
-                        registry.register(i, mutableListOf(TextViewer as Viewer<Any>))
-                    } else {
-                        registry.get(i)!!.add(TextViewer as Viewer<Any>)
-                    }
+                    registry.getOrRegister(i, ::mutableListOf)?.let { it += TextViewer as Viewer<Any> }
                 }
             }
 
             ConfigUtil.getSettings<TextViewerSettings>("deflatedpickle@text_viewer#>=1.0.0")?.let { settings ->
                 // Initially load the configured theme
                 SwingUtilities.invokeLater {
-                    SyntaxTheme.load(
-                        this::class.java.getResourceAsStream("/${settings.theme.id}")
-                    ).apply(TextViewer.component)
+                    try {
+                        SyntaxTheme.load(
+                            this::class.java.getResourceAsStream("/${settings.theme.id}")
+                        ).apply(TextViewer.component)
+                    } catch (e: IOException) {
+                    }
                 }
 
                 // Add the setting widget to select a new theme

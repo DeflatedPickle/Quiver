@@ -8,6 +8,7 @@ import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.marvin.Version
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventNewDocument
+import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.backend.util.PackUtil.findResolution
 import com.deflatedpickle.quiver.frontend.dialog.NewDialog
 import org.oxbow.swingbits.dialog.task.TaskDialog
@@ -147,6 +148,7 @@ object ActionUtil {
             }
 
             EventNewDocument.trigger(Quiver.packDirectory!!)
+            EventOpenPack.trigger(Quiver.packDirectory!!)
         }
     }
 
@@ -167,8 +169,13 @@ object ActionUtil {
             ) {
                 Quiver.packDirectory = directoryChooser.selectedFile
                 Quiver.resolution = findResolution()
+                Quiver.format = Quiver.json
+                    .load(selected.resolve("pack.mcmeta"))
+                    .getObject("pack")!!
+                    .get(Int::class.java, "pack_format") as PackFormat
 
                 EventNewDocument.trigger(Quiver.packDirectory!!)
+                EventOpenPack.trigger(Quiver.packDirectory!!)
             } else {
                 TaskDialogs.error(
                     PluginUtil.window,
