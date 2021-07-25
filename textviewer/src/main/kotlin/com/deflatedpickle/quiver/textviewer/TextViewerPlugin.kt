@@ -1,5 +1,7 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.haruhi.api.Registry
@@ -73,7 +75,7 @@ object TextViewerPlugin {
                 SwingUtilities.invokeLater {
                     SyntaxTheme.load(
                         this::class.java.getResourceAsStream("/${settings.theme.id}")
-                    ).apply(TextViewer.getComponent())
+                    ).apply(TextViewer.component)
                 }
 
                 // Add the setting widget to select a new theme
@@ -87,7 +89,7 @@ object TextViewerPlugin {
 
                                 SyntaxTheme.load(
                                     this::class.java.getResourceAsStream("/${settings.theme.id}")
-                                ).apply(TextViewer.getComponent())
+                                ).apply(TextViewer.component)
 
                                 SettingsGUI.serializeConfig(plugin)
                             }
