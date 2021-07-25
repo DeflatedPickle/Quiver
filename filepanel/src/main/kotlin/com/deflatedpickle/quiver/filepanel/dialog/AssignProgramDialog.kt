@@ -3,6 +3,7 @@
 package com.deflatedpickle.quiver.filepanel.dialog
 
 import com.deflatedpickle.marvin.util.OSUtil
+import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.api.Program
 import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.constraints.FillHorizontalFinishLine
@@ -31,9 +32,16 @@ class AssignProgramDialog(
     companion object {
         fun open(window: Window): Program? {
             val dialog = AssignProgramDialog(window)
+
+            dialog.extensionsEntry.field.text = Quiver.selectedFile!!.extension
+
             dialog.isVisible = true
 
             if (dialog.result == StandardCommand.OK) {
+                if (dialog.extensionsEntry.field.text.isNotBlank()) {
+                    dialog.extensionsEntry.tags.add(dialog.extensionsEntry.field.text)
+                }
+
                 return Program(
                     dialog.nameEntry.text,
                     dialog.locationEntry.field.text.substringBeforeLast("/"),
@@ -49,15 +57,16 @@ class AssignProgramDialog(
 
     private fun validationCheck() =
         nameEntry.text != "" &&
-            locationEntry.field.text.let {
-                val dir = File(it.substringBeforeLast("/"))
-                val program = it.substringAfterLast("/")
-                val file = dir.resolve(program)
+                locationEntry.field.text.let {
+                    val dir = File(it.substringBeforeLast("/"))
+                    val program = it.substringAfterLast("/")
+                    val file = dir.resolve(program)
 
-                it != "" && dir.exists() && dir.isDirectory &&
-                    program != "" && file.exists() && file.isFile &&
-                    extensionsEntry.tags.isNotEmpty()
-            }
+                    it != "" && dir.exists() && dir.isDirectory &&
+                            program != "" && file.exists() && file.isFile
+                } &&
+                (extensionsEntry.tags.isNotEmpty() ||
+                        extensionsEntry.field.text.isNotBlank())
 
     val nameEntry: JXTextField = JXTextField("Name").apply {
         toolTipText = "The name to assign to this program"
@@ -100,6 +109,7 @@ class AssignProgramDialog(
 
     val argsEntry: JXTextField = JXTextField("Args").apply {
         toolTipText = "The arguments the command will receive"
+        text = "{file}"
     }
 
     val extensionsEntry: TagInput = TagInput().apply {
