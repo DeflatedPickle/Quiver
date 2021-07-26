@@ -4,7 +4,7 @@ package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
 import com.deflatedpickle.quiver.filepanel.api.Viewer
-import java.io.File
+import com.deflatedpickle.quiver.textviewer.link.AssetLinkGenerator
 import org.fife.ui.rsyntaxtextarea.ErrorStrip
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice
@@ -27,7 +27,11 @@ object TextViewer : Viewer<File> {
         antiAliasingEnabled = true
         hyperlinksEnabled = true
 
-        isCodeFoldingEnabled = true
+        linkGenerator = AssetLinkGenerator
+        // We have to have a listener for the link generator to activate results
+        addHyperlinkListener {}
+    }
+
     private val errorStrip = ErrorStrip(this.component).apply {
         followCaret = true
         levelThreshold = ParserNotice.Level.ERROR
