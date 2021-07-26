@@ -10,10 +10,7 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.backend.event.EventDeleteFile
-import com.deflatedpickle.quiver.backend.event.EventReplaceFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
-import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.api.Program
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.quiver.filepanel.config.FilePanelSettings
@@ -98,16 +95,19 @@ object FilePanelPlugin {
                             viewer.refresh(it)
                         }
                         // Add the viewer wrapped by it's scroller
-                        FilePanel.widgetPanel.add(JXPanel(BorderLayout()).apply {
-                            add(viewer.getScroller() ?: viewer.getComponent(), BorderLayout.CENTER)
+                        FilePanel.widgetPanel.add(
+                            JXPanel(BorderLayout()).apply {
+                                add(viewer.getScroller() ?: viewer.getComponent(), BorderLayout.CENTER)
 
-                            viewer.getToolBars()?.let { bar ->
-                                bar.north?.let { add(it, BorderLayout.NORTH) }
-                                bar.east?.let { add(it, BorderLayout.EAST) }
-                                bar.south?.let { add(it, BorderLayout.SOUTH) }
-                                bar.west?.let { add(it, BorderLayout.WEST) }
-                            }
-                        }, BorderLayout.CENTER)
+                                viewer.getToolBars()?.let { bar ->
+                                    bar.north?.let { add(it, BorderLayout.NORTH) }
+                                    bar.east?.let { add(it, BorderLayout.EAST) }
+                                    bar.south?.let { add(it, BorderLayout.SOUTH) }
+                                    bar.west?.let { add(it, BorderLayout.WEST) }
+                                }
+                            },
+                            BorderLayout.CENTER
+                        )
 
                         // We added the viewer, so we have to repaint it
                         FilePanel.widgetPanel.repaint()
@@ -142,13 +142,17 @@ object FilePanelPlugin {
             FilePanel.widgetPanel.revalidate()
         }
 
+        /*EventCreateFile.addListener {
+            EventSelectFile.trigger(it)
+        }
+
         EventReplaceFile.addListener {
             EventSelectFile.trigger(it)
         }
 
         EventDeleteFile.addListener {
             EventSelectFolder.trigger(it.parentFile)
-        }
+        }*/
     }
 
     fun putProgramToRegistry(program: Program) {

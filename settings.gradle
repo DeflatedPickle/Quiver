@@ -32,6 +32,8 @@ include 'packexport'
 include 'packsquashstep'
 include 'zipstep'
 
+include 'filewatcher'
+
 // Include the libraries I use and own
 // This is so I can fix any issues easier
 [
@@ -50,3 +52,4 @@ includeBuild 'libs/marvin'
 includeBuild 'libs/monocons'
 includeBuild 'libs/tosuto'
 includeBuild 'libs/undulation'
+includeBuild 'libs/mmf'

@@ -5,7 +5,6 @@ package com.deflatedpickle.quiver.launcher
 import com.deflatedpickle.haruhi.api.plugin.DependencyComparator
 import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.component.PluginPanel
-import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventCreatePluginComponent
 import com.deflatedpickle.haruhi.event.EventCreatedPluginComponents
 import com.deflatedpickle.haruhi.event.EventDeserializedConfig
@@ -20,15 +19,15 @@ import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.quiver.launcher.window.Window
 import com.deflatedpickle.quiver.launcher.window.menu.MenuBar
 import com.jidesoft.plaf.LookAndFeelFactory
+import kotlinx.serialization.InternalSerializationApi
+import org.apache.logging.log4j.LogManager
+import org.fusesource.jansi.AnsiConsole
+import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
 import javax.swing.SwingUtilities
 import kotlin.system.exitProcess
-import kotlinx.serialization.InternalSerializationApi
-import org.apache.logging.log4j.LogManager
-import org.fusesource.jansi.AnsiConsole
-import org.oxbow.swingbits.dialog.task.TaskDialogs
 
 @InternalSerializationApi
 fun main(args: Array<String>) {
@@ -49,13 +48,15 @@ fun main(args: Array<String>) {
     // if it doesn't exist it's not indev
     PluginUtil.isInDev = args.contains("indev")
 
-    logger.info("""
+    logger.info(
+        """
         |
         |OS  : ${OSUtil.getOS()} (${OSUtil.os})
         |Java: ${Runtime::class.java.`package`.specificationVersion} (${Runtime::class.java.`package`.implementationVersion})
         |Dir : ${System.getProperty("user.dir")}
         |Dev?: ${PluginUtil.isInDev}
-    """.trimMargin())
+    """.trimMargin()
+    )
 
     PluginUtil.window = Window
     PluginUtil.toastWindow = Window.toastWindow
@@ -101,23 +102,23 @@ fun main(args: Array<String>) {
     // Plugins are distributed and loaded as JARs
     // when the program is built
     if (!PluginUtil.isInDev) {
-        EventCreateFile.trigger(
-            PluginUtil.createPluginsFolder().apply {
-                logger.info("Created the plugins folder at ${this.absolutePath}")
-            }
-        )
+        // EventCreateFile.trigger(
+        PluginUtil.createPluginsFolder().apply {
+            logger.info("Created the plugins folder at ${this.absolutePath}")
+        }
+        // )
     }
 
     // Create the config file
     // We do this whether it's built or not as they are always needed
-    EventCreateFile.trigger(
-        ConfigUtil.createConfigFolder().apply {
-            if (!this.exists()) {
-                this.mkdir()
-                logger.info("Created the config folder at ${this.absolutePath}")
-            }
+    // EventCreateFile.trigger(
+    ConfigUtil.createConfigFolder().apply {
+        if (!this.exists()) {
+            this.mkdir()
+            logger.info("Created the config folder at ${this.absolutePath}")
         }
-    )
+    }
+    // )
 
     // Start a scan of the class graph
     // this will discover all plugins
@@ -141,14 +142,14 @@ fun main(args: Array<String>) {
     PluginUtil.loadPlugins {
         // Versions must be semantic
         PluginUtil.validateVersion(it) &&
-                // Descriptions must contain a <br> tag
-                PluginUtil.validateDescription(it) &&
-                // Specific types need a specified field
-                PluginUtil.validateType(it) &&
-                // Dependencies should be "author@plugin#version"
-                // PluginUtil.validateDependencySlug(it) &&
-                // The dependency should exist
-                PluginUtil.validateDependencyExistence(it)
+            // Descriptions must contain a <br> tag
+            PluginUtil.validateDescription(it) &&
+            // Specific types need a specified field
+            PluginUtil.validateType(it) &&
+            // Dependencies should be "author@plugin#version"
+            // PluginUtil.validateDependencySlug(it) &&
+            // The dependency should exist
+            PluginUtil.validateDependencyExistence(it)
     }
     logger.info("Loaded plugins; ${PluginUtil.loadedPlugins.map { PluginUtil.pluginToSlug(it) }}")
     EventLoadedPlugins.trigger(PluginUtil.loadedPlugins)

@@ -16,3 +16,6 @@
 [submodule "libs/monocons"]
 	path = libs/monocons
 	url = https://github.com/DeflatedPickle/monocons
+[submodule "libs/mmf"]
+	path = libs/mmf
+	url = https://github.com/DeflatedPickle/mmf

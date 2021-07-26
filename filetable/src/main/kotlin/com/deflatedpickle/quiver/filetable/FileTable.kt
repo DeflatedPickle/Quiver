@@ -2,12 +2,9 @@
 
 package com.deflatedpickle.quiver.filetable
 
-import com.deflatedpickle.haruhi.event.EventCreateFile
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
-import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
 import org.apache.commons.io.FileUtils
@@ -26,8 +23,6 @@ import javax.swing.ListSelectionModel
 import javax.swing.SortOrder
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
-import org.apache.commons.io.FileUtils
-import org.jdesktop.swingx.JXTable
 
 object FileTable : JXTable() {
     val fileModel = object : DefaultTableModel(arrayOf(""), 0) {
@@ -100,20 +95,23 @@ object FileTable : JXTable() {
     }
 
     private fun addFileRenderer() {
-        this.setDefaultRenderer(File::class.java, object : DefaultTableCellRenderer() {
-            override fun getTableCellRendererComponent(
-                table: JTable,
-                value: Any,
-                isSelected: Boolean,
-                hasFocus: Boolean,
-                row: Int,
-                column: Int
-            ): java.awt.Component = super.getTableCellRendererComponent(
-                table, (value as File).nameWithoutExtension,
-                isSelected, hasFocus,
-                row, column
-            )
-        })
+        this.setDefaultRenderer(
+            File::class.java,
+            object : DefaultTableCellRenderer() {
+                override fun getTableCellRendererComponent(
+                    table: JTable,
+                    value: Any,
+                    isSelected: Boolean,
+                    hasFocus: Boolean,
+                    row: Int,
+                    column: Int
+                ): java.awt.Component = super.getTableCellRendererComponent(
+                    table, (value as File).nameWithoutExtension,
+                    isSelected, hasFocus,
+                    row, column
+                )
+            }
+        )
     }
 
     private fun addDropTarget() {
@@ -137,9 +135,9 @@ object FileTable : JXTable() {
 
                         val file = File(Quiver.selectedDir, i.name)
 
-                        EventCreateFile.trigger(file)
-                        EventSelectFolder.trigger(Quiver.selectedDir!!)
-                        EventSearchFile.trigger(file)
+                        // EventCreateFile.trigger(file)
+                        // EventSelectFolder.trigger(Quiver.selectedDir!!)
+                        // EventSearchFile.trigger(file)
                     }
                 }
             }

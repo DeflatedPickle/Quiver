@@ -3,11 +3,13 @@
 package com.deflatedpickle.quiver.frontend.menu
 
 import blue.endless.jankson.Jankson
+import com.deflatedpickle.mmf.util.AssetPath
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
 import com.deflatedpickle.undulation.extensions.add
+import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 import javax.swing.JMenu
 import javax.swing.JPopupMenu
@@ -98,13 +100,14 @@ class LinkedFilesPopupMenu(
         }
     }
 
+    @ExperimentalSerializationApi
     private fun searchTexture(value: String) {
-        val split = value.split(":")
+        val asset = AssetPath.from(value)
         val textureFile = Quiver.packDirectory!!
             .resolve("assets")
-            .resolve(split[0])
+            .resolve(asset.id)
             .resolve("textures")
-            .resolve("${split[1]}.png")
+            .resolve("${asset.asset}.png")
 
         EventSearchFolder.trigger(textureFile.parentFile)
         EventSearchFile.trigger(textureFile)

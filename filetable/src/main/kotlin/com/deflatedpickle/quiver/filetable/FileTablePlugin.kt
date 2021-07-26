@@ -9,12 +9,15 @@ import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.ConfigUtil
 import com.deflatedpickle.monocons.MonoIcon
+import com.deflatedpickle.quiver.Quiver
+import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.filetable.config.FileTableSettings
 import com.deflatedpickle.quiver.filetable.util.FileLinkAction
+import com.deflatedpickle.quiver.filewatcher.event.EventFileSystemUpdate
 import com.deflatedpickle.quiver.frontend.menu.LinkedFilesPopupMenu
 import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
 import com.deflatedpickle.sniffle.swingsettings.event.EventChangeTheme
@@ -33,7 +36,8 @@ import java.io.File
     type = PluginType.COMPONENT,
     component = Component::class,
     dependencies = [
-        "deflatedpickle@file_panel#>=1.0.0"
+        "deflatedpickle@file_panel#>=1.0.0",
+        "deflatedpickle@file_watcher"
     ],
     settings = FileTableSettings::class
 )
@@ -63,6 +67,19 @@ object FileTablePlugin {
             }
 
             Component.add(this.toolbar, BorderLayout.NORTH)
+        }
+
+        EventOpenPack.addListener {
+            FileTable.refresh(it)
+        }
+
+        EventFileSystemUpdate.addListener {
+            // Waiting until Haruhi updates events to have sources
+            if (it.isFile || !it.exists()) {
+                FileTable.refresh(it)
+                EventSelectFolder.trigger(Quiver.packDirectory!!)
+                EventSearchFile.trigger(it)
+            }
         }
 
         EventSelectFolder.addListener {

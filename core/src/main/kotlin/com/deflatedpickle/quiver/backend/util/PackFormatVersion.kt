@@ -1,8 +1,12 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 package com.deflatedpickle.quiver.backend.util
 
 import com.deflatedpickle.marvin.v
 
 // Pack Format: 7
+val v1_18_0 = v("1.18")
+val v1_17_1 = v("1.17.1")
 val v1_17_0 = v("1.17")
 
 // Pack Format: 6

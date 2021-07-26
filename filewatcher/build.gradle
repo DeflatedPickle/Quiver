@@ -1,0 +1,9 @@
+plugins {
+	id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+	implementation project(':core')
+
+	implementation 'io.methvin:directory-watcher:0.15.0'
+}

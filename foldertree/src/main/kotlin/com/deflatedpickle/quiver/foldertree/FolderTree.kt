@@ -1,10 +1,11 @@
-/* Copyright (c) 2020 DeflatedPickle under the MIT license */
+/* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
 package com.deflatedpickle.quiver.foldertree
 
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
+import org.jdesktop.swingx.JXTree
 import java.awt.Component
 import java.io.File
 import javax.swing.JTree
@@ -12,7 +13,6 @@ import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeCellRenderer
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel
-import org.jdesktop.swingx.JXTree
 
 object FolderTree : JXTree(DefaultMutableTreeNode()) {
     init {
@@ -58,12 +58,13 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
     }
 
     fun refreshAll() {
-        this.removeAll()
+        (this.model.root as DefaultMutableTreeNode).removeAllChildren()
 
         val document = Quiver.packDirectory
         val fakeRoot = DefaultMutableTreeNode(Quiver.packDirectory)
         (this.model.root as DefaultMutableTreeNode).add(fakeRoot)
         refresh(document!!, fakeRoot)
+        (this.model as DefaultTreeModel).reload()
 
         this.expandAll()
     }

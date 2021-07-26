@@ -7,15 +7,17 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.event.EventNewDocument
-import com.deflatedpickle.quiver.backend.event.EventOpenFile
+import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
+import com.deflatedpickle.quiver.filewatcher.event.EventFileSystemUpdate
 import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
 import java.awt.BorderLayout
 import java.io.File
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
+import kotlin.io.path.ExperimentalPathApi
 
+@OptIn(ExperimentalPathApi::class)
 @Suppress("unused")
 @Plugin(
     value = "$[name]",
@@ -28,7 +30,8 @@ import javax.swing.tree.TreePath
     type = PluginType.COMPONENT,
     component = Component::class,
     dependencies = [
-        "deflatedpickle@file_panel#>=1.0.0"
+        "deflatedpickle@file_panel#>=1.0.0",
+        "deflatedpickle@file_watcher"
     ]
 )
 object FolderTreePlugin {
@@ -39,12 +42,15 @@ object FolderTreePlugin {
             Component.add(this.toolbar, BorderLayout.NORTH)
         }
 
-        EventNewDocument.addListener {
+        EventOpenPack.addListener {
             FolderTree.refreshAll()
         }
 
-        EventOpenFile.addListener {
-            FolderTree.refreshAll()
+        EventFileSystemUpdate.addListener {
+            // Waiting until Haruhi updates events to have sources
+            if (it.isDirectory || !it.exists()) {
+                FolderTree.refreshAll()
+            }
         }
 
         EventSearchFolder.addListener {

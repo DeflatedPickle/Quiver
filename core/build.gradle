@@ -27,6 +27,7 @@ dependencies {
 
 	api 'com.deflatedpickle:marvin:'
 	api 'com.deflatedpickle:undulation:'
+	api 'com.deflatedpickle:mmf:'
 
 	// Plugin framework
 	api 'com.deflatedpickle:haruhi:'

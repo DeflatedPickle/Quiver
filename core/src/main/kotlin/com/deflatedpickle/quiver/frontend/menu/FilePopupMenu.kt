@@ -4,7 +4,6 @@ package com.deflatedpickle.quiver.frontend.menu
 
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.event.EventDeleteFile
 import com.deflatedpickle.quiver.backend.event.EventSearchFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
@@ -14,6 +13,10 @@ import com.deflatedpickle.undulation.extensions.add
 import com.deflatedpickle.undulation.extensions.disableAll
 import com.jidesoft.swing.FolderChooser
 import cr.nate.TransferableImage
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.apache.commons.io.FileUtils
+import org.oxbow.swingbits.dialog.task.TaskDialogs
 import java.awt.Desktop
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -26,10 +29,6 @@ import javax.imageio.ImageIO
 import javax.swing.JFileChooser
 import javax.swing.JMenu
 import javax.swing.JPopupMenu
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.apache.commons.io.FileUtils
-import org.oxbow.swingbits.dialog.task.TaskDialogs
 
 class FilePopupMenu(
     val getFile: () -> File?
@@ -52,7 +51,7 @@ class FilePopupMenu(
         this.getFile()?.let {
             copyContent(it)
             it.deleteRecursively()
-            EventDeleteFile.trigger(it)
+            // EventDeleteFile.trigger(it)
         }
     }
 
@@ -107,7 +106,7 @@ class FilePopupMenu(
     private val deleteItem = this.add("Delete") {
         this.getFile()?.let {
             it.deleteRecursively()
-            EventDeleteFile.trigger(it)
+            // EventDeleteFile.trigger(it)
         }
     }.also {
         this.addSeparator()

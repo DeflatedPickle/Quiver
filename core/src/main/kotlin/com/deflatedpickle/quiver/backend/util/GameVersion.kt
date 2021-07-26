@@ -1,3 +1,5 @@
+/* Copyright (c) 2021 DeflatedPickle under the MIT license */
+
 @file:Suppress("unused")
 
 package com.deflatedpickle.quiver.backend.util
@@ -6,9 +8,13 @@ import com.deflatedpickle.marvin.v
 
 // https://minecraft.fandom.com/wiki/Java_Edition_version_history
 fun latest() = v1_17
+fun oldest() = v1_0
+
+// Next
+val v1_18 = v1_18_0..v1_18_0
 
 // Current
-val v1_17 = v1_17_0..v1_17_0
+val v1_17 = v1_17_0..v1_17_1
 
 // Past
 val v1_16 = v("1.16")..v("1.16.5")
