@@ -28,18 +28,6 @@ object TextViewer : Viewer<File> {
         hyperlinksEnabled = true
 
         isCodeFoldingEnabled = true
-
-        addMouseWheelListener { event ->
-            if (event.modifiers == InputEvent.CTRL_MASK) {
-                val zoom = font.size + (event.wheelRotation * -1)
-                // We don't want to zoom in/out too much!
-                if (zoom in 4 until 40) {
-                    font = font.deriveFont((zoom).toFloat())
-                }
-            }
-        }
-    }
-
     private val errorStrip = ErrorStrip(this.component).apply {
         followCaret = true
         levelThreshold = ParserNotice.Level.ERROR
@@ -47,7 +35,19 @@ object TextViewer : Viewer<File> {
         showMarkedOccurrences = true
     }
 
-    private val scrollPane = RTextScrollPane(this.component)
+    private val scrollPane = RTextScrollPane(this.component).apply {
+        addMouseWheelListener { event ->
+            when (event.modifiers) {
+                InputEvent.CTRL_MASK -> {
+                    val zoom = component.font.size + (event.wheelRotation * -1)
+                    // We don't want to zoom in/out too much!
+                    if (zoom in 4 until 40) {
+                        component.font = component.font.deriveFont((zoom).toFloat())
+                    }
+                }
+            }
+        }
+    }
 
     private val panel = JXPanel(BorderLayout()).apply {
         add(errorStrip, BorderLayout.LINE_START)
