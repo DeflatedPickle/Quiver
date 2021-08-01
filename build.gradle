@@ -41,7 +41,7 @@ allprojects { p ->
 		api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 		api "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
 		api "org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinSerialization}"
-		api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+		api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
 		api 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.3'
 	}
 
