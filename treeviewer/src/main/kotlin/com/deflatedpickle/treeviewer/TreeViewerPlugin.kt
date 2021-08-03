@@ -27,8 +27,8 @@ import com.deflatedpickle.quiver.filepanel.api.Viewer
 )
 object TreeViewerPlugin {
     private val extensionSet = setOf(
-        "mcmeta",
-        "json"
+        "mcmeta", "json", // JSON-like
+        "nbt", "dat" // NBT-like
     )
 
     init {

@@ -77,5 +77,7 @@ Though there isn't an official way to develop external plugins, there are two ro
 - markdownviewer
 	- [flexmark](https://github.com/vsch/flexmark-java)
 	- [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
+- treeviewer
+	- [NBT](https://github.com/Querz/NBT)
 ### Tools
 - [PackSquash](https://github.com/ComunidadAylas/PackSquash)
