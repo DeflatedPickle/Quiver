@@ -1,0 +1,11 @@
+plugins {
+	id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+	implementation 'org.xhtmlrenderer:flying-saucer-core:9.1.22'
+	implementation 'org.zwobble.mammoth:mammoth:1.4.2'
+
+	implementation project(':core')
+	implementation project(':filepanel')
+}

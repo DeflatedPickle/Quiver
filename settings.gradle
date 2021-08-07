@@ -27,6 +27,7 @@ include 'imageviewer'
 include 'treeviewer'
 include 'markdownviewer'
 include 'spritesheetviewer'
+include 'docxviewer'
 
 include 'packexport'
 include 'packsquashstep'
