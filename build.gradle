@@ -17,7 +17,7 @@ version "$version"
 sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
-	mostlyName = "$name-$version-${System.getProperty("os.name").toLowerCase()}(${System.getProperty("os.arch")})"
+	mostlyName = "$name-$version-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${JavaVersion.current()}"
 
 	licenseDir = new File(buildDir, 'licenses')
 	toolDir = new File(buildDir, 'tools')
@@ -168,6 +168,10 @@ distZip {
 			file.exclude()
 		}
 	}
+}
+
+distTar {
+	archiveName "$mostlyName-distTar.tar"
 }
 
 run {
