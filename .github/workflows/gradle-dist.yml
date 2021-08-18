@@ -43,4 +43,4 @@ jobs:
         with:
           tag_name: "dist-latest"
           prerelease: true
-          files: ./build/distributions
+          files: ./build/distributions/*

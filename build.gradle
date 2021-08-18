@@ -17,6 +17,8 @@ version "$version"
 sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
+	mostlyName = "$name-$version-${System.getProperty("os.name").toLowerCase()}(${System.getProperty("os.arch")})"
+
 	licenseDir = new File(buildDir, 'licenses')
 	toolDir = new File(buildDir, 'tools')
 }
@@ -132,6 +134,8 @@ distributions {
 }
 
 distZip {
+	archiveName "$mostlyName-distZip.zip"
+
 	def list = []
 
 	// Collect a list of all the JARs produced by submodules
