@@ -1,6 +1,4 @@
-plugins {
-	id 'org.jetbrains.kotlin.jvm'
-}
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
 	implementation 'org.xhtmlrenderer:flying-saucer-core:9.1.22'

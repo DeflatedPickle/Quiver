@@ -1,4 +1,4 @@
-version '1.0.0'
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
 	implementation project(':core')

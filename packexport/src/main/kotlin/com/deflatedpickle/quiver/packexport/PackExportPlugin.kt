@@ -57,7 +57,7 @@ object PackExportPlugin {
                 addSeparator()
             }
 
-            toolbarButton = Toolbar.add(MonoIcon.CUT, "Export Pack") { openExportPackGUI() }
+            toolbarButton = Toolbar.add(icon = MonoIcon.CUT, tooltip = "Export Pack") { openExportPackGUI() }
             toolbarButton.isEnabled = false
         }
 

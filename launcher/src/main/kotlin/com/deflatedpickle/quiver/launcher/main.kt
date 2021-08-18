@@ -52,7 +52,7 @@ fun main(args: Array<String>) {
         """
         |
         |OS  : ${OSUtil.getOS()} (${OSUtil.os})
-        |Java: ${Runtime::class.java.`package`.specificationVersion} (${Runtime::class.java.`package`.implementationVersion})
+        |Java: ${System.getProperty("java.version")} (${System.getProperty("java.vm.name")})
         |Dir : ${System.getProperty("user.dir")}
         |Dev?: ${PluginUtil.isInDev}
     """.trimMargin()

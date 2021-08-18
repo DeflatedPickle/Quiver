@@ -35,8 +35,8 @@ object LauncherPlugin {
                 addSeparator()
             }
 
-            Toolbar.add(MonoIcon.FOLDER_NEW, "New Pack") { ActionUtil.newPack() } as JComponent
-            Toolbar.add(MonoIcon.FOLDER_OPEN, "Open Pack") { ActionUtil.openPack() }
+            Toolbar.add(icon = MonoIcon.FOLDER_NEW, tooltip = "New Pack") { ActionUtil.newPack() }
+            Toolbar.add(icon = MonoIcon.FOLDER_OPEN, tooltip = "Open Pack") { ActionUtil.openPack() }
         }
     }
 }

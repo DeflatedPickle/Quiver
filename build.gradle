@@ -14,19 +14,21 @@ plugins {
 group "$group"
 archivesBaseName = "$name"
 version "$version"
-sourceCompatibility = "$jvmTarget"
+sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
-	licenseDir = new File('licenses', buildDir)
-	toolDir = new File('tools', buildDir)
+	licenseDir = new File(buildDir, 'licenses')
+	toolDir = new File(buildDir, 'tools')
 }
 
 allprojects { p ->
 	apply plugin: 'java'
 	apply plugin: 'java-library'
 	apply plugin: 'distribution'
+
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 	apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+
 	apply plugin: 'com.diffplug.spotless'
 	apply plugin: 'net.kyori.blossom'
 
