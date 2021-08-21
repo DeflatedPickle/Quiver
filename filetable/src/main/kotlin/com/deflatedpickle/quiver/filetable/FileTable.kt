@@ -7,8 +7,10 @@ import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.filepanel.FilePanel
 import com.deflatedpickle.quiver.frontend.menu.FilePopupMenu
+import com.deflatedpickle.undulation.predicate.highlight.AlternatePredicate
 import org.apache.commons.io.FileUtils
 import org.jdesktop.swingx.JXTable
+import org.jdesktop.swingx.decorator.ColorHighlighter
 import java.awt.Desktop
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
@@ -66,9 +68,14 @@ object FileTable : JXTable() {
 
         this.addMouseListener(mouseListener)
 
-        this.addSelectionListener()
-        this.addFileRenderer()
-        this.addDropTarget()
+        addSelectionListener()
+        addFileRenderer()
+        addDropTarget()
+    }
+
+    fun resetHighlighters() {
+        this.setHighlighters()
+        AlternatePredicate(this).apply()
     }
 
     private fun addSelectionListener() {

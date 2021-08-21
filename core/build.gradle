@@ -41,6 +41,7 @@ dependencies {
 	api 'net.java.balloontip:balloontip:1.2.4.1'
 
 	// api 'com.github.mickleness:pumpernickel:7721e5641f'
+	api 'com.github.DeflatedPickle:pumpernickel:9fb38d8acc'
 
 	api 'com.fifesoft:rsyntaxtextarea:3.1.2'
 	api 'com.fifesoft:languagesupport:3.1.1'

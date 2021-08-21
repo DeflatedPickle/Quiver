@@ -41,59 +41,59 @@ configs.
 Though there isn't an official way to develop external plugins, there are two routes I can think of;
 
 1. Clone this repository and develop your plugin as a submodule
-    - **Pro:** Easier to debug
-    - **Con:** Harder to distribute
+	- **Pro:** Easier to debug
+	- **Con:** Harder to distribute
 2. Develop your plugin in its own repository, then build it and place the build in your install of Quiver's `/plugins`
-   directory when you want to test it
-    - **Pro:** Doesn't require the Quiver source
-    - **Con:** Harder to test
+directory when you want to test it
+	- **Pro:** Doesn't require the Quiver source
+	- **Con:** Harder to test
 
 ## Credits
 
 ### Libraries
 
 - core
-    - [log4j](https://github.com/apache/logging-log4j2)
-    - [commons-lang](https://github.com/apache/commons-lang)
-    - [underscore](https://github.com/javadev/underscore-java)
-    - [kappdirs](https://github.com/erayerdin/kappdirs)
-    - [zip4j](https://github.com/srikanth-lingala/zip4j)
-    - [reflections](https://github.com/ronmamo/reflections)
-    - [classgraph](https://github.com/classgraph/classgraph)
-    - [discord-rpc](https://github.com/Vatuu/discord-rpc)
-    - [fuzzywuzzy](https://github.com/xdrop/fuzzywuzzy)
-    - [jankson](https://github.com/falkreon/Jankson)
-    - [jOOr](https://github.com/jOOQ/jOOR)
-    - [kunion](https://github.com/renatoathaydes/kunion)
-    - [marvin](https://github.com/DeflatedPickle/marvin)
-    - [undulation](https://github.com/DeflatedPickle/undulation)
-    - [haruhi](https://github.com/DeflatedPickle/haruhi)
-    - [easy-events](https://github.com/Fylipp/easy-events)
-    - [jsplitbutton](https://github.com/rhwood/jsplitbutton)
-    - [swingx](https://github.com/smartbow-gmbh/swingx)
-    - [jide-oss](https://github.com/jidesoft/jide-oss)
-    - [balloontip](https://github.com/timmolderez/balloontip)
-    - [rsyntaxtextarea](https://github.com/bobbylight/RSyntaxTextArea)
-        - [languagesupport](https://github.com/bobbylight/RSTALanguageSupport)
-        - [spellchecker](https://github.com/bobbylight/SpellChecker)
-        - [autocomplete](https://github.com/bobbylight/AutoComplete)
-        - [rstaui](https://github.com/bobbylight/RSTAUI)
-        - [rsyntaxtextarea-antlr4-extension](https://github.com/tisoft/rsyntaxtextarea-antlr4-extension)
-    - [dockingframes](https://github.com/Benoker/DockingFrames)
-    - [oxbow](https://github.com/eugener/oxbow)
-    - [wraplayout](https://github.com/DeflatedPickle/WrapLayout)
-    - [tosuto](https://github.com/DeflatedPickle/tosuto)
-    - [nagato](https://github.com/DeflatedPickle/Nagato)
+	- [log4j](https://github.com/apache/logging-log4j2)
+	- [commons-lang](https://github.com/apache/commons-lang)
+	- [underscore](https://github.com/javadev/underscore-java)
+	- [kappdirs](https://github.com/erayerdin/kappdirs)
+	- [zip4j](https://github.com/srikanth-lingala/zip4j)
+	- [reflections](https://github.com/ronmamo/reflections)
+	- [classgraph](https://github.com/classgraph/classgraph)
+	- [discord-rpc](https://github.com/Vatuu/discord-rpc)
+	- [fuzzywuzzy](https://github.com/xdrop/fuzzywuzzy)
+	- [jankson](https://github.com/falkreon/Jankson)
+	- [jOOr](https://github.com/jOOQ/jOOR)
+	- [kunion](https://github.com/renatoathaydes/kunion)
+	- [marvin](https://github.com/DeflatedPickle/marvin)
+	- [undulation](https://github.com/DeflatedPickle/undulation)
+	- [haruhi](https://github.com/DeflatedPickle/haruhi)
+	- [easy-events](https://github.com/Fylipp/easy-events)
+	- [jsplitbutton](https://github.com/rhwood/jsplitbutton)
+	- [swingx](https://github.com/smartbow-gmbh/swingx)
+	- [jide-oss](https://github.com/jidesoft/jide-oss)
+	- [balloontip](https://github.com/timmolderez/balloontip)
+	- [rsyntaxtextarea](https://github.com/bobbylight/RSyntaxTextArea)
+		- [languagesupport](https://github.com/bobbylight/RSTALanguageSupport)
+		- [spellchecker](https://github.com/bobbylight/SpellChecker)
+		- [autocomplete](https://github.com/bobbylight/AutoComplete)
+		- [rstaui](https://github.com/bobbylight/RSTAUI)
+		- [rsyntaxtextarea-antlr4-extension](https://github.com/tisoft/rsyntaxtextarea-antlr4-extension)
+	- [dockingframes](https://github.com/Benoker/DockingFrames)
+	- [oxbow](https://github.com/eugener/oxbow)
+	- [wraplayout](https://github.com/DeflatedPickle/WrapLayout)
+	- [tosuto](https://github.com/DeflatedPickle/tosuto)
+	- [nagato](https://github.com/DeflatedPickle/Nagato)
 - launcher
-    - [jansi](https://github.com/fusesource/jansi)
+	- [jansi](https://github.com/fusesource/jansi)
 - markdownviewer
-    - [flexmark](https://github.com/vsch/flexmark-java)
-    - [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
+	- [flexmark](https://github.com/vsch/flexmark-java)
+	- [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
 - treeviewer
-    - [NBT](https://github.com/Querz/NBT)
+	- [NBT](https://github.com/Querz/NBT)
 - docxviewer
-    - [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
-    - [mammoth](https://github.com/mwilliamson/java-mammoth)
+	- [flyingsaucer](https://github.com/flyingsaucerproject/flyingsaucer)
+	- [mammoth](https://github.com/mwilliamson/java-mammoth)
 
 ### Tools
 

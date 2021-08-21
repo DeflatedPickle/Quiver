@@ -7,8 +7,6 @@ import com.deflatedpickle.haruhi.api.plugin.Plugin
 import com.deflatedpickle.haruhi.api.plugin.PluginType
 import com.deflatedpickle.haruhi.event.EventProgramFinishSetup
 import com.deflatedpickle.haruhi.util.RegistryUtil
-import com.deflatedpickle.quiver.Quiver
-import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 
 @Suppress("unused")
@@ -28,18 +26,11 @@ import com.deflatedpickle.quiver.filepanel.api.Viewer
 object TreeViewerPlugin {
     private val extensionSet = setOf(
         "mcmeta", "json", // JSON-like
-        "nbt", "dat" // NBT-like
+        "nbt", "dat", // NBT-like
+        "lang",
     )
 
     init {
-        EventOpenPack.addListener {
-            if (Quiver.format > 3) {
-                val registry = RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?
-
-                registry?.getOrRegister("lang", ::mutableListOf)?.let { it += TreeViewer as Viewer<Any> }
-            }
-        }
-
         EventProgramFinishSetup.addListener {
             (RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?)?.let { registry ->
                 for (i in this.extensionSet) {

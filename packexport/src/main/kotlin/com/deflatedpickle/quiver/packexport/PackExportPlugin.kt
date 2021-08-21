@@ -52,13 +52,11 @@ object PackExportPlugin {
 
             val menuBar = RegistryUtil.get(MenuCategory.MENU.name)
             (menuBar?.get(MenuCategory.FILE.name) as JMenu).apply {
-                menuButton = add("Export Pack", MonoIcon.CUT) { openExportPackGUI() }
-                menuButton.isEnabled = false
+                menuButton = add("Export Pack", MonoIcon.CUT, enabled = false) { openExportPackGUI() }
                 addSeparator()
             }
 
-            toolbarButton = Toolbar.add(icon = MonoIcon.CUT, tooltip = "Export Pack") { openExportPackGUI() }
-            toolbarButton.isEnabled = false
+            toolbarButton = Toolbar.add(icon = MonoIcon.CUT, tooltip = "Export Pack", enabled = false) { openExportPackGUI() }
         }
 
         EventNewDocument.addListener {

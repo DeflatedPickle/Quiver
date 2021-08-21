@@ -28,8 +28,8 @@ object FolderTree : JXTree(DefaultMutableTreeNode()) {
                 ?.userObject as File?
         }
 
-        this.addSelectionListener()
-        this.setCellRender()
+        addSelectionListener()
+        setCellRender()
     }
 
     private fun addSelectionListener() {

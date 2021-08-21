@@ -11,7 +11,6 @@ import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.backend.util.ActionUtil
 import com.deflatedpickle.quiver.launcher.window.Toolbar
 import com.deflatedpickle.undulation.extensions.add
-import javax.swing.JComponent
 import javax.swing.JMenu
 
 @Plugin(
@@ -35,8 +34,10 @@ object LauncherPlugin {
                 addSeparator()
             }
 
-            Toolbar.add(icon = MonoIcon.FOLDER_NEW, tooltip = "New Pack") { ActionUtil.newPack() }
-            Toolbar.add(icon = MonoIcon.FOLDER_OPEN, tooltip = "Open Pack") { ActionUtil.openPack() }
+            Toolbar.apply {
+                add(icon = MonoIcon.FOLDER_NEW, tooltip = "New Pack") { ActionUtil.newPack() }
+                add(icon = MonoIcon.FOLDER_OPEN, tooltip = "Open Pack") { ActionUtil.openPack() }
+            }
         }
     }
 }
