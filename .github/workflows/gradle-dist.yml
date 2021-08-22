@@ -3,18 +3,31 @@ name: Gradle Dist
 on: [ push, workflow_dispatch ]
 
 jobs:
+  clear:
+    name: Delete old dist-latest release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: "dist-latest"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
+    needs: clear
     continue-on-error: true
 
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        task: [ distZip, distTar ]
+        task: [ distZip ]
         java-v: [ 8, 11, 16 ]
         java-d: [ adopt-hotspot, adopt-openj9 ]
 
-    # name: Building Jar for ${{ matrix.os }}
+    name: Building ${{ matrix.task }} for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
