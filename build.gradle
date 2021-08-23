@@ -22,7 +22,19 @@ sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
 	ver = project.properties["pre"] ?: version
-	mostlyName = "$name-$ver-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${JavaVersion.current()}-${System.getProperty("java.vendor").replace(" ", "").toLowerCase()}"
+	vendor = System.getProperty("java.vendor").replace(" ", "").toLowerCase()
+
+	if (vendor == "internationalbusinessmachinescorporation") {
+		vendor = "ibm"
+	}
+
+	jv = JavaVersion.current()
+
+	if (jv == JavaVersion.VERSION_1_8) {
+		jv = "8"
+	}
+
+	mostlyName = "$name-$ver-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${jv}-${vendor}"
 
 	licenseDir = new File(buildDir, 'licenses')
 	toolDir = new File(buildDir, 'tools')

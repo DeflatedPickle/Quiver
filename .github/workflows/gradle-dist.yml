@@ -24,7 +24,7 @@ jobs:
         os: [ ubuntu-latest ]
         task: [ distZip ]
         java-v: [ 8, 11, 16 ]
-        java-d: [ adopt-hotspot, adopt-openj9 ]
+        java-d: [ adopt-hotspot, adopt-openj9, temurin, zulu ]
 
     name: Building ${{ matrix.task }} for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
