@@ -21,11 +21,8 @@ version "$version"
 sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
-	if (project.hasProperty("pre")) {
-		mostlyName = "$name-${project.getProperty("pre")}-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${JavaVersion.current()}"
-	} else {
-		mostlyName = "$name-$version-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${JavaVersion.current()}"
-	}
+	ver = project.properties["pre"] ?: version
+	mostlyName = "$name-$ver-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${JavaVersion.current()}-${System.getProperty("java.vendor").replace(" ", "").toLowerCase()}"
 
 	licenseDir = new File(buildDir, 'licenses')
 	toolDir = new File(buildDir, 'tools')
