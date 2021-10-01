@@ -232,6 +232,8 @@ run {
 
 		runtimeOnly project(':filewatcher')
 
+		runtimeOnly project(':translationmatrix')
+
 		// runtimeOnly project(':discordrpc')
 		runtimeOnly project(':pluginmanager')
 		runtimeOnly project(':settingsgui')

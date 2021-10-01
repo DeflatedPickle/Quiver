@@ -9,6 +9,9 @@ import com.deflatedpickle.quiver.backend.event.EventNewDocument
 import com.deflatedpickle.quiver.backend.event.EventSelectFile
 import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.util.PackFormat
+import com.deflatedpickle.quiver.backend.util.lang.JsonLangReader
+import com.deflatedpickle.quiver.backend.api.lang.LangReader
+import com.deflatedpickle.quiver.backend.util.lang.PropertiesLangReader
 import java.io.File
 
 @Suppress("unused", "SpellCheckingInspection")
@@ -37,6 +40,9 @@ object Quiver {
     var format: PackFormat = -1
 
     init {
+        LangReader.registry.register("properties", PropertiesLangReader)
+        LangReader.registry.register("json", JsonLangReader)
+
         EventNewDocument.addListener {
             this.packDirectory = it
             this.selectedDir = it

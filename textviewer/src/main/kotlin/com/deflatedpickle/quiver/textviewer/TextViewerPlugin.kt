@@ -52,7 +52,7 @@ object TextViewerPlugin {
         "bat", "py", "rb",
         "make", "makefile", "makef", "gmk", "mak",
         "gradle",
-        "fsh", "vsh"
+        "fsh", "vsh",
     )
 
     init {
@@ -62,9 +62,8 @@ object TextViewerPlugin {
 
         EventOpenPack.addListener {
             if (Quiver.format <= 3) {
-                val registry = RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?
-
-                registry?.getOrRegister("lang", ::mutableListOf)?.let { it += TextViewer as Viewer<Any> }
+                (RegistryUtil.get("viewer") as Registry<String, MutableList<Viewer<Any>>>?)
+                    ?.getOrRegister("lang", ::mutableListOf)?.let { it += TextViewer as Viewer<Any> }
             }
         }
 
@@ -104,7 +103,8 @@ object TextViewerPlugin {
 
                             setRenderer { list, value, index, isSelected, cellHasFocus ->
                                 DefaultListCellRenderer().getListCellRendererComponent(
-                                    list, value.split("/").last()
+                                    list,
+                                    value.split("/").last()
                                         .split(".").first()
                                         .capitalize(),
                                     index, isSelected, cellHasFocus

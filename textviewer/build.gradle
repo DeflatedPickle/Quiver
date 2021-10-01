@@ -4,4 +4,6 @@ dependencies {
 	implementation project(':core')
 	implementation project(':filepanel')
 	implementation project(':settingsgui')
+
+	implementation project(':translationmatrix')
 }

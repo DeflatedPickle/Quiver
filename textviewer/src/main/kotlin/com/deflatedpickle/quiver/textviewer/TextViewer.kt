@@ -4,9 +4,10 @@ package com.deflatedpickle.quiver.textviewer
 
 import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
 import com.deflatedpickle.quiver.filepanel.api.Viewer
-import com.deflatedpickle.quiver.textviewer.link.AssetLinkGenerator
+import com.deflatedpickle.quiver.textviewer.link.MinecraftLinkGenerator
 import org.fife.ui.rsyntaxtextarea.ErrorStrip
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice
 import org.fife.ui.rtextarea.RTextScrollPane
 import org.jdesktop.swingx.JXPanel
@@ -27,7 +28,7 @@ object TextViewer : Viewer<File> {
         antiAliasingEnabled = true
         hyperlinksEnabled = true
 
-        linkGenerator = AssetLinkGenerator
+        linkGenerator = MinecraftLinkGenerator
         // We have to have a listener for the link generator to activate results
         addHyperlinkListener {}
     }
@@ -43,10 +44,10 @@ object TextViewer : Viewer<File> {
         addMouseWheelListener { event ->
             when (event.modifiers) {
                 InputEvent.CTRL_MASK -> {
-                    val zoom = component.font.size + (event.wheelRotation * -1)
-                    // We don't want to zoom in/out too much!
-                    if (zoom in 4 until 40) {
-                        component.font = component.font.deriveFont((zoom).toFloat())
+                    if (event.wheelRotation < 0) {
+                        RSyntaxTextAreaEditorKit.IncreaseFontSizeAction().actionPerformedImpl(null, component)
+                    } else {
+                        RSyntaxTextAreaEditorKit.DecreaseFontSizeAction().actionPerformedImpl(null, component)
                     }
                 }
             }
