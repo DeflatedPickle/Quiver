@@ -1,5 +1,7 @@
 /* Copyright (c) 2020-2021 DeflatedPickle under the MIT license */
 
+@file:Suppress("UNCHECKED_CAST", "SimpleRedundantLet")
+
 package com.deflatedpickle.quiver.frontend.menu
 
 import com.deflatedpickle.haruhi.util.PluginUtil

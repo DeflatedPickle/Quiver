@@ -98,3 +98,4 @@ directory when you want to test it
 ### Tools
 
 - [PackSquash](https://github.com/ComunidadAylas/PackSquash)
+- [mcpackutil](https://github.com/DeflatedPickle/mcpackutil)

@@ -21,9 +21,13 @@ import com.deflatedpickle.quiver.filewatcher.event.EventFileSystemUpdate
 import com.deflatedpickle.quiver.frontend.menu.LinkedFilesPopupMenu
 import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
 import com.deflatedpickle.sniffle.swingsettings.event.EventChangeTheme
+import com.deflatedpickle.undulation.extensions.updateUIRecursively
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.awt.BorderLayout
 import java.io.File
 import javax.swing.SwingUtilities
+import javax.swing.Timer
 
 @Suppress("unused")
 @Plugin(
@@ -43,7 +47,7 @@ import javax.swing.SwingUtilities
     settings = FileTableSettings::class
 )
 object FileTablePlugin {
-    private val toolbar = SearchToolbar(Union.U2.ofB(FileTable))
+    private val toolbar = SearchToolbar(Union.U3.ofB(FileTable))
 
     private val fileLinkMenu = LinkedFilesPopupMenu {
         if (FileTable.selectedRow >= 0)
@@ -74,17 +78,19 @@ object FileTablePlugin {
             FileTable.refresh(it)
         }
 
-        EventFileSystemUpdate.addListener {
+        EventFileSystemUpdate.addListener { file ->
             // Waiting until Haruhi updates events to have sources
-            if (it.isFile || !it.exists()) {
-                FileTable.refresh(it)
+            if (file.isFile || !file.exists()) {
+                // FileTable.refresh(file)
                 EventSelectFolder.trigger(Quiver.packDirectory!!)
-                EventSearchFile.trigger(it)
+                EventSearchFile.trigger(file)
             }
         }
 
         EventSelectFolder.addListener {
-            FileTable.refresh(it)
+            // GlobalScope.launch {
+                FileTable.refresh(it)
+           //  }
         }
 
         EventSelectFile.addListener {

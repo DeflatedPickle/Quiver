@@ -9,6 +9,7 @@ import blue.endless.jankson.JsonPrimitive
 import com.deflatedpickle.quiver.Quiver
 import com.deflatedpickle.quiver.filepanel.api.Viewer
 import com.deflatedpickle.undulation.extensions.find
+import com.deflatedpickle.undulation.extensions.purgeDuplicates
 import net.querz.nbt.io.NBTUtil
 import net.querz.nbt.tag.ArrayTag
 import net.querz.nbt.tag.CompoundTag
@@ -124,7 +125,7 @@ object TreeViewer : Viewer<File> {
             for (i in file.readLines().sorted()) {
                 addOldLang(i, component.root)
             }
-            purgeDuplicate(component.root)
+            component.root.purgeDuplicates()
         }
     }
 
@@ -142,7 +143,8 @@ object TreeViewer : Viewer<File> {
 
             last = if (found == null) {
                 last.add(childNode)
-                purgeDuplicate(component.root)
+                // I'm lazy, so instead of checking, we'll just add and remove the duplicates
+                component.root.purgeDuplicates()
                 childNode
             } else {
                 found.add(childNode)
@@ -152,21 +154,6 @@ object TreeViewer : Viewer<File> {
 
         val childNode = DefaultMutableTreeNode(split.last())
         last.add(childNode)
-    }
-
-    // I'm lazy, so instead of checking, we'll just add and remove the duplicates
-    private fun purgeDuplicate(node: DefaultMutableTreeNode) {
-        val list = mutableListOf<String>()
-
-        for (i in node.children()) {
-            val s = (i as DefaultMutableTreeNode).userObject as String
-            if (s in list) {
-                node.remove(i)
-            } else {
-                list.add(s)
-            }
-            purgeDuplicate(i)
-        }
     }
 
     override fun getComponent(): JComponent = component

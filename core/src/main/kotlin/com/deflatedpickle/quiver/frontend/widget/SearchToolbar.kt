@@ -7,6 +7,7 @@ import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.undulation.DocumentAdapter
 import com.deflatedpickle.undulation.extensions.getText
 import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXList
 import org.jdesktop.swingx.JXSearchField
 import org.jdesktop.swingx.JXTable
 import org.jdesktop.swingx.JXTree
@@ -15,7 +16,7 @@ import javax.swing.JToggleButton
 import javax.swing.JToolBar
 
 class SearchToolbar(
-    private val widgetUnion: Union.U2<JXTree, JXTable>
+    private val widgetUnion: Union.U3<JXTree, JXTable, JXList<*>>
 ) : JToolBar("Search") {
     private val searchField: JXSearchField = JXSearchField("Search").apply {
         searchMode = JXSearchField.SearchMode.INSTANT
@@ -49,7 +50,8 @@ class SearchToolbar(
                 ignoreWhitespaceCheckbox.isSelected,
                 widgetUnion.use(
                     { tree -> tree.selectionModel.maxSelectionRow - 1 },
-                    { table -> table.selectionModel.maxSelectionIndex - 1 }
+                    { table -> table.selectionModel.maxSelectionIndex - 1 },
+                    { list -> list.selectionModel.maxSelectionIndex - 1 },
                 ),
                 true
             )
@@ -67,7 +69,8 @@ class SearchToolbar(
                 ignoreWhitespaceCheckbox.isSelected,
                 widgetUnion.use(
                     { tree -> tree.selectionModel.maxSelectionRow + 1 },
-                    { table -> table.selectionModel.maxSelectionIndex + 1 }
+                    { table -> table.selectionModel.maxSelectionIndex + 1 },
+                    { list -> list.selectionModel.maxSelectionIndex + 1 },
                 )
             )
         }
@@ -134,7 +137,8 @@ class SearchToolbar(
 
         val searchable = this.widgetUnion.use(
             { it.searchable },
-            { it.searchable }
+            { it.searchable },
+            { it.searchable },
         )
 
         if (backwards) {

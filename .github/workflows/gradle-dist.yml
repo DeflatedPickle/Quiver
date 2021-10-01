@@ -1,6 +1,10 @@
 name: Gradle Dist
 
-on: [ push, workflow_dispatch ]
+on:
+  push:
+    branches:
+      - rewrite
+  workflow_dispatch:
 
 jobs:
   clear:

@@ -39,6 +39,10 @@ include 'zipstep'
 
 include 'filewatcher'
 
+include 'packcreator'
+includeSub 'packcreator/rippedpack'
+includeSub 'packcreator/emptypack'
+
 // Include the libraries I use and own
 // This is so I can fix any issues easier
 [
@@ -58,3 +62,9 @@ includeBuild 'libs/monocons'
 includeBuild 'libs/tosuto'
 includeBuild 'libs/undulation'
 includeBuild 'libs/mmf'
+
+def includeSub(String path) {
+	def name = path.split("/").last()
+	include name
+	project(":$name").projectDir = new File(settingsDir, path)
+}

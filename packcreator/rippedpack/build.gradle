@@ -1,0 +1,67 @@
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+	implementation project(':core')
+	implementation project(':packcreator')
+	implementation project(':swingsettings')
+}
+
+def dir = toolDir.toPath().resolve('mcpackutil').toFile()
+def repo = "https://raw.githubusercontent.com/DeflatedPickle/mcpackutil/master"
+def releases = "https://github.com/DeflatedPickle/mcpackutil/releases/download/"
+
+task downloadLicense(type: Download) {
+	src "$repo/LICENSE"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(dir, 'LICENSE')
+	overwrite false
+}
+
+task downloadReadMe(type: Download) {
+	src "$repo/README.md"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(dir, 'README.md')
+	overwrite false
+}
+
+task downloadLinux(type: Download) {
+	src "$releases/ubuntu-latest/mcpackutil"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(dir, 'mcpackutil-linux')
+	overwrite false
+}
+
+task downloadMacOS(type: Download) {
+	src "$releases/macos-latest/mcpackutil"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(dir, 'mcpackutil-macos')
+	overwrite false
+}
+
+task downloadWin(type: Download) {
+	src "$releases/windows-latest/mcpackutil.exe"
+	//noinspection GroovyAssignabilityCheck
+	dest new File(dir, 'mcpackutil.exe')
+	overwrite false
+}
+
+rootProject.tasks.getByName('run').with {
+	dependsOn downloadLicense
+	dependsOn downloadReadMe
+	dependsOn downloadLinux
+	dependsOn downloadMacOS
+	dependsOn downloadWin
+
+	copy {
+		from "../build/tools"
+		into '../run/tools'
+	}
+}
+
+distZip.with {
+	dependsOn downloadLicense
+	dependsOn downloadReadMe
+	dependsOn downloadLinux
+	dependsOn downloadMacOS
+	dependsOn downloadWin
+}

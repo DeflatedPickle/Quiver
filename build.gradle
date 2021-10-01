@@ -22,10 +22,20 @@ sourceCompatibility = targetCompatibility = "$jvmTarget"
 
 project.ext {
 	ver = project.properties["pre"] ?: version
+	os = System.getProperty("os.name").toLowerCase()
+	arch = System.getProperty("os.arch")
 	vendor = System.getProperty("java.vendor").replace(" ", "").toLowerCase()
 
-	if (vendor == "internationalbusinessmachinescorporation") {
-		vendor = "ibm"
+	switch (vendor) {
+		case "adoptopenjdk":
+			vendor = "openjdk"
+			break
+		case "internationalbusinessmachinescorporation":
+			vendor = "ibm"
+			break
+		case "azulsystems.inc.":
+			vendor = "azul"
+			break
 	}
 
 	jv = JavaVersion.current()
@@ -34,7 +44,7 @@ project.ext {
 		jv = "8"
 	}
 
-	mostlyName = "$name-$ver-${System.getProperty("os.name").toLowerCase()}-${System.getProperty("os.arch")}-java${jv}-${vendor}"
+	mostlyName = "$name-$ver-$os-$arch-java${jv}-${vendor}"
 
 	licenseDir = new File(buildDir, 'licenses')
 	toolDir = new File(buildDir, 'tools')
@@ -62,8 +72,11 @@ allprojects { p ->
 		api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 		api "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
 		api "org.jetbrains.kotlinx:kotlinx-serialization-json:${kotlinSerialization}"
-		api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
-		api 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.1'
+		// For some reason, the newer versions break functionality
+		//noinspection GradlePackageUpdate
+		api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+		//noinspection GradlePackageUpdate
+		api 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.3'
 	}
 
 	spotless {
@@ -231,6 +244,10 @@ run {
 		runtimeOnly project(':zipstep')
 
 		runtimeOnly project(':filewatcher')
+
+		runtimeOnly project(':packcreator')
+		runtimeOnly project(':rippedpack')
+		runtimeOnly project(':emptypack')
 
 		// runtimeOnly project(':discordrpc')
 		runtimeOnly project(':pluginmanager')

@@ -11,7 +11,10 @@ import com.deflatedpickle.quiver.backend.event.EventOpenPack
 import com.deflatedpickle.quiver.backend.event.EventSearchFolder
 import com.deflatedpickle.quiver.filewatcher.event.EventFileSystemUpdate
 import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.awt.BorderLayout
+import java.awt.EventQueue
 import java.io.File
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
@@ -35,7 +38,7 @@ import kotlin.io.path.ExperimentalPathApi
     ]
 )
 object FolderTreePlugin {
-    private val toolbar = SearchToolbar(Union.U2.ofA(FolderTree))
+    private val toolbar = SearchToolbar(Union.U3.ofA(FolderTree))
 
     init {
         EventProgramFinishSetup.addListener {
@@ -46,10 +49,12 @@ object FolderTreePlugin {
             FolderTree.refreshAll()
         }
 
-        EventFileSystemUpdate.addListener {
+        EventFileSystemUpdate.addListener { file ->
             // Waiting until Haruhi updates events to have sources
-            if (it.isDirectory || !it.exists()) {
-                FolderTree.refreshAll()
+            if (file.isDirectory || !file.exists()) {
+                GlobalScope.launch {
+                    FolderTree.refreshAll()
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.quiver.frontend.dialog
 
+import com.athaydes.kunion.Union
 import com.deflatedpickle.haruhi.util.PluginUtil
 import com.deflatedpickle.monocons.MonoIcon
 import com.deflatedpickle.quiver.Quiver
@@ -11,15 +12,18 @@ import com.deflatedpickle.quiver.backend.event.EventSelectFolder
 import com.deflatedpickle.quiver.backend.extension.toAsset
 import com.deflatedpickle.quiver.backend.extension.toSyntaxEditingStyle
 import com.deflatedpickle.quiver.backend.util.DotMinecraft
+import com.deflatedpickle.quiver.frontend.widget.SearchToolbar
 import com.deflatedpickle.quiver.frontend.widget.editButton
 import com.deflatedpickle.quiver.frontend.widget.openButton
 import com.deflatedpickle.undulation.constraints.FillBothFinishLine
-import com.jidesoft.swing.DefaultOverlayable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rtextarea.RTextScrollPane
 import org.fife.ui.rtextarea.SearchContext
 import org.fife.ui.rtextarea.SearchEngine
 import org.jdesktop.swingx.JXButton
+import org.jdesktop.swingx.JXList
 import org.jdesktop.swingx.JXPanel
 import org.oxbow.swingbits.dialog.task.TaskDialog
 import java.awt.BorderLayout
@@ -35,12 +39,13 @@ import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JProgressBar
 import javax.swing.JScrollPane
+import javax.swing.JSeparator
 import javax.swing.JSplitPane
 import javax.swing.JToolBar
 
 // TODO: Add a context menu to select items in the file table
 class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
-    private var lookFor: String = ""
+    private lateinit var lookFor: File
 
     private val textArea = RSyntaxTextArea().apply {
         this.isEditable = false
@@ -52,7 +57,7 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
     }
 
     private val listModel = DefaultListModel<File>()
-    private val list = JList(this.listModel).apply {
+    private val list = JXList(this.listModel).apply {
         cellRenderer = object : DefaultListCellRenderer() {
             override fun getListCellRendererComponent(
                 list: JList<*>?,
@@ -79,9 +84,19 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
                     markAll = true
                     wholeWord = true
                     searchForward = false
-                    searchFor = lookFor
+                    searchFor = lookFor.nameWithoutExtension
                 }
                 SearchEngine.find(textArea, context)
+            }
+        }
+    }
+
+    private val toolbar = SearchToolbar(Union.U3.ofC(list))
+
+    private val refreshButton = JXButton(MonoIcon.RELOAD).apply {
+        addActionListener {
+            GlobalScope.launch {
+                refreshAll(lookFor)
             }
         }
     }
@@ -122,10 +137,20 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
                 add(
                     JSplitPane(
                         JSplitPane.HORIZONTAL_SPLIT,
-                        DefaultOverlayable(
-                            JScrollPane(list),
-                            progressBar
-                        ),
+                        // DefaultOverlayable(
+                            JXPanel(BorderLayout()).apply {
+                                add(toolbar.apply {
+                                    add(JSeparator())
+                                    add(refreshButton)
+                                },
+                                BorderLayout.NORTH)
+                                add(JScrollPane(list), BorderLayout.CENTER)
+                                add(JToolBar().apply {
+                                    add(progressBar)
+                                }, BorderLayout.SOUTH)
+                            }
+                            /*progressBar
+                        )*/,
                         JXPanel(BorderLayout()).apply {
                             add(
                                 JToolBar().apply {
@@ -155,11 +180,12 @@ class UsagesDialog : TaskDialog(PluginUtil.window, "Find Usages") {
     }
 
     fun refreshAll(lookFor: File) {
-        this.lookFor = lookFor.nameWithoutExtension
+        progressBar.isIndeterminate = true
+        this.lookFor = lookFor
 
         this.listModel.removeAllElements()
         this.refresh(Quiver.packDirectory!!, lookFor)
-        progressBar.isVisible = false
+        progressBar.isIndeterminate = false
     }
 
     fun refresh(file: File, lookFor: File) {
