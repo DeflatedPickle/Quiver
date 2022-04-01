@@ -45,7 +45,7 @@ dependencies {
 
 	api 'com.fifesoft:rsyntaxtextarea:3.1.2'
 	api 'com.fifesoft:languagesupport:3.1.1'
-	api 'com.fifesoft:spellchecker:3.1.1'
+	api 'com.fifesoft:spellchecker:3.2.0'
 	api 'com.fifesoft:autocomplete:3.1.1'
 	api 'com.fifesoft:rstaui:3.1.1'
 	api 'de.tisoft.rsyntaxtextarea:rsyntaxtextarea-antlr4-extension:0.0.2'
