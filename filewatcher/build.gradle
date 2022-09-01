@@ -3,5 +3,5 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 dependencies {
 	implementation project(':core')
 
-	implementation 'io.methvin:directory-watcher:0.15.0'
+	implementation 'io.methvin:directory-watcher:0.16.1'
 }
