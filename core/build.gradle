@@ -43,7 +43,7 @@ dependencies {
 	// api 'com.github.mickleness:pumpernickel:7721e5641f'
 	api 'com.github.DeflatedPickle:pumpernickel:9fb38d8acc'
 
-	api 'com.fifesoft:rsyntaxtextarea:3.1.2'
+	api 'com.fifesoft:rsyntaxtextarea:3.3.0'
 	api 'com.fifesoft:languagesupport:3.1.1'
 	api 'com.fifesoft:spellchecker:3.1.1'
 	api 'com.fifesoft:autocomplete:3.1.1'
